@@ -226,29 +226,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-#################################
-
-# Images #
-*.jpg
-*.gif
-*.png
-*.svg
-*.ico
-
-# Common files #
-*.txt
-*.tsv
-*.dat
-*.csv
-*.xlsx
-
-# Temporary files #
-*.~
-
-# Paths to be ignored #
-Description_of_components\**\ # Input files
-Simulation_results\**\ # code output directory
-opensc2\**\ # virtual environment
-GUI_icons\**\ # graphical user interface images
-TDD_examples\**\ # input files template for the three selected cases used whitin the Test Driven Development approach
