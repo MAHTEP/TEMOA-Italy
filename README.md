@@ -2,9 +2,7 @@
 
 ## Features
 
-TEMOA-Italy is a software for the multi-physical analysis of thermal-hydraulic and electro-dynamic transients in Superconducting Cable-in-Conduit Conductors (CICC) for fusion magnets and power transmission.
-
-The model is built based on the well-established TIMES-Italy model, re-arranged in the open-source framework TEMOA (Tools for Energy Modeling Optimization and Analysis https://temoacloud.com/). The input set is to be prescribed through self-explanatory excel files.
+TEMOA-Italy is an energy model instance on the Italian energy system. The model is built based on the well-established TIMES-Italy model, re-arranged in the open-source framework TEMOA (Tools for Energy Modeling Optimization and Analysis https://temoacloud.com/). The input set is to be prescribed through self-explanatory excel files.
 The developing team includes Prof. L. Savoldi[^1], D. Lerede[^2], M. Nicoli[^2]  @ Energy Department “Galileo Ferraris” @ [Politecnico di Torino](https://www.polito.it/). Please, contact us at:
 * laura.savoldi@polito.it
 * daniele.lerede@polito.it
