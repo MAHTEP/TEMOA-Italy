@@ -86,7 +86,7 @@ CREATE TABLE "MinInputGroupWeight" (
 	"tech"		        text,
 	"group_name"	    text,
 	"gi_min_fraction"	real,
-	"tech_desc"	        text,
+	"notes"	        text,
 	PRIMARY KEY("tech","group_name","regions")
 );
 CREATE TABLE "MinInputGroup" (
@@ -106,7 +106,7 @@ CREATE TABLE "MaxInputGroupWeight" (
 	"tech"		        text,
 	"group_name"	    text,
 	"gi_max_fraction"	real,
-	"tech_desc"	        text,
+	"notes"	        text,
 	PRIMARY KEY("tech","group_name","regions")
 );
 CREATE TABLE "MaxInputGroup" (
@@ -126,7 +126,7 @@ CREATE TABLE "MaxOutputGroupWeight" (
 	"tech"		        text,
 	"group_name"	    text,
 	"go_max_fraction"	real,
-	"tech_desc"	        text,
+	"notes"	        text,
 	PRIMARY KEY("tech","group_name","regions")
 );
 CREATE TABLE "MaxOutputGroup" (
@@ -364,7 +364,7 @@ CREATE TABLE "MinGenGroupWeight" (
 	"tech"	text,
 	"group_name"	text,
 	"act_fraction"	REAL,
-	"tech_desc"	text,
+	"notes"	text,
 	PRIMARY KEY("tech","group_name","regions")
 );
 CREATE TABLE "MinGenGroupTarget" (
@@ -380,7 +380,7 @@ CREATE TABLE "MaxGenGroupWeight" (
 	"tech"	text,
 	"max_group_name"	text,
 	"act_fraction"	REAL,
-	"tech_desc"	text,
+	"notes"	text,
 	PRIMARY KEY("tech","max_group_name","regions")
 );
 CREATE TABLE "MaxGenGroupLimit" (
