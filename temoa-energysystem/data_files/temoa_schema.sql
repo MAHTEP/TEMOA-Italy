@@ -81,6 +81,66 @@ CREATE TABLE "groups" (
 	"notes"	text,
 	PRIMARY KEY("group_name")
 );
+CREATE TABLE "MinInputGroupWeight" (
+	"regions"	        text,
+	"tech"		        text,
+	"group_name"	    text,
+	"gi_min_fraction"	real,
+	"tech_desc"	        text,
+	PRIMARY KEY("tech","group_name","regions")
+);
+CREATE TABLE "MinInputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"input_comm"	  text,
+	"group_name" 	  text,
+	"gi_min"	      real,
+	"gi_min_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("input_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","input_comm","group_name")
+);
+CREATE TABLE "MaxInputGroupWeight" (
+	"regions"	        text,
+	"tech"		        text,
+	"group_name"	    text,
+	"gi_max_fraction"	real,
+	"tech_desc"	        text,
+	PRIMARY KEY("tech","group_name","regions")
+);
+CREATE TABLE "MaxInputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"input_comm"	  text,
+	"group_name" 	  text,
+	"gi_max"	      real,
+	"gi_max_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("input_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","input_comm","group_name")
+);
+CREATE TABLE "MaxOutputGroupWeight" (
+	"regions"	        text,
+	"tech"		        text,
+	"group_name"	    text,
+	"go_max_fraction"	real,
+	"tech_desc"	        text,
+	PRIMARY KEY("tech","group_name","regions")
+);
+CREATE TABLE "MaxOutputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"output_comm"	  text,
+	"group_name" 	  text,
+	"go_max"	      real,
+	"go_max_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","output_comm","group_name")
+);
 CREATE TABLE "commodity_labels" (
 	"comm_labels"	text,
 	"comm_labels_desc"	text,
@@ -315,6 +375,21 @@ CREATE TABLE "MinGenGroupTarget" (
 	"notes"	text,
 	PRIMARY KEY("periods","group_name","regions")
 );
+CREATE TABLE "MaxGenGroupWeight" (
+	"regions"	text,
+	"tech"	text,
+	"max_group_name"	text,
+	"act_fraction"	REAL,
+	"tech_desc"	text,
+	PRIMARY KEY("tech","max_group_name","regions")
+);
+CREATE TABLE "MaxGenGroupLimit" (
+	"periods"	integer,
+	"max_group_name"	text,
+	"max_act_g"	real,
+	"notes"	text,
+	PRIMARY KEY("periods","max_group_name")
+);
 CREATE TABLE "MinCapacity" (
 	"regions"	text,
 	"periods"	integer,
@@ -444,6 +519,16 @@ CREATE TABLE "EmissionActivity" (
 	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
+CREATE TABLE "CommodityEmissionFactor" (
+	"input_comm"    text,
+	"emis_comm"     text,
+	"ef"            real,
+	"emis_unit"     text,
+	"ef_notes"      text,
+	PRIMARY KEY("input_comm","ef","emis_comm"),
+	FOREIGN KEY("input_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
+);
 CREATE TABLE "Efficiency" (
 	"regions"	text,
 	"input_comm"	text,
@@ -535,6 +620,16 @@ CREATE TABLE "CapacityToActivity" (
 	"c2a_notes"	TEXT,
 	PRIMARY KEY("regions","tech"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
+);
+CREATE TABLE "CapacityFactor" (
+	"regions"	text,
+	"tech"	text,
+	"vintage"	integer,
+	"cf"	real,
+	"cf_notes"	text,
+	PRIMARY KEY("regions","tech","vintage"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
 );
 CREATE TABLE "CapacityFactorTech" (
 	"regions"	text,
