@@ -356,7 +356,7 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 CREATE TABLE "MyopicBaseyear" (
-	"year"	real
+	"year"	real,
 	"notes"	text	
 );
 CREATE TABLE "MinGenGroupWeight" (

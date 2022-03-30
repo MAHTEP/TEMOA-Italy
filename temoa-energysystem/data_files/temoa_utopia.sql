@@ -336,7 +336,7 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	PRIMARY KEY("regions","scenario","t_periods","tech")
 );
 CREATE TABLE "MyopicBaseyear" (
-	"year"	real
+	"year"	real,
 	"notes"	text	
 );
 CREATE TABLE "MinGenGroupWeight" (
