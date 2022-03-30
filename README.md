@@ -2,9 +2,9 @@
 
 ## Features
 
-TEMOA-Italy is an extension of the open-source energy system modeling framework [TEMOA](https://temoacloud.com/) (Tools for Energy Modeling Optimization and Analysis). A case study on a Reference Energy System representing the Italian system is developed starting from the well-established [TIMES-Italy](https://biblioteca.bologna.enea.it/RT/2011/2011_9_ENEA.pdf) model.
+**TEMOA-Italy** is an extension of the **open-source energy system modeling framework** [**TEMOA**](https://temoacloud.com/) (Tools for Energy Modeling Optimization and Analysis). A case study on a Reference Energy System representing the **Italian system** is developed starting from the well-established [TIMES-Italy](https://biblioteca.bologna.enea.it/RT/2011/2011_9_ENEA.pdf) model.
 
-The developing team includes Prof. L. Savoldi[^1], D. Lerede[^2], M. Nicoli[^2]  @ Energy Department “Galileo Ferraris” @ [Politecnico di Torino](https://www.polito.it/). Please, contact us at:
+The developing team includes Prof. L. Savoldi[^1], D. Lerede[^2], M. Nicoli[^2]  @ Energy Department “Galileo Ferraris” @ [**Politecnico di Torino**](https://www.polito.it/). Please, contact us at:
 * laura.savoldi@polito.it
 * daniele.lerede@polito.it
 * matteo.nicoli@polito.it
