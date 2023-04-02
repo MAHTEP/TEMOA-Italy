@@ -289,37 +289,7 @@ INSERT INTO "tech_annual" VALUES ('AGR_FT_SOL','');
 -- Base year technologies
 INSERT INTO "tech_annual" VALUES ('AGR_TECH','');
 -- Commercial sector
--- Fuel technologies
-INSERT INTO "tech_annual" VALUES ('COM_FT_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_DST_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_LPG_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_BIO_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_GEO_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_SOL_E','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_NGA_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_DST_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_LPG_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_BIO_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_SOL_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_GEO_1_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_GEO_2_N','');
-INSERT INTO "tech_annual" VALUES ('COM_FT_GEO_3_N','');
 -- Base year technologies
-INSERT INTO "tech_annual" VALUES ('COM_SH_HT_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HP_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HT_DST_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HT_LPG_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HT_BIO_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_RES_ELC_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HP_ELC_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HEX_HET_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HEX_GEO_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ABS_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_CHL_DST_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_CCL_ELC_CNT_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_AHP_ELC_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ROOM_ELC_E','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ROOF_ELC_E','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_NGA_E','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_DST_E','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_LPG_E','');
@@ -354,28 +324,6 @@ INSERT INTO "tech_annual" VALUES ('COM_WH_ELC_N','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_AHP_ELC_N','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_HEX_HET_N','');
 INSERT INTO "tech_annual" VALUES ('COM_WH_SOL_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HEX_HET_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HP_AIR_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_HP_PRB_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SH_WPEL_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_DST_STD_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_DST_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_HP_STD_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_HP_IMP_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ROOF_STD_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ELC_GEO_IMP_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ELC_GEO_ADV_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ROOF_ADV_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_REC_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_REC_IMP_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_CNF_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_CNF_IMP_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_CNT_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ROOM_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_GEO_IMP_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_ABS_NGA_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_NGA_STD_N','');
-INSERT INTO "tech_annual" VALUES ('COM_SC_NGA_IMP_N','');
 INSERT INTO "tech_annual" VALUES ('COM_CK_NGA_N','');
 INSERT INTO "tech_annual" VALUES ('COM_CK_LPG_N','');
 INSERT INTO "tech_annual" VALUES ('COM_CK_DST_N','');
@@ -476,9 +424,21 @@ CREATE TABLE "TechOutputSplit" (
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_HP_N','COM_SH',0.50,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_HP_N','COM_WH',0.20,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_HP_N','COM_SC',0.30,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_HP_N','COM_SH',0.50,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_HP_N','COM_WH',0.20,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_HP_N','COM_SC',0.30,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_HP_N','COM_SH',0.00,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_HP_N','COM_WH',0.00,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_HP_N','COM_SC',0.00,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_GEO_N','COM_SH',0.50,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_GEO_N','COM_WH',0.20,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_SH_GEO_N','COM_SC',0.30,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_GEO_N','COM_SH',0.50,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_GEO_N','COM_WH',0.20,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2020,'COM_SH_GEO_N','COM_SC',0.30,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_GEO_N','COM_SH',0.00,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_GEO_N','COM_WH',0.00,'');
+INSERT INTO "TechOutputSplit" VALUES ('IT',2050,'COM_SH_GEO_N','COM_SC',0.00,'');
 -- Micro-CHP
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_CHP_NGA_CI_N','ELC_DST',4.375E-01,'');
 INSERT INTO "TechOutputSplit" VALUES ('IT',2007,'COM_CHP_NGA_CI_N','COM_HET',5.625E-01,'');
@@ -2019,6 +1979,32 @@ CREATE TABLE "DemandSpecificDistribution" (
 	FOREIGN KEY("time_of_day_name") REFERENCES "time_of_day"("t_day"),
 	FOREIGN KEY("demand_name") REFERENCES "commodities"("comm_name")
 );
+-- Commercial sector
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','COM_SC',0.700,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','COM_SC',0.100,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','COM_SC',0.110,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','COM_SC',0.075,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','COM_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','COM_SC',0.015,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','COM_SH',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','COM_SH',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','COM_SH',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','COM_SH',0.138,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','COM_SH',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','COM_SH',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','COM_SH',0.520,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','COM_SH',0.068,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','COM_SH',0.052,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','COM_SH',0.138,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','COM_SH',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','COM_SH',0.042,'');
+
 CREATE TABLE "Driver" (
     "regions"       text,
     "periods"   	integer,

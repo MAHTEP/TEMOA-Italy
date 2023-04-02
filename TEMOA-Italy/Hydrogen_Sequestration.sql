@@ -154,9 +154,9 @@ INSERT INTO "technologies" VALUES ('CCUS_H2_SMR_CS','p','CCUS','Natural Gas Stea
 INSERT INTO "technologies" VALUES ('CCUS_H2_SMR_CS_LINKED','p','CCUS','LINKED tech for CCUS_H2_SMR_CS','');
 INSERT INTO "technologies" VALUES ('CCUS_H2_COA_CL','p','CCUS','Coal Gasification w/CCUS Centralized - Large','');
 INSERT INTO "technologies" VALUES ('CCUS_H2_COA_CL_LINKED','p','CCUS','LINKED tech for CCUS_H2_COA_CL','');
-INSERT INTO "technologies" VALUES ('CCUS_H2_COA_CM','p','CCUS','Natural Gas Steam Reforming w/CCUS Decentralized - Medium','');
+INSERT INTO "technologies" VALUES ('CCUS_H2_COA_CM','p','CCUS','Coal Gasification w/CCUS Centralized - Medium','');
 INSERT INTO "technologies" VALUES ('CCUS_H2_COA_CM_LINKED','p','CCUS','LINKED tech for CCUS_H2_COA_CM','');
-INSERT INTO "technologies" VALUES ('CCUS_H2_SBG_CM','p','CCUS','Natural Gas Steam Reforming w/CCUS Decentralized - Small','');
+INSERT INTO "technologies" VALUES ('CCUS_H2_SBG_CM','p','CCUS','Biomass Gasification w/CCUS Centralized - Small','');
 INSERT INTO "technologies" VALUES ('CCUS_H2_SBG_CM_LINKED','p','CCUS','LINKED tech for CCUS_H2_SBG_CM','');
 -- CCUS, Power
 INSERT INTO "technologies" VALUES ('CCUS_ELC_IG_COA','p','CCUS','IGCC coal w/CCUS, removal from input gas','');

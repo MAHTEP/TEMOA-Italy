@@ -19,17 +19,24 @@ aggregation = {
     "new_capacity_tech": True,
     "input_tech": True,
     "input_comm": True,
-    "output_tech": True,
+    "output_tech": False,
     "output_comm": True,
     "emissions_tech": True,
     "emissions_comm": True
 }
 
-tech = [
+tech = ['RES_FT_HET_E',
+'RES_FT_HET_N',
+'RES_CHP_NGA_CI_N',
+'RES_CHP_NGA_MICRO_N',
+'RES_CHP_NGA_CC_N',
+'RES_CHP_NGA_STR_N',
+'RES_CHP_NGA_SOFC_N',
+'RES_CHP_H2_PEMFC_N'
 ]
-input_comm = ['SNK_UPS_CO2'
+input_comm = [
 ]
-output_comm = ['SNK_UPS_CO2'
+output_comm = ['RES_HET'
 ]
 emissions_comm = [
 ]
