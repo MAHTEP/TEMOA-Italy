@@ -6,37 +6,30 @@ database_name = "TEMOA_Italy.sqlite"
 excel_name = "database_postprocessing"
 
 print_set = True
-toexcel_set = False
+toexcel_set = True
 result_set = {
-    "Output_CapacityByPeriodAndTech": False,
-    "Output_V_Capacity": False,
+    "Output_CapacityByPeriodAndTech": True,
+    "Output_V_Capacity": True,
     "Output_VFlow_In": True,
     "Output_VFlow_Out": True,
-    "Output_Emissions": False
+    "Output_Emissions": True
 }
 aggregation = {
     "capacity_tech": True,
     "new_capacity_tech": True,
     "input_tech": True,
     "input_comm": True,
-    "output_tech": False,
+    "output_tech": True,
     "output_comm": True,
     "emissions_tech": True,
     "emissions_comm": True
 }
 
-tech = ['RES_FT_HET_E',
-'RES_FT_HET_N',
-'RES_CHP_NGA_CI_N',
-'RES_CHP_NGA_MICRO_N',
-'RES_CHP_NGA_CC_N',
-'RES_CHP_NGA_STR_N',
-'RES_CHP_NGA_SOFC_N',
-'RES_CHP_H2_PEMFC_N'
+tech = [
 ]
 input_comm = [
 ]
-output_comm = ['RES_HET'
+output_comm = [
 ]
 emissions_comm = [
 ]

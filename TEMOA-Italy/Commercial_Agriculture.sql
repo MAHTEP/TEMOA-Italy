@@ -656,12 +656,6 @@ INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_BIO_N','COM_FT_BIO_GRP',1.0,'
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_DST_E','COM_FT_DST_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_DST_N','COM_FT_DST_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_ELC_E','COM_FT_ELC_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_NGA_CI_N','COM_FT_ELC_GRP',0.45,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_NGA_MICRO_N','COM_FT_ELC_GRP',0.38,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_NGA_CC_N','COM_FT_ELC_GRP',0.50,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_SLB_CI_N','COM_FT_ELC_GRP',0.45,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_NGA_SOFC_N','COM_FT_ELC_GRP',0.65,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CHP_H2_PEMFC_N','COM_FT_ELC_GRP',0.54,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_E','COM_FT_GEO_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_1_N','COM_FT_GEO_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_2_N','COM_FT_GEO_GRP',1.0,'');
@@ -2983,5 +2977,3 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
-
-COMMIT;

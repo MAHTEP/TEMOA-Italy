@@ -2134,5 +2134,3 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
-
-COMMIT;
