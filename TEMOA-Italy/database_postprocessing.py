@@ -503,8 +503,8 @@ if result_set["Output_VFlow_Out"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                          (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                          (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                            (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
+                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                         Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                         if float(sum(vflow_out_period.vflow_out)) != 0:
                             check_zeros = False

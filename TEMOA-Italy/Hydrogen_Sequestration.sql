@@ -171,8 +171,9 @@ INSERT INTO "technologies" VALUES ('CCUS_ELC_OXY_NGA','p','CCUS','NGCC w/CCUS, o
 INSERT INTO "technologies" VALUES ('CCUS_ELC_OXY_NGA_LINKED','p','CCUS','LINKED tech for CCUS_ELC_OXY_NGA','');
 -- CCUS, Capture
 INSERT INTO "technologies" VALUES ('CCUS_DAC','p','CCUS','Direct Air Capture (DAC) with chemical absorption','');
-INSERT INTO "technologies" VALUES ('SNK_IND_CO2_AGG','p','CCUS','Aggregation of industrial captured CO2 to SNK_CO2','');
-INSERT INTO "technologies" VALUES ('SNK_UPS_CO2_AGG','p','CCUS','Aggregation of upstream captured CO2 to SNK_CO2','');
+INSERT INTO "technologies" VALUES ('SNK_ELC_CO2_AGG','p','CCUS','Aggregation of captured CO2 to SNK_CO2','');
+INSERT INTO "technologies" VALUES ('SNK_IND_CO2_AGG','p','CCUS','Aggregation of captured CO2 to SNK_CO2','');
+INSERT INTO "technologies" VALUES ('SNK_UPS_CO2_AGG','p','CCUS','Aggregation of captured CO2 to SNK_CO2','');
 -- CCUS, Synfuels
 INSERT INTO "technologies" VALUES ('SF_NGA_METH','p','CCUS','Methane production from H2C and CO2 (Methanation)','');
 INSERT INTO "technologies" VALUES ('SF_DST_HYDR','p','CCUS','Gas oil production from H2C and CO2 (Hydrogenation)','');
@@ -354,8 +355,8 @@ INSERT INTO "commodities" VALUES('H2_DT','p','Hydrogen, decentralized production
 INSERT INTO "commodities" VALUES('H2_DTE','p','Hydrogen from electrolysis, decentralized production, tank storage');
 INSERT INTO "commodities" VALUES('H2_SF','p','Hydrogen for synfuel production');
 -- CCUS
-INSERT INTO "commodities" VALUES('SNK_CO2','p','Carbon dioxide (physical) for storage/utilization');
-INSERT INTO "commodities" VALUES('SNK_CO2_EM','e','Carbon dioxide for storage/utilization');
+INSERT INTO "commodities" VALUES('SNK_CO2','p','Captured CO2 for storage/utilization - Physical');
+INSERT INTO "commodities" VALUES('SNK_CO2_EM','e','Captured CO2 for storage/utilization - Emission');
 -- Other sectors and dummies (not required in the whole database)
 INSERT INTO "commodities" VALUES('DMY_OUT','d','');
 INSERT INTO "commodities" VALUES('BIO_SLB','p','');
@@ -374,6 +375,7 @@ INSERT INTO "commodities" VALUES('IND_H2','d','');
 INSERT INTO "commodities" VALUES('IND_H2E','d','');
 INSERT INTO "commodities" VALUES('OIL_HFO','p','');
 INSERT INTO "commodities" VALUES('RES_H2','d','');
+INSERT INTO "commodities" VALUES('SNK_ELC_CO2','p','');
 INSERT INTO "commodities" VALUES('SNK_IND_CO2','p','');
 INSERT INTO "commodities" VALUES('SNK_UPS_CO2','p','');
 INSERT INTO "commodities" VALUES('SYN_DST','p','');
@@ -596,14 +598,36 @@ CREATE TABLE "MaxActivity" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- CCUS, Capture
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'SNK_IND_CO2_AGG',100,'Mt','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'SNK_IND_CO2_AGG',5000,'Mt','');
-INSERT INTO "MaxActivity" VALUES ('IT',2030,'SNK_UPS_CO2_AGG',400,'Mt','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'SNK_UPS_CO2_AGG',1000,'Mt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'SNK_IND_CO2_AGG',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'SNK_IND_CO2_AGG',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2025,'SNK_IND_CO2_AGG',20,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2030,'SNK_IND_CO2_AGG',70,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2035,'SNK_IND_CO2_AGG',220,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2040,'SNK_IND_CO2_AGG',680,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2045,'SNK_IND_CO2_AGG',2080,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'SNK_IND_CO2_AGG',6400,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'SNK_UPS_CO2_AGG',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2025,'SNK_UPS_CO2_AGG',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2030,'SNK_UPS_CO2_AGG',20,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2035,'SNK_UPS_CO2_AGG',70,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2040,'SNK_UPS_CO2_AGG',220,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2045,'SNK_UPS_CO2_AGG',680,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'SNK_UPS_CO2_AGG',2100,'kt','');
 -- CCUS, Storage
-INSERT INTO "MaxActivity" VALUES ('IT',2030,'CCUS_SNK_DGF_ON',1E3,'Mt','');
-INSERT INTO "MaxActivity" VALUES ('IT',2040,'CCUS_SNK_DGF_ON',1E4,'Mt','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'CCUS_SNK_DGF_ON',5E4,'Mt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'CCUS_SNK_DGF_ON',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2025,'CCUS_SNK_DGF_ON',10,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2030,'CCUS_SNK_DGF_ON',100,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2035,'CCUS_SNK_DGF_ON',760,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2040,'CCUS_SNK_DGF_ON',2830,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2045,'CCUS_SNK_DGF_ON',10510,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'CCUS_SNK_DGF_ON',27000,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'CCUS_SNK_DGF_OFF',0,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2025,'CCUS_SNK_DGF_OFF',1,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2030,'CCUS_SNK_DGF_OFF',20,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2035,'CCUS_SNK_DGF_OFF',160,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2040,'CCUS_SNK_DGF_OFF',870,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2045,'CCUS_SNK_DGF_OFF',4680,'kt','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'CCUS_SNK_DGF_OFF',18000,'kt','');
 
 CREATE TABLE "LifetimeTech" (
 	"regions"	text,
@@ -1076,11 +1100,11 @@ INSERT INTO "Efficiency" VALUES ('IT','ELC_COA','CCUS_ELC_OXY_COA',2020,'ELC_CEN
 INSERT INTO "Efficiency" VALUES ('IT','ELC_COA','CCUS_ELC_OXY_COA',2025,'ELC_CEN',0.4400,'');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_COA','CCUS_ELC_SOFC_COA',2035,'ELC_CEN',0.4750,'');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_NGA','CCUS_ELC_OXY_NGA',2030,'ELC_CEN',0.5500,'');
-INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_IG_COA_LINKED',2020,'SNK_CO2',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OG_COA_LINKED',2020,'SNK_CO2',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OXY_COA_LINKED',2020,'SNK_CO2',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_SOFC_COA_LINKED',2035,'SNK_CO2',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OXY_NGA_LINKED',2030,'SNK_CO2',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_IG_COA_LINKED',2020,'SNK_ELC_CO2',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OG_COA_LINKED',2020,'SNK_ELC_CO2',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OXY_COA_LINKED',2020,'SNK_ELC_CO2',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_SOFC_COA_LINKED',2035,'SNK_ELC_CO2',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_ELC_OXY_NGA_LINKED',2030,'SNK_ELC_CO2',1.00,'');
 -- CCUS, Capture
 INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','CCUS_DAC',2020,'SNK_CO2',89.29,'kt/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','HET','CCUS_DAC',2020,'SNK_CO2',89.29,'kt/PJ');
@@ -1088,8 +1112,9 @@ INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','CCUS_DAC',2030,'SNK_CO2',111.61
 INSERT INTO "Efficiency" VALUES ('IT','HET','CCUS_DAC',2030,'SNK_CO2',111.61,'kt/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','CCUS_DAC',2050,'SNK_CO2',139.51,'kt/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','HET','CCUS_DAC',2050,'SNK_CO2',139.51,'kt/PJ');
-INSERT INTO "Efficiency" VALUES ('IT','SNK_IND_CO2','SNK_IND_CO2_AGG',2020,'SNK_CO2',1.00,'kt/kt');
-INSERT INTO "Efficiency" VALUES ('IT','SNK_UPS_CO2','SNK_UPS_CO2_AGG',2030,'SNK_CO2',1.00,'kt/kt');
+INSERT INTO "Efficiency" VALUES ('IT','SNK_ELC_CO2','SNK_ELC_CO2_AGG',2007,'SNK_CO2',1.00,'kt/kt');
+INSERT INTO "Efficiency" VALUES ('IT','SNK_IND_CO2','SNK_IND_CO2_AGG',2007,'SNK_CO2',1.00,'kt/kt');
+INSERT INTO "Efficiency" VALUES ('IT','SNK_UPS_CO2','SNK_UPS_CO2_AGG',2007,'SNK_CO2',1.00,'kt/kt');
 -- CCUS, Synfuels
 INSERT INTO "Efficiency" VALUES ('IT','H2_SF','SF_NGA_METH',2020,'SYN_NGA',0.01743,'');
 INSERT INTO "Efficiency" VALUES ('IT','SNK_CO2','SF_NGA_METH',2020,'SYN_NGA',0.01743,'');
@@ -1471,8 +1496,8 @@ INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_ELC_OXY_NGA',2030,0.34,'M€/
 INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_DAC',2020,8.00E-05,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_DAC',2020,6.40E-05,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2050,'CCUS_DAC',2020,5.10E-05,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2020,'SNK_IND_CO2_AGG',2020,0.15,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2030,'SNK_UPS_CO2_AGG',2030,0.50,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_IND_CO2_AGG',2007,0.15,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_UPS_CO2_AGG',2007,0.50,'M€/kt','');
 -- CCUS, Synfuels (CO2 transportation costs are included)
 INSERT INTO "CostVariable" VALUES ('IT',2025,'SF_DST_HYDR',2025,0.27,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2025,'SF_DST_COELC',2025,0.33,'M€/PJ','');
@@ -1483,7 +1508,7 @@ INSERT INTO "CostVariable" VALUES ('IT',2025,'SF_MEOH_HYDR',2025,0.29,'M€/PJ',
 INSERT INTO "CostVariable" VALUES ('IT',2025,'SF_MEOH_COELC',2025,0.41,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2025,'SF_MEOH_DAC',2025,0.87,'M€/PJ','');
 -- CCUS, Storage (CO2 transportation costs are included)
-INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_SNK_DGF_ON',2020, 3.67E-03,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_SNK_DGF_ON',2020,3.67E-03,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_SNK_DGF_OFF',2020,6.27E-03,'M€/kt','');
 
 CREATE TABLE "CostInvest" (
@@ -1629,8 +1654,8 @@ INSERT INTO "CostInvest" VALUES ('IT','SF_MEOH_HYDR',2025,26.94,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','SF_MEOH_COELC',2025,59.42,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','SF_MEOH_DAC',2025,237.68,'M€/PJ','');
 -- CCUS, Storage
-INSERT INTO "CostInvest" VALUES ('IT','CCUS_SNK_DGF_ON',2020,3.33E-03,'M€/kt','');
-INSERT INTO "CostInvest" VALUES ('IT','CCUS_SNK_DGF_OFF',2020,7.00E-03,'M€/kt','');
+INSERT INTO "CostInvest" VALUES ('IT','CCUS_SNK_DGF_ON',2020,3.3E-03,'M€/kt','');
+INSERT INTO "CostInvest" VALUES ('IT','CCUS_SNK_DGF_OFF',2020,7.0E-03,'M€/kt','');
 
 CREATE TABLE "CostFixed" (
 	"regions"	text NOT NULL,
@@ -2002,8 +2027,8 @@ CREATE TABLE "MaxResource" (
 	PRIMARY KEY("regions","tech")
 );
 -- CCUS
-INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_ON',40E+06,'kt','');
-INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_OFF',1E+03,'kt','');
+INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_ON',3E+07,'kt','');
+INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_OFF',1E+04,'kt','');
 
 CREATE TABLE "Output_V_Capacity" (
 	"regions"	text,
