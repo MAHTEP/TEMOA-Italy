@@ -1,27 +1,45 @@
 import os
 import sqlite3
 
-database_name = 'TEMOA_Italy.sqlite'
+sqlite_database = 'TEMOA_Italy.sqlite'
+sql_modules = ['TEMOA_Italy.sql']
+
+Deleting = True
+Reading = True
+Preprocessing = True
+Simplifying = False
 
 # Check if the SQLite database already exists and delete it
 
-if os.path.exists(database_name):
-    os.remove(database_name)
-    print('\nExisting SQLite database deleted.')
+if Deleting:
+    if os.path.exists(sqlite_database):
+        os.remove(sqlite_database)
+        print("{:>62}".format('Existing SQLite database deleted.'))
 
 # Create the SQLite database and execute the SQL code(s)
 
-conn = sqlite3.connect(database_name)
-with open('TEMOA_Italy.sql', 'r') as sql_file:
-    conn.executescript(sql_file.read())
-conn.commit()
-conn.close()
-
-print('\nSQLite database created and SQL code executed.\n')
+if Reading:
+    for sql in sql_modules:
+        conn = sqlite3.connect(sqlite_database)
+        with open(sql, mode='r', encoding='utf-8-sig') as sql_code:
+            conn.executescript(sql_code.read())
+        conn.commit()
+        conn.close()
+    print("{:>62}".format('SQLite database created and SQL code executed.'))
 
 # Execute the database_preprocessing.py script
 
-with open("database_preprocessing.py") as preprocessing:
-    exec(preprocessing.read())
+if Preprocessing:
+    with open("database_preprocessing.py") as preprocessing:
+        exec(preprocessing.read())
+    print("{:>62}".format('SQLite database preprocessed.'))
 
-print('\nSQLite database preprocessed.\n')
+# Simplify the SQLite database by removing the selected set of milestone years
+
+if Simplifying:
+    conn = sqlite3.connect(sqlite_database)
+    with open('database_simplifier.sql', mode='r', encoding='utf-8-sig') as sql_code:
+        conn.executescript(sql_code.read())
+    conn.commit()
+    conn.close()
+    print("{:>62}".format('SQLite database simplified.'))
