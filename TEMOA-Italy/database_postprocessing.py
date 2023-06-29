@@ -1,18 +1,17 @@
 import pandas as pd
-import numpy as np
 import sqlite3
 
 database_name = "TEMOA_Italy.sqlite"
 excel_name = "database_postprocessing"
 
 print_set = True
-toexcel_set = True
+toexcel_set = False
 result_set = {
-    "Output_CapacityByPeriodAndTech": True,
-    "Output_V_Capacity": True,
-    "Output_VFlow_In": True,
-    "Output_VFlow_Out": True,
-    "Output_Emissions": True
+    "Output_CapacityByPeriodAndTech": False,
+    "Output_V_Capacity": False,
+    "Output_VFlow_In": False,
+    "Output_VFlow_Out": False,
+    "Output_Emissions": False
 }
 aggregation = {
     "capacity_tech": True,
@@ -25,16 +24,11 @@ aggregation = {
     "emissions_comm": True
 }
 
-tech = [
-]
-input_comm = [
-]
-output_comm = [
-]
-emissions_comm = [
-]
-periods = [
-]
+tech = []
+input_comm = []
+output_comm = []
+emissions_comm = []
+periods = []
 
 tech_dummies = ['DMY_DEM_ANNUAL', 'DMY_PHY_ANNUAL', 'DMY_PHY_NON_ANNUAL']
 
@@ -58,7 +52,7 @@ if result_set["Output_CapacityByPeriodAndTech"]:
     else:
         conn = sqlite3.connect(database_name)
         Output_CapacityByPeriodAndTech = pd.read_sql("select * from Output_CapacityByPeriodAndTech where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                                                     " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
 
         if aggregation["capacity_tech"]:
@@ -81,7 +75,8 @@ if result_set["Output_CapacityByPeriodAndTech"]:
                     if float(sum(capacity_period.capacity)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
+                    Output_CapacityByPeriodAndTech_DF =\
+                        Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
 
         elif not aggregation["capacity_tech"]:
 
@@ -104,7 +99,8 @@ if result_set["Output_CapacityByPeriodAndTech"]:
     if result_set["Output_CapacityByPeriodAndTech"]:
         if aggregation["capacity_tech"]:
             Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.sort_values(by=['tech'], ignore_index=True)
-        Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.loc[:, (Output_CapacityByPeriodAndTech_DF != 0).any(axis=0)]  # To remove columns with only zeros
+        # To remove columns with only zeros
+        Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.loc[:, (Output_CapacityByPeriodAndTech_DF != 0).any(axis=0)]
             
 # Output_V_Capacity
 
@@ -117,7 +113,7 @@ if result_set["Output_V_Capacity"]:
     else:
         conn = sqlite3.connect(database_name)
         Output_V_Capacity = pd.read_sql("select * from Output_V_Capacity where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                                        " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
 
         if aggregation["new_capacity_tech"]:
@@ -480,7 +476,7 @@ if result_set["Output_VFlow_Out"]:
     elif tech and not output_comm:
         conn = sqlite3.connect(database_name)
         Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                                       " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
 
         output_comm = list(Output_VFlow_Out.output_comm)
@@ -526,7 +522,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -548,7 +544,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -576,7 +572,7 @@ if result_set["Output_VFlow_Out"]:
     elif not tech and output_comm:
         conn = sqlite3.connect(database_name)
         Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                      " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
+                                       " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
         conn.close()
 
         tech = list(Output_VFlow_Out.tech)
@@ -599,8 +595,8 @@ if result_set["Output_VFlow_Out"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                          (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                          (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                            (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
+                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                         Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                         if float(sum(vflow_out_period.vflow_out)) != 0:
                             check_zeros = False
@@ -622,7 +618,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -644,7 +640,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -672,8 +668,8 @@ if result_set["Output_VFlow_Out"]:
     else:
         conn = sqlite3.connect(database_name)
         Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                      " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
+                                       " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
+                                       " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
         conn.close()
 
         if aggregation["output_tech"] and aggregation["output_comm"]:
@@ -693,8 +689,8 @@ if result_set["Output_VFlow_Out"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                          (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                          (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                            (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
+                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                         Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                         if float(sum(vflow_out_period.vflow_out)) != 0:
                             check_zeros = False
@@ -716,7 +712,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -738,7 +734,7 @@ if result_set["Output_VFlow_Out"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                      (Output_VFlow_Out['t_periods'] == periods[i_periods])]
+                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
                     Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
                     if float(sum(vflow_out_period.vflow_out)) != 0:
                         check_zeros = False
@@ -784,7 +780,7 @@ if result_set["Output_Emissions"]:
     elif tech and not emissions_comm:
         conn = sqlite3.connect(database_name)
         Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                                       " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
 
         emissions_comm = list(Output_Emissions.emissions_comm)
@@ -807,8 +803,8 @@ if result_set["Output_Emissions"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                          (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                          (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                            (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
+                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
                         Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                         if float(sum(emissions_period.emissions)) != 0:
                             check_zeros = False
@@ -830,7 +826,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False
@@ -852,7 +848,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False
@@ -880,7 +876,7 @@ if result_set["Output_Emissions"]:
     elif not tech and emissions_comm:
         conn = sqlite3.connect(database_name)
         Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                      " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                                       " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
         conn.close()
 
         tech = list(Output_Emissions.tech)
@@ -903,8 +899,8 @@ if result_set["Output_Emissions"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                          (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                          (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                            (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
+                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
                         Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                         if float(sum(emissions_period.emissions)) != 0:
                             check_zeros = False
@@ -926,7 +922,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False
@@ -948,7 +944,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False
@@ -976,8 +972,8 @@ if result_set["Output_Emissions"]:
     else:
         conn = sqlite3.connect(database_name)
         Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                      " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                      " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                                       " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
+                                       " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
         conn.close()
 
         if aggregation["emissions_tech"] and aggregation["emissions_comm"]:
@@ -997,8 +993,8 @@ if result_set["Output_Emissions"]:
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
                         emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                          (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                          (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                            (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
+                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
                         Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                         if float(sum(emissions_period.emissions)) != 0:
                             check_zeros = False
@@ -1020,7 +1016,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['tech'] == tech[i_tech]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False
@@ -1042,7 +1038,7 @@ if result_set["Output_Emissions"]:
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
                     emissions_period = Output_Emissions[(Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                      (Output_Emissions['t_periods'] == periods[i_periods])]
+                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
                     Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
                     if float(sum(emissions_period.emissions)) != 0:
                         check_zeros = False

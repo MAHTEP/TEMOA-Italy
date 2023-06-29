@@ -1,145 +1,489 @@
 import pandas as pd
 import numpy as np
 import sqlite3
+import time
 
-database_name = "TEMOA_Italy.sqlite"
+# Input data and preliminary operations
+
+conn = sqlite3.connect("TEMOA_Italy.sqlite")
+
 lifetime_default = 40
-base_year = 2006
 print_i = 0
 
-print_set = {'LifetimeProcess':         False,
-             'Efficiency':              False,
-             'TechInputSplit':          False,
-             'TechOutputSplit':         False,
-             'EmissionAggregation':     False,
-             'EmissionActivity':        False,
-             'Currency':                False,
-             'CostInvest':              False,
-             'CostFixed':               False,
-             'CostVariable':            False,
-             'DiscountRate':            False,
-             'MinCapacity':             False,
-             'MinActivity':             False,
-             'MaxCapacity':             False,
-             'MaxActivity':             False,
-             'MinInputGroup':           False,
-             'MaxInputGroup':           False,
-             'MaxOutputGroup':          False,
-             'MinActivityGroup':        False,
-             'MaxActivityGroup':        False,
-             'MinCapacityGroup':        False,
-             'MaxCapacityGroup':        False,
-             'Demand':                  False,
-             'CapacityFactor':          False,
-             'CapacityFactorProcess':   False,
-             'CapacityCredit':          False}
+print_status = True
 
-tosql_set = {'LifetimeProcess':         True,
-             'Efficiency':              True,
-             'TechInputSplit':          True,
-             'TechOutputSplit':         True,
-             'EmissionAggregation':     True,
-             'EmissionActivity':        True,
-             'Currency':                True,
-             'CostInvest':              True,
-             'CostFixed':               True,
-             'CostVariable':            True,
-             'DiscountRate':            True,
-             'MinCapacity':             True,
-             'MinActivity':             True,
-             'MaxCapacity':             True,
-             'MaxActivity':             True,
-             'MinInputGroup':           True,
-             'MaxInputGroup':           True,
-             'MaxOutputGroup':          True,
-             'MinActivityGroup':        True,
-             'MaxActivityGroup':        True,
-             'MinCapacityGroup':        True,
-             'MaxCapacityGroup':        True,
-             'Demand':                  True,
-             'CapacityFactor':          True,
-             'CapacityFactorProcess':   True,
-             'CapacityCredit':          True}
+print_outcome = {'EmissionActivity':        False,
+                 'EmissionLimit':           False,
+                 'LifetimeProcess':         False,
+                 'Efficiency':              False,
+                 'TechInputSplit':          False,
+                 'TechOutputSplit':         False,
+                 'Currency':                False,
+                 'CostInvest':              False,
+                 'CostFixed':               False,
+                 'CostVariable':            False,
+                 'DiscountRate':            False,
+                 'MinCapacity':             False,
+                 'MinActivity':             False,
+                 'MaxCapacity':             False,
+                 'MaxActivity':             False,
+                 'MinInputGroup':           False,
+                 'MaxInputGroup':           False,
+                 'MaxOutputGroup':          False,
+                 'MinActivityGroup':        False,
+                 'MaxActivityGroup':        False,
+                 'MinCapacityGroup':        False,
+                 'MaxCapacityGroup':        False,
+                 'Demand':                  False,
+                 'CapacityFactor':          False,
+                 'CapacityFactorProcess':   False,
+                 'CapacityCredit':          False}
+
+save_tosql = {'EmissionActivity':           True,
+              'EmissionLimit':              True,
+              'LifetimeProcess':            True,
+              'Efficiency':                 True,
+              'TechInputSplit':             True,
+              'TechOutputSplit':            True,
+              'Currency':                   True,
+              'CostInvest':                 True,
+              'CostFixed':                  True,
+              'CostVariable':               True,
+              'DiscountRate':               True,
+              'MinCapacity':                True,
+              'MinActivity':                True,
+              'MaxCapacity':                True,
+              'MaxActivity':                True,
+              'MinInputGroup':              True,
+              'MaxInputGroup':              True,
+              'MaxOutputGroup':             True,
+              'MinActivityGroup':           True,
+              'MaxActivityGroup':           True,
+              'MinCapacityGroup':           True,
+              'MaxCapacityGroup':           True,
+              'Demand':                     True,
+              'CapacityFactor':             True,
+              'CapacityFactorProcess':      True,
+              'CapacityCredit':             True}
+
+time_periods = pd.read_sql("SELECT * FROM time_periods", conn)  # Extracting the time_periods
+time_periods = time_periods.sort_values(by=['t_periods'], ignore_index=True)
+time_periods = time_periods.drop(len(time_periods)-1)  # Removing the last milestone year (it is in time_future but not in time_periods)
+time_periods = list(time_periods.t_periods)
+
+time_existing = pd.read_sql("SELECT * FROM time_periods WHERE flag = 'e'", conn)  # Extracting the existing time_periods
+time_existing = time_existing.sort_values(by=['t_periods'], ignore_index=True)
+time_existing = list(time_existing.t_periods)
+
+time_optimize = pd.read_sql("SELECT * FROM time_periods WHERE flag = 'f'", conn)  # Extracting the future time_periods
+time_optimize = time_optimize.sort_values(by=['t_periods'], ignore_index=True)
+time_optimize = time_optimize.drop(len(time_optimize)-1)  # Removing the last milestone year (it is in time_future but not in time_optimize)
+time_optimize = list(time_optimize.t_periods)
+
+base_year = time_existing[len(time_existing)-1]  # Assuming that the last existing time_period corresponds to the model base year
+
+print('_______________________________________________________________________')
+print("{:>62}".format('Output code of database_preprocessing.py:'))
+
+# EmissionActivity
+
+start_time = time.time()
+
+# Evaluating EmissionActivity values from emission factors in the CommodityEmissionFactor table
+
+Efficiency = pd.read_sql("SELECT * FROM Efficiency", conn)  # Loading the Efficiency table from the .SQLite database
+CommodityEmissionFactor = pd.read_sql("SELECT * FROM CommodityEmissionFactor", conn)
+
+regions = list()
+emis_comm = list()
+input_comm = list()
+tech = list()
+vintage = list()
+output_comm = list()
+emis_act = list()
+emis_act_units = list()
+emis_act_notes = list()
+
+for i in range(0, len(CommodityEmissionFactor.input_comm)):
+    Efficiency_i = Efficiency[(Efficiency['input_comm'] == CommodityEmissionFactor.input_comm[i])]
+    Efficiency_i = Efficiency_i.reset_index(drop=True)
+    for j in range(0, len(Efficiency_i.tech)):
+        regions.append(Efficiency_i.regions[j])
+        emis_comm.append(CommodityEmissionFactor.emis_comm[i])
+        input_comm.append(CommodityEmissionFactor.input_comm[i])
+        tech.append(Efficiency_i.tech[j])
+        vintage.append(Efficiency_i.vintage[j])
+        output_comm.append(Efficiency_i.output_comm[j])
+        emis_act.append(float(CommodityEmissionFactor.ef[i] / Efficiency_i.efficiency[j]))
+        emis_act_units.append('')
+        emis_act_notes.append('')
+
+EmissionActivity_CEF = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "emis_comm": pd.Series(emis_comm, dtype='str'),
+        "input_comm": pd.Series(input_comm, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "output_comm": pd.Series(output_comm, dtype='str'),
+        "emis_act": pd.Series(emis_act, dtype='float'),
+        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
+        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
+    }
+)
+
+# Merging the interpolated pre-existing EmissionActivity_PEF with EmissionActivity_CEF from CommodityEmissionFactor
+
+EmissionActivity_PEF = pd.read_sql("SELECT * FROM EmissionActivity", conn)
+
+# Extracting the list of all indexes combinations for EmissionActivity_PEF
+indexes_PEF = list()
+for i in range(0, len(EmissionActivity_PEF)):
+    indexes_PEF.append(EmissionActivity_PEF.regions[i] + EmissionActivity_PEF.emis_comm[i] + EmissionActivity_PEF.input_comm[i] +
+                       EmissionActivity_PEF.tech[i] + str(EmissionActivity_PEF.vintage[i]) + EmissionActivity_PEF.output_comm[i])
+EmissionActivity_PEF['indexes'] = indexes_PEF
+indexes_PEF = list(dict.fromkeys(indexes_PEF))  # Removing duplicates
+
+# Extracting the list of all indexes combinations for EmissionActivity_CEF
+indexes_CEF = list()
+for i in range(0, len(EmissionActivity_CEF)):
+    indexes_CEF.append(EmissionActivity_CEF.regions[i] + EmissionActivity_CEF.emis_comm[i] + EmissionActivity_CEF.input_comm[i] +
+                       EmissionActivity_CEF.tech[i] + str(EmissionActivity_CEF.vintage[i]) + EmissionActivity_CEF.output_comm[i])
+EmissionActivity_CEF['indexes'] = indexes_CEF
+indexes_CEF = list(dict.fromkeys(indexes_CEF))  # Removing duplicates
+
+indexes = indexes_PEF + indexes_CEF  # Combining the two indexes lists
+indexes = list(dict.fromkeys(indexes))
+
+EmissionActivity = pd.DataFrame({'regions': pd.Series(dtype='str'),
+                                 'emis_comm': pd.Series(dtype='str'),
+                                 'input_comm': pd.Series(dtype='str'),
+                                 'tech': pd.Series(dtype='str'),
+                                 'vintage': pd.Series(dtype='int'),
+                                 'output_comm': pd.Series(dtype='str'),
+                                 'emis_act': pd.Series(dtype='float'),
+                                 'emis_act_units': pd.Series(dtype='str'),
+                                 'emis_act_notes': pd.Series(dtype='str')})
+
+for i in range(0, len(indexes)):
+    EmissionActivity_PEF_i = EmissionActivity_PEF[EmissionActivity_PEF['indexes'] == indexes[i]]
+    EmissionActivity_PEF_i = EmissionActivity_PEF_i.reset_index(drop=True)
+    EmissionActivity_CEF_i = EmissionActivity_CEF[EmissionActivity_CEF['indexes'] == indexes[i]]
+    EmissionActivity_CEF_i = EmissionActivity_CEF_i.reset_index(drop=True)
+
+    if len(EmissionActivity_PEF_i.emis_act) == 0 and len(EmissionActivity_CEF_i.emis_act) == 1:
+        EmissionActivity = pd.concat([EmissionActivity, EmissionActivity_CEF_i], ignore_index=True)
+    if len(EmissionActivity_PEF_i.emis_act) == 1 and len(EmissionActivity_CEF_i.emis_act) == 0:
+        EmissionActivity = pd.concat([EmissionActivity, EmissionActivity_PEF_i], ignore_index=True)
+    if len(EmissionActivity_PEF_i.emis_act) == 1 and len(EmissionActivity_CEF_i.emis_act) == 1:
+        emis_act = float(EmissionActivity_PEF_i.emis_act[0] + EmissionActivity_CEF_i.emis_act[0])
+        if abs(emis_act) >= 1E-2:  # To avoid to include negligible emission factors due to approximations in input data
+            EmissionActivity_NewRow = {'regions': EmissionActivity_PEF_i.regions[0],
+                                       'emis_comm': EmissionActivity_PEF_i.emis_comm[0],
+                                       'input_comm': EmissionActivity_PEF_i.input_comm[0],
+                                       'tech': EmissionActivity_PEF_i.tech[0],
+                                       'vintage': EmissionActivity_PEF_i.vintage[0],
+                                       'output_comm': EmissionActivity_PEF_i.output_comm[0],
+                                       'emis_act': emis_act,
+                                       'emis_act_units': EmissionActivity_PEF_i.emis_act_units[0],
+                                       'emis_act_notes': EmissionActivity_PEF_i.emis_act_notes[0],
+                                       'indexes': indexes[i]}
+            EmissionActivity = EmissionActivity.append(EmissionActivity_NewRow, ignore_index=True)
+
+EmissionActivity = EmissionActivity.drop(columns=['indexes'])
+
+# Aggregating emissions on aggregated commodities according to EmissionAggregation
+
+EmissionAggregation = pd.read_sql("SELECT * FROM EmissionAggregation", conn)
+
+# Deriving the list of commodity for global emissions
+global_comm_list = EmissionAggregation.emis_agg
+global_comm_list = list(dict.fromkeys(global_comm_list))
+
+for global_comm in global_comm_list:
+    EmissionAggregation_i = EmissionAggregation[EmissionAggregation['emis_agg'] == global_comm]
+
+    # Deriving the list of all the emission commodities associated to the global one
+    aggregated_comm_list = EmissionAggregation_i.emis_comm
+    aggregated_comm_list = list(dict.fromkeys(aggregated_comm_list))
+
+    EmissionActivity_i = EmissionActivity.loc[EmissionActivity['emis_comm'].isin(aggregated_comm_list)]
+    EmissionActivity_i = EmissionActivity_i.reset_index(drop=True)
+
+    # Extracting the list of all indexes combinations for EmissionActivity_i (excluding emis_comm)
+    indexes = list()
+    for i in range(0, len(EmissionActivity_i)):
+        indexes.append(EmissionActivity_i.regions[i] + EmissionActivity_i.input_comm[i] +
+                       EmissionActivity_i.tech[i] + str(EmissionActivity_i.vintage[i]) + EmissionActivity_i.output_comm[i])
+    EmissionActivity_i['indexes'] = indexes
+    indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+    for index_i in indexes:
+        EmissionActivity_j = EmissionActivity_i[EmissionActivity_i['indexes'] == index_i]
+        EmissionActivity_j = EmissionActivity_j.reset_index(drop=True)
+
+        emis_act = 0.0
+        for i in range(0, len(EmissionActivity_j.emis_act)):
+            EmissionAggregation_j = EmissionAggregation_i[(EmissionAggregation_i['emis_comm'] == EmissionActivity_j.emis_comm[i])]
+            EmissionAggregation_j = EmissionAggregation_j.reset_index(drop=True)
+            if len(EmissionAggregation_j) != 0:
+                emis_act = emis_act + EmissionActivity_j.emis_act[i] * float(EmissionAggregation_j.emis_agg_weight[0])
+
+        if abs(emis_act) >= 1E-2:  # To avoid to include negligible emission factors due to approximations in input data
+            EmissionActivity_NewRow = {'regions': EmissionActivity_j.regions[0],
+                                       'emis_comm': global_comm,
+                                       'input_comm': EmissionActivity_j.input_comm[0],
+                                       'tech': EmissionActivity_j.tech[0],
+                                       'vintage': EmissionActivity_j.vintage[0],
+                                       'output_comm': EmissionActivity_j.output_comm[0],
+                                       'emis_act': emis_act,
+                                       'emis_act_units': EmissionActivity_j.emis_act_units[0],
+                                       'emis_act_notes': EmissionActivity_j.emis_act_notes[0]}
+            EmissionActivity = EmissionActivity.append(EmissionActivity_NewRow, ignore_index=True)
+
+# Pre-existing EmissionActivity interpolation (the same algorithm adopted for other vintage indexed parameters)
+
+regions = list()
+emis_comm = list()
+input_comm = list()
+tech = list()
+vintage = list()
+output_comm = list()
+emis_act = list()
+emis_act_units = list()
+emis_act_notes = list()
+
+# Extracting the list of all indexes combinations for EmissionActivity
+indexes = list()
+for i in range(0, len(EmissionActivity)):
+    indexes.append(EmissionActivity.regions[i] + EmissionActivity.emis_comm[i] + \
+                   EmissionActivity.input_comm[i] + EmissionActivity.tech[i] + EmissionActivity.output_comm[i])
+EmissionActivity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    EmissionActivity_i = EmissionActivity[(EmissionActivity['indexes'] == index_i)]
+    EmissionActivity_i = EmissionActivity_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(EmissionActivity_i.vintage)):
+        if i < len(EmissionActivity_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if EmissionActivity_i.vintage[i] <= x < EmissionActivity_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(EmissionActivity_i.regions[i])
+                    emis_comm.append(EmissionActivity_i.emis_comm[i])
+                    input_comm.append(EmissionActivity_i.input_comm[i])
+                    tech.append(EmissionActivity_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    output_comm.append(EmissionActivity_i.output_comm[i])
+                    emis_act.append(float(EmissionActivity_i.emis_act[i]))
+                    emis_act_units.append(EmissionActivity_i.emis_act_units[i])
+                    emis_act_notes.append(EmissionActivity_i.emis_act_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(EmissionActivity_i.regions[i])
+                    emis_comm.append(EmissionActivity_i.emis_comm[i])
+                    input_comm.append(EmissionActivity_i.input_comm[i])
+                    tech.append(EmissionActivity_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    output_comm.append(EmissionActivity_i.output_comm[i])
+                    emis_act.append(float(EmissionActivity_i.emis_act[i] +
+                                            (EmissionActivity_i.emis_act[i + 1] - EmissionActivity_i.emis_act[i]) *
+                                            (time_periods_i[j] - EmissionActivity_i.vintage[i]) /
+                                            (EmissionActivity_i.vintage[i + 1] - EmissionActivity_i.vintage[i])))
+                    emis_act_units.append(EmissionActivity_i.emis_act_units[i])
+                    emis_act_notes.append(EmissionActivity_i.emis_act_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= EmissionActivity_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(EmissionActivity_i.regions[i])
+                emis_comm.append(EmissionActivity_i.emis_comm[i])
+                input_comm.append(EmissionActivity_i.input_comm[i])
+                tech.append(EmissionActivity_i.tech[i])
+                vintage.append(time_periods_i[j])
+                output_comm.append(EmissionActivity_i.output_comm[i])
+                emis_act.append(float(EmissionActivity_i.emis_act[i]))
+                emis_act_units.append(EmissionActivity_i.emis_act_units[i])
+                emis_act_notes.append(EmissionActivity_i.emis_act_notes[i])
+
+# Converting lists into a DataFrame
+EmissionActivity = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "emis_comm": pd.Series(emis_comm, dtype='str'),
+        "input_comm": pd.Series(input_comm, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "output_comm": pd.Series(output_comm, dtype='str'),
+        "emis_act": pd.Series(emis_act, dtype='float'),
+        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
+        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
+    }
+)
+
+EmissionActivity = EmissionActivity.sort_values(by=['regions', 'tech', 'emis_comm', 'input_comm', 'output_comm', 'vintage'], ignore_index=True)
+
+if save_tosql['EmissionActivity']:
+    EmissionActivity.to_sql('EmissionActivity', conn, index=False, if_exists='replace')
+
+if print_outcome['EmissionActivity']:
+    pd.set_option('display.max_rows', len(EmissionActivity))
+    pd.set_option('display.max_columns', 10)
+    print("\nEmissionActivity DataFrame\n\n", EmissionActivity[0:1000])
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']',
+                                                                    'EmissionActivity calculated and interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# EmissionLimit
+
+start_time = time.time()
+
+EmissionLimit = pd.read_sql("SELECT * FROM EmissionLimit", conn)  # Loading the EmissionLimit table from the .SQLite database
+
+regions = list()
+periods = list()
+emis_comm = list()
+emis_limit = list()
+emis_limit_units = list()
+emis_limit_notes = list()
+
+# Extracting the list of all indexes combinations for EmissionLimit
+indexes = list()
+for i in range(0, len(EmissionLimit)):
+    indexes.append(EmissionLimit.regions[i] + EmissionLimit.emis_comm[i])
+EmissionLimit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    EmissionLimit_i = EmissionLimit[(EmissionLimit['indexes'] == index_i)]
+    EmissionLimit_i = EmissionLimit_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(EmissionLimit_i.periods)):
+        if i < len(EmissionLimit_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if EmissionLimit_i.periods[i] <= x < EmissionLimit_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(EmissionLimit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    emis_comm.append(EmissionLimit_i.emis_comm[i])
+                    emis_limit.append(float(EmissionLimit_i.emis_limit[i]))
+                    emis_limit_units.append(EmissionLimit_i.emis_limit_units[i])
+                    emis_limit_notes.append(EmissionLimit_i.emis_limit_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(EmissionLimit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    emis_comm.append(EmissionLimit_i.emis_comm[i])
+                    emis_limit.append(float(EmissionLimit_i.emis_limit[i] +
+                                            (EmissionLimit_i.emis_limit[i + 1] - EmissionLimit_i.emis_limit[i]) *
+                                            (time_periods_i[j] - EmissionLimit_i.periods[i]) /
+                                            (EmissionLimit_i.periods[i + 1] - EmissionLimit_i.periods[i])))
+                    emis_limit_units.append(EmissionLimit_i.emis_limit_units[i])
+                    emis_limit_notes.append(EmissionLimit_i.emis_limit_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= EmissionLimit_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(EmissionLimit_i.regions[i])
+                periods.append(time_periods_i[j])
+                emis_comm.append(EmissionLimit_i.emis_comm[i])
+                emis_limit.append(float(EmissionLimit_i.emis_limit[i]))
+                emis_limit_units.append(EmissionLimit_i.emis_limit_units[i])
+                emis_limit_notes.append(EmissionLimit_i.emis_limit_notes[i])
+
+# Converting lists into a DataFrame
+EmissionLimit = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "periods": pd.Series(periods, dtype='int'),
+        "emis_comm": pd.Series(emis_comm, dtype='str'),
+        "emis_limit": pd.Series(emis_limit, dtype='float'),
+        "emis_limit_units": pd.Series(emis_limit_units, dtype='str'),
+        "emis_limit_notes": pd.Series(emis_limit_notes, dtype='str')
+    }
+)
+
+if save_tosql['EmissionLimit']:
+    EmissionLimit.to_sql('EmissionLimit', conn, index=False, if_exists='replace')
+
+if print_outcome['EmissionLimit']:
+    pd.set_option('display.max_rows', len(EmissionLimit))
+    pd.set_option('display.max_columns', 10)
+    print("\nEmissionLimit DataFrame\n\n", EmissionLimit)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'EmissionLimit interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # LifetimeProcess
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-LifetimeProcess = pd.read_sql("select * from LifetimeProcess", conn)
+start_time = time.time()
+
+LifetimeTech = pd.read_sql("SELECT * FROM LifetimeTech", conn)  # Loading the LifetimeTech table from the .SQLite database (to be used later)
+LifetimeProcess = pd.read_sql("SELECT * FROM LifetimeProcess", conn)  # Loading the LifetimeProcess table from the .SQLite database
 
 regions = list()
 tech = list()
 vintage = list()
 life_process = list()
-life_process = list()
 life_process_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(LifetimeProcess.tech)):
-    tech_i = LifetimeProcess.tech[i_tech]
+# Extracting the list of all indexes combinations for LifetimeProcess
+indexes = list()
+for i in range(0, len(LifetimeProcess)):
+    indexes.append(LifetimeProcess.regions[i] + LifetimeProcess.tech[i])
+LifetimeProcess['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    for check in range(0, len(tech_already_considered)):
-        if tech_i == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    LifetimeProcess_i = LifetimeProcess[(LifetimeProcess['indexes'] == index_i)]
+    LifetimeProcess_i = LifetimeProcess_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(LifetimeProcess_i.vintage)):
+        if i < len(LifetimeProcess_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if LifetimeProcess_i.vintage[i] <= x < LifetimeProcess_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(LifetimeProcess_i.regions[i])
+                    tech.append(LifetimeProcess_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    life_process.append(int(LifetimeProcess_i.life_process[i]))
+                    life_process_notes.append(LifetimeProcess_i.life_process_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(LifetimeProcess_i.regions[i])
+                    tech.append(LifetimeProcess_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    life_process.append(int(LifetimeProcess_i.life_process[i] +
+                                            (LifetimeProcess_i.life_process[i + 1] - LifetimeProcess_i.life_process[i]) *
+                                            (time_periods_i[j] - LifetimeProcess_i.vintage[i]) /
+                                            (LifetimeProcess_i.vintage[i + 1] - LifetimeProcess_i.vintage[i])))
+                    life_process_notes.append(LifetimeProcess_i.life_process_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= LifetimeProcess_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(LifetimeProcess_i.regions[i])
+                tech.append(LifetimeProcess_i.tech[i])
+                vintage.append(time_periods_i[j])
+                life_process.append(int(LifetimeProcess_i.life_process[i]))
+                life_process_notes.append(LifetimeProcess_i.life_process_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(LifetimeProcess.tech)):
-            if LifetimeProcess.tech[j_tech] == tech_i:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i)
-
-        if flag == 0:  # No other values
-
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= LifetimeProcess.vintage[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(LifetimeProcess.regions[i_tech])
-                    tech.append(LifetimeProcess.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    life_process.append(int(LifetimeProcess.life_process[i_tech]))
-                    life_process_notes.append(LifetimeProcess.life_process_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = LifetimeProcess.vintage[location[i_location]]
-                year2 = LifetimeProcess.vintage[location[i_location + 1]]
-                life1 = LifetimeProcess.life_process[location[i_location]]
-                life2 = LifetimeProcess.life_process[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(LifetimeProcess.regions[i_tech])
-                        tech.append(LifetimeProcess.tech[i_tech])
-                        vintage.append(int(year))
-                        life_process.append(life1)  # For linear interpolation with integer results: int(life1 + (year-year1)/(year2-year1)*(life2-life1))
-                        life_process_notes.append(LifetimeProcess.life_process_notes[i_tech])
-
-            year_last = LifetimeProcess.vintage[location[i_location + 1]]
-            cost = LifetimeProcess.life_process[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(LifetimeProcess.regions[i_tech])
-                        tech.append(LifetimeProcess.tech[i_tech])
-                        vintage.append(int(year))
-                        life_process.append(int(LifetimeProcess.life_process[location[i_location + 1]]))
-                        life_process_notes.append(LifetimeProcess.life_process_notes[i_tech])
-            else:
-                regions.append(LifetimeProcess.regions[i_tech])
-                vintage.append(int(year_last))
-                tech.append(LifetimeProcess.tech[i_tech])
-                life_process.append(int(LifetimeProcess.life_process[location[i_location + 1]]))
-                life_process_notes.append(LifetimeProcess.life_process_notes[i_tech])
-
-LifetimeProcess_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+LifetimeProcess = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "tech": pd.Series(tech, dtype='str'),
@@ -149,27 +493,28 @@ LifetimeProcess_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['LifetimeProcess']:
-    LifetimeProcess_DF.to_sql("LifetimeProcess", conn, index=False, if_exists='replace')
+if save_tosql['LifetimeProcess']:
+    LifetimeProcess.to_sql('LifetimeProcess', conn, index=False, if_exists='replace')
 
-if print_set['LifetimeProcess']:
-    pd.set_option('display.max_rows', len(LifetimeProcess_DF))
-    pd.set_option('display.max_columns', len(LifetimeProcess_DF))
-    print("\nLifetimeProcess DataFrame\n\n", LifetimeProcess_DF)
+if print_outcome['LifetimeProcess']:
+    pd.set_option('display.max_rows', len(LifetimeProcess))
+    pd.set_option('display.max_columns', 10)
+    print("\nLifetimeProcess DataFrame\n\n", LifetimeProcess)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     LifetimeProcess updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     LifetimeProcess updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'LifetimeProcess interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # Efficiency
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-Efficiency = pd.read_sql("select * from Efficiency", conn)
+start_time = time.time()
+
+Efficiency = pd.read_sql("SELECT * FROM Efficiency", conn)  # Loading the Efficiency table from the .SQLite database
 
 regions = list()
 input_comm = list()
@@ -179,82 +524,55 @@ output_comm = list()
 efficiency = list()
 eff_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(Efficiency.tech)):
-    tech_i = Efficiency.tech[i_tech]
+# Extracting the list of all indexes combinations for Efficiency
+indexes = list()
+for i in range(0, len(Efficiency)):
+    indexes.append(Efficiency.regions[i] + Efficiency.input_comm[i] + Efficiency.tech[i] + Efficiency.output_comm[i])
+Efficiency['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = Efficiency.input_comm[i_tech] + tech_i + Efficiency.output_comm[i_tech]
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    Efficiency_i = Efficiency[(Efficiency['indexes'] == index_i)]
+    Efficiency_i = Efficiency_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(Efficiency_i.vintage)):
+        if i < len(Efficiency_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if Efficiency_i.vintage[i] <= x < Efficiency_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(Efficiency_i.regions[i])
+                    input_comm.append(Efficiency_i.input_comm[i])
+                    tech.append(Efficiency_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    output_comm.append(Efficiency_i.output_comm[i])
+                    efficiency.append(float(Efficiency_i.efficiency[i]))
+                    eff_notes.append(Efficiency_i.eff_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(Efficiency_i.regions[i])
+                    input_comm.append(Efficiency_i.input_comm[i])
+                    tech.append(Efficiency_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    output_comm.append(Efficiency_i.output_comm[i])
+                    efficiency.append(float(Efficiency_i.efficiency[i] +
+                                            (Efficiency_i.efficiency[i + 1] - Efficiency_i.efficiency[i]) *
+                                            (time_periods_i[j] - Efficiency_i.vintage[i]) /
+                                            (Efficiency_i.vintage[i + 1] - Efficiency_i.vintage[i])))
+                    eff_notes.append(Efficiency_i.eff_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= Efficiency_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(Efficiency_i.regions[i])
+                input_comm.append(Efficiency_i.input_comm[i])
+                tech.append(Efficiency_i.tech[i])
+                vintage.append(time_periods_i[j])
+                output_comm.append(Efficiency_i.output_comm[i])
+                efficiency.append(float(Efficiency_i.efficiency[i]))
+                eff_notes.append(Efficiency_i.eff_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(Efficiency.tech)):
-            tech_j_check = Efficiency.input_comm[j_tech] + Efficiency.tech[j_tech] + Efficiency.output_comm[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= Efficiency.vintage[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(Efficiency.regions[i_tech])
-                    input_comm.append(Efficiency.input_comm[i_tech])
-                    tech.append(Efficiency.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    output_comm.append(Efficiency.output_comm[i_tech])
-                    efficiency.append(float(np.format_float_scientific(Efficiency.efficiency[i_tech])))
-                    eff_notes.append(Efficiency.eff_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = Efficiency.vintage[location[i_location]]
-                year2 = Efficiency.vintage[location[i_location + 1]]
-                eff1 = Efficiency.efficiency[location[i_location]]
-                eff2 = Efficiency.efficiency[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(Efficiency.regions[i_tech])
-                        input_comm.append(Efficiency.input_comm[i_tech])
-                        tech.append(Efficiency.tech[i_tech])
-                        vintage.append(int(year))
-                        output_comm.append(Efficiency.output_comm[i_tech])
-                        efficiency.append(float(np.format_float_scientific(eff1 + (year - year1) / (year2 - year1) * (eff2 - eff1))))
-                        eff_notes.append(Efficiency.eff_notes[i_tech])
-
-            year_last = Efficiency.vintage[location[i_location + 1]]
-            eff = Efficiency.efficiency[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(Efficiency.regions[i_tech])
-                        input_comm.append(Efficiency.input_comm[i_tech])
-                        tech.append(Efficiency.tech[i_tech])
-                        vintage.append(int(year))
-                        output_comm.append(Efficiency.output_comm[i_tech])
-                        efficiency.append(
-                            float(np.format_float_scientific(Efficiency.efficiency[location[i_location + 1]])))
-                        eff_notes.append(Efficiency.eff_notes[i_tech])
-            else:
-                regions.append(Efficiency.regions[i_tech])
-                input_comm.append(Efficiency.input_comm[i_tech])
-                tech.append(Efficiency.tech[i_tech])
-                vintage.append(int(year_last))
-                output_comm.append(Efficiency.output_comm[i_tech])
-                efficiency.append(float(np.format_float_scientific(Efficiency.efficiency[location[i_location + 1]])))
-                eff_notes.append(Efficiency.eff_notes[i_tech])
-
-Efficiency_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+Efficiency = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "input_comm": pd.Series(input_comm, dtype='str'),
@@ -266,27 +584,28 @@ Efficiency_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['Efficiency']:
-    Efficiency_DF.to_sql("Efficiency", conn, index=False, if_exists='replace')
+if save_tosql['Efficiency']:
+    Efficiency.to_sql('Efficiency', conn, index=False, if_exists='replace')
 
-if print_set['Efficiency']:
-    pd.set_option('display.max_rows', len(Efficiency_DF))
-    pd.set_option('display.max_columns', len(Efficiency_DF))
-    print("\nEfficiency DataFrame\n\n", Efficiency_DF)
+if print_outcome['Efficiency']:
+    pd.set_option('display.max_rows', len(Efficiency))
+    pd.set_option('display.max_columns', 10)
+    print("\nEfficiency DataFrame\n\n", Efficiency)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     Efficiency updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     Efficiency updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'Efficiency interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # TechInputSplit
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-TechInputSplit = pd.read_sql("select * from TechInputSplit", conn)
+start_time = time.time()
+
+TechInputSplit = pd.read_sql("SELECT * FROM TechInputSplit", conn)  # Loading the TechInputSplit table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -295,77 +614,52 @@ tech = list()
 ti_split = list()
 ti_split_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(TechInputSplit.tech)):
-    tech_i = TechInputSplit.tech[i_tech]
+# Extracting the list of all indexes combinations for TechInputSplit
+indexes = list()
+for i in range(0, len(TechInputSplit)):
+    indexes.append(TechInputSplit.regions[i] + TechInputSplit.input_comm[i] + TechInputSplit.tech[i])
+TechInputSplit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = TechInputSplit.input_comm[i_tech] + tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    TechInputSplit_i = TechInputSplit[(TechInputSplit['indexes'] == index_i)]
+    TechInputSplit_i = TechInputSplit_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(TechInputSplit_i.periods)):
+        if i < len(TechInputSplit_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if TechInputSplit_i.periods[i] <= x < TechInputSplit_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(TechInputSplit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(TechInputSplit_i.input_comm[i])
+                    tech.append(TechInputSplit_i.tech[i])
+                    ti_split.append(float(TechInputSplit_i.ti_split[i]))
+                    ti_split_notes.append(TechInputSplit_i.ti_split_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(TechInputSplit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(TechInputSplit_i.input_comm[i])
+                    tech.append(TechInputSplit_i.tech[i])
+                    ti_split.append(float(TechInputSplit_i.ti_split[i] +
+                                          (TechInputSplit_i.ti_split[i + 1] - TechInputSplit_i.ti_split[i]) *
+                                          (time_periods_i[j] - TechInputSplit_i.periods[i]) /
+                                          (TechInputSplit_i.periods[i + 1] - TechInputSplit_i.periods[i])))
+                    ti_split_notes.append(TechInputSplit_i.ti_split_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= TechInputSplit_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(TechInputSplit_i.regions[i])
+                periods.append(time_periods_i[j])
+                input_comm.append(TechInputSplit_i.input_comm[i])
+                tech.append(TechInputSplit_i.tech[i])
+                ti_split.append(float(TechInputSplit_i.ti_split[i]))
+                ti_split_notes.append(TechInputSplit_i.ti_split_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(TechInputSplit.tech)):
-            tech_j_check = TechInputSplit.input_comm[j_tech] + TechInputSplit.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= TechInputSplit.periods[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(TechInputSplit.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    input_comm.append(TechInputSplit.input_comm[i_tech])
-                    tech.append(TechInputSplit.tech[i_tech])
-                    ti_split.append(float(np.format_float_positional(TechInputSplit.ti_split[i_tech], 4)))
-                    ti_split_notes.append(TechInputSplit.ti_split_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = TechInputSplit.periods[location[i_location]]
-                year2 = TechInputSplit.periods[location[i_location + 1]]
-                ti1 = TechInputSplit.ti_split[location[i_location]]
-                ti2 = TechInputSplit.ti_split[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(TechInputSplit.regions[i_tech])
-                        periods.append(int(year))
-                        input_comm.append(TechInputSplit.input_comm[i_tech])
-                        tech.append(TechInputSplit.tech[i_tech])
-                        ti_split.append(float(np.format_float_positional(ti1 + (year - year1) / (year2 - year1) * (ti2 - ti1), 4)))
-                        ti_split_notes.append(TechInputSplit.ti_split_notes[i_tech])
-
-            year_last = TechInputSplit.periods[location[i_location + 1]]
-            eff = TechInputSplit.ti_split[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(TechInputSplit.regions[i_tech])
-                        periods.append(int(year))
-                        input_comm.append(TechInputSplit.input_comm[i_tech])
-                        tech.append(TechInputSplit.tech[i_tech])
-                        ti_split.append(float(np.format_float_positional(TechInputSplit.ti_split[location[i_location + 1]], 4)))
-                        ti_split_notes.append(TechInputSplit.ti_split_notes[i_tech])
-            else:
-                regions.append(TechInputSplit.regions[i_tech])
-                periods.append(int(year_last))
-                input_comm.append(TechInputSplit.input_comm[i_tech])
-                tech.append(TechInputSplit.tech[i_tech])
-                ti_split.append(float(np.format_float_positional(TechInputSplit.ti_split[location[i_location + 1]], 4)))
-                ti_split_notes.append(TechInputSplit.ti_split_notes[i_tech])
-
-TechInputSplit_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+TechInputSplit = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -376,106 +670,82 @@ TechInputSplit_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['TechInputSplit']:
-    TechInputSplit_DF.to_sql("TechInputSplit", conn, index=False, if_exists='replace')
+if save_tosql['TechInputSplit']:
+    TechInputSplit.to_sql('TechInputSplit', conn, index=False, if_exists='replace')
 
-if print_set['TechInputSplit']:
-    pd.set_option('display.max_rows', len(TechInputSplit_DF))
-    pd.set_option('display.max_columns', len(TechInputSplit_DF))
-    print("\nTechInputSplit DataFrame\n\n", TechInputSplit_DF)
+if print_outcome['TechInputSplit']:
+    pd.set_option('display.max_rows', len(TechInputSplit))
+    pd.set_option('display.max_columns', 10)
+    print("\nTechInputSplit DataFrame\n\n", TechInputSplit)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     TechInputSplit updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     TechInputSplit updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'TechInputSplit interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # TechOutputSplit
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-TechOutputSplit = pd.read_sql("select * from TechOutputSplit", conn)
+start_time = time.time()
+
+TechOutputSplit = pd.read_sql("SELECT * FROM TechOutputSplit", conn)  # Loading the TechOutputSplit table from the .SQLite database
 
 regions = list()
 periods = list()
-output_comm = list()
 tech = list()
+output_comm = list()
 to_split = list()
 to_split_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(TechOutputSplit.tech)):
-    tech_i = TechOutputSplit.tech[i_tech]
+# Extracting the list of all indexes combinations for TechOutputSplit
+indexes = list()
+for i in range(0, len(TechOutputSplit)):
+    indexes.append(TechOutputSplit.regions[i] + TechOutputSplit.tech[i] + TechOutputSplit.output_comm[i])
+TechOutputSplit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i + TechOutputSplit.output_comm[i_tech]
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    TechOutputSplit_i = TechOutputSplit[(TechOutputSplit['indexes'] == index_i)]
+    TechOutputSplit_i = TechOutputSplit_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(TechOutputSplit_i.periods)):
+        if i < len(TechOutputSplit_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if TechOutputSplit_i.periods[i] <= x < TechOutputSplit_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(TechOutputSplit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(TechOutputSplit_i.tech[i])
+                    output_comm.append(TechOutputSplit_i.output_comm[i])
+                    to_split.append(float(TechOutputSplit_i.to_split[i]))
+                    to_split_notes.append(TechOutputSplit_i.to_split_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(TechOutputSplit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(TechOutputSplit_i.tech[i])
+                    output_comm.append(TechOutputSplit_i.output_comm[i])
+                    to_split.append(float(TechOutputSplit_i.to_split[i] +
+                                          (TechOutputSplit_i.to_split[i + 1] - TechOutputSplit_i.to_split[i]) *
+                                          (time_periods_i[j] - TechOutputSplit_i.periods[i]) /
+                                          (TechOutputSplit_i.periods[i + 1] - TechOutputSplit_i.periods[i])))
+                    to_split_notes.append(TechOutputSplit_i.to_split_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= TechOutputSplit_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(TechOutputSplit_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(TechOutputSplit_i.tech[i])
+                output_comm.append(TechOutputSplit_i.output_comm[i])
+                to_split.append(float(TechOutputSplit_i.to_split[i]))
+                to_split_notes.append(TechOutputSplit_i.to_split_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(TechOutputSplit.tech)):
-            tech_j_check = TechOutputSplit.tech[j_tech] + TechOutputSplit.output_comm[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= TechOutputSplit.periods[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(TechOutputSplit.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    tech.append(TechOutputSplit.tech[i_tech])
-                    output_comm.append(TechOutputSplit.output_comm[i_tech])
-                    to_split.append(float(np.format_float_positional(TechOutputSplit.to_split[i_tech], 4)))
-                    to_split_notes.append(TechOutputSplit.to_split_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = TechOutputSplit.periods[location[i_location]]
-                year2 = TechOutputSplit.periods[location[i_location + 1]]
-                to1 = TechOutputSplit.to_split[location[i_location]]
-                to2 = TechOutputSplit.to_split[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(TechOutputSplit.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(TechOutputSplit.tech[i_tech])
-                        output_comm.append(TechOutputSplit.output_comm[i_tech])
-                        to_split.append(float(np.format_float_positional(to1 + (year - year1) / (year2 - year1) * (to2 - to1), 4)))
-                        to_split_notes.append(TechOutputSplit.to_split_notes[i_tech])
-
-            year_last = TechOutputSplit.periods[location[i_location + 1]]
-            eff = TechOutputSplit.to_split[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(TechOutputSplit.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(TechOutputSplit.tech[i_tech])
-                        output_comm.append(TechOutputSplit.output_comm[i_tech])
-                        to_split.append(float(np.format_float_positional(TechOutputSplit.to_split[location[i_location + 1]], 4)))
-                        to_split_notes.append(TechOutputSplit.to_split_notes[i_tech])
-            else:
-                regions.append(TechOutputSplit.regions[i_tech])
-                periods.append(int(year_last))
-                tech.append(TechOutputSplit.tech[i_tech])
-                output_comm.append(TechOutputSplit.output_comm[i_tech])
-                to_split.append(float(np.format_float_positional(TechOutputSplit.to_split[location[i_location + 1]], 4)))
-                to_split_notes.append(TechOutputSplit.to_split_notes[i_tech])
-
-TechOutputSplit_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+TechOutputSplit = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -486,445 +756,32 @@ TechOutputSplit_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['TechOutputSplit']:
-    TechOutputSplit_DF.to_sql("TechOutputSplit", conn, index=False, if_exists='replace')
+if save_tosql['TechOutputSplit']:
+    TechOutputSplit.to_sql('TechOutputSplit', conn, index=False, if_exists='replace')
 
-if print_set['TechOutputSplit']:
-    pd.set_option('display.max_rows', len(TechOutputSplit_DF))
-    pd.set_option('display.max_columns', len(TechOutputSplit_DF))
-    print("\nTechOutputSplit DataFrame\n\n", TechOutputSplit_DF)
+if print_outcome['TechOutputSplit']:
+    pd.set_option('display.max_rows', len(TechOutputSplit))
+    pd.set_option('display.max_columns', 10)
+    print("\nTechOutputSplit DataFrame\n\n", TechOutputSplit)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     TechOutputSplit updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     TechOutputSplit updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'TechOutputSplit interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# EmissionAggregation
+# Currency  (from the previous database_preprocessing.py)
 
-conn = sqlite3.connect(database_name)
-EmissionAggregation = pd.read_sql("select * from EmissionAggregation", conn)
-CommodityEmissionFactor = pd.read_sql("select * from CommodityEmissionFactor", conn)
-CommodityEmissionFactor_BACKUP = CommodityEmissionFactor
-EmissionActivity = pd.read_sql("select * from EmissionActivity", conn)
-EmissionActivity_BACKUP = EmissionActivity
+start_time = time.time()
 
-global_emissions = list()
-
-for i in range(0, len(EmissionAggregation.emis_agg)):
-    flag_check = 0
-    for i_check in range(0, len(global_emissions)):
-        if EmissionAggregation.emis_agg[i] == global_emissions[i_check]:
-            flag_check = 1
-    if flag_check == 0:
-        global_emissions.append(EmissionAggregation.emis_agg[i])
-
-input_comm = list()
-emis_comm = list()
-ef = list()
-emis_unit = list()
-ef_notes = list()
-
-for i in range(0, len(global_emissions)):
-    aggregated_comm = list()
-    aggregated_comm_weight = list()
-    for j in range(0, len(EmissionAggregation)):
-        if global_emissions[i] == EmissionAggregation.emis_agg[j]:
-            aggregated_comm.append(EmissionAggregation.emis_comm[j])
-            aggregated_comm_weight.append(EmissionAggregation.emis_agg_weight[j])
-
-    for j in range(0, len(CommodityEmissionFactor)):
-        for k in range(0, len(aggregated_comm)):
-            if CommodityEmissionFactor.emis_comm[j] == aggregated_comm[k]:
-                flag_check = 0
-                for l in range(0, len(input_comm)):
-                    if input_comm[l] == CommodityEmissionFactor.input_comm[j] and emis_comm[l] == global_emissions[i]:
-                        ef[l] = ef[l] + CommodityEmissionFactor.ef[j] * aggregated_comm_weight[k]
-                        flag_check = 1
-                if flag_check == 0:
-                    input_comm.append(CommodityEmissionFactor.input_comm[j])
-                    emis_comm.append(global_emissions[i])
-                    ef.append(CommodityEmissionFactor.ef[j] * aggregated_comm_weight[k])
-                    emis_unit.append(EmissionAggregation.emis_agg_units[i])
-                    ef_notes.append(EmissionAggregation.emis_agg_notes[i])
-
-CommodityEmissionFactor = pd.DataFrame(
-    {
-        "input_comm": pd.Series(input_comm, dtype='str'),
-        "emis_comm": pd.Series(emis_comm, dtype='str'),
-        "ef": pd.Series(ef, dtype='float'),
-        "emis_unit": pd.Series(emis_unit, dtype='str'),
-        "ef_notes": pd.Series(ef_notes, dtype='str')
-    }
-)
-
-if len(CommodityEmissionFactor) != 0 or len(CommodityEmissionFactor_BACKUP) != 0:
-    CommodityEmissionFactor = pd.merge(CommodityEmissionFactor_BACKUP, CommodityEmissionFactor, how='outer')
-    CommodityEmissionFactor = CommodityEmissionFactor.sort_values(by=['input_comm', 'emis_comm'], ignore_index=True)
-
-regions = list()
-emis_comm = list()
-input_comm = list()
-tech = list()
-vintage = list()
-output_comm = list()
-emis_act = list()
-emis_act_units = list()
-emis_act_notes = list()
-
-for i in range(0, len(global_emissions)):
-    aggregated_comm = list()
-    aggregated_comm_weight = list()
-    for j in range(0, len(EmissionAggregation)):
-        if global_emissions[i] == EmissionAggregation.emis_agg[j]:
-            aggregated_comm.append(EmissionAggregation.emis_comm[j])
-            aggregated_comm_weight.append(EmissionAggregation.emis_agg_weight[j])
-    for j in range(0, len(EmissionActivity)):
-        for k in range(0, len(aggregated_comm)):
-            if EmissionActivity.emis_comm[j] == aggregated_comm[k]:
-                flag_check = 0
-                for l in range(0, len(regions)):
-                    index_EmissionActivity = EmissionActivity.regions[j] + EmissionActivity.input_comm[j] + EmissionActivity.tech[j] + str(EmissionActivity.vintage[j]) + EmissionActivity.output_comm[j]
-                    index = regions[l] + input_comm[l] + tech[l] + str(vintage[l]) + output_comm[l]
-                    if index_EmissionActivity == index and emis_comm[l] == global_emissions[i]:
-                        emis_act[l] = emis_act[l] + EmissionActivity.emis_act[j] * aggregated_comm_weight[k]
-                        flag_check = 1
-                if flag_check == 0:
-                    regions.append(EmissionActivity.regions[j])
-                    emis_comm.append(global_emissions[i])
-                    input_comm.append(EmissionActivity.input_comm[j])
-                    tech.append(EmissionActivity.tech[j])
-                    vintage.append(EmissionActivity.vintage[j])
-                    output_comm.append(EmissionActivity.output_comm[j])
-                    emis_act.append(EmissionActivity.emis_act[j] * aggregated_comm_weight[k])
-                    emis_act_units.append(EmissionAggregation.emis_agg_units[i])
-                    emis_act_notes.append(EmissionAggregation.emis_agg_notes[i])
-
-EmissionActivity_DF = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "emis_comm": pd.Series(emis_comm, dtype='str'),
-        "input_comm": pd.Series(input_comm, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "output_comm": pd.Series(output_comm, dtype='str'),
-        "emis_act": pd.Series(emis_act, dtype='float'),
-        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
-        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
-    }
-)
-
-if len(EmissionActivity_DF) != 0 or len(EmissionActivity_BACKUP) != 0:
-    EmissionActivity_DF = pd.merge(EmissionActivity_BACKUP, EmissionActivity_DF, how='outer')
-    EmissionActivity_DF = EmissionActivity_DF.sort_values(by=['tech', 'vintage', 'emis_comm'], ignore_index=True)
-
-if tosql_set['EmissionAggregation']:
-    EmissionActivity_DF.to_sql("EmissionActivity", conn, index=False, if_exists='replace')
-
-if print_set['EmissionAggregation']:
-    pd.set_option('display.max_rows', len(EmissionActivity_DF))
-    pd.set_option('display.max_columns', len(EmissionActivity_DF))
-    print("\nEmissionActivity DataFrame\n\n", EmissionActivity_DF)
-    pd.reset_option('display.max_rows')
-
-conn.close()
-print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     EmissionAggregation performed...')
-else:
-    print('[', print_i, '/', len(print_set), ']     EmissionAggregation performed...')
-
-# EmissionActivity
-
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-Efficiency = pd.read_sql("select * from Efficiency", conn)
-EmissionActivity = pd.read_sql("select * from EmissionActivity", conn)
-#CommodityEmissionFactor = pd.read_sql("select * from CommodityEmissionFactor", conn)
-
-# EmissionActivity interpolation
-
-regions = list()
-emis_comm = list()
-input_comm = list()
-tech = list()
-vintage = list()
-output_comm = list()
-emis_act = list()
-emis_act_units = list()
-emis_act_notes = list()
-
-tech_already_considered = list()
-for i_tech in range(0, len(EmissionActivity.tech)):
-    tech_i = EmissionActivity.tech[i_tech]
-
-    flag_check = 0
-    tech_i_check = EmissionActivity.emis_comm[i_tech] + EmissionActivity.input_comm[i_tech] + tech_i + \
-                   EmissionActivity.output_comm[i_tech]
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
-
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(EmissionActivity.tech)):
-            tech_j_check = EmissionActivity.emis_comm[j_tech] + EmissionActivity.input_comm[j_tech] + \
-                           EmissionActivity.tech[j_tech] + EmissionActivity.output_comm[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= EmissionActivity.vintage[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(EmissionActivity.regions[i_tech])
-                    emis_comm.append(EmissionActivity.emis_comm[i_tech])
-                    input_comm.append(EmissionActivity.input_comm[i_tech])
-                    tech.append(EmissionActivity.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    output_comm.append(EmissionActivity.output_comm[i_tech])
-                    emis_act.append(float(np.format_float_positional(EmissionActivity.emis_act[i_tech])))
-                    emis_act_units.append(EmissionActivity.emis_act_units[i_tech])
-                    emis_act_notes.append(EmissionActivity.emis_act_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = EmissionActivity.vintage[location[i_location]]
-                year2 = EmissionActivity.vintage[location[i_location + 1]]
-                ea1 = EmissionActivity.emis_act[location[i_location]]
-                ea2 = EmissionActivity.emis_act[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(EmissionActivity.regions[i_tech])
-                        emis_comm.append(EmissionActivity.emis_comm[i_tech])
-                        input_comm.append(EmissionActivity.input_comm[i_tech])
-                        tech.append(EmissionActivity.tech[i_tech])
-                        vintage.append(int(year))
-                        output_comm.append(EmissionActivity.output_comm[i_tech])
-                        emis_act.append(float(np.format_float_positional(ea1 + (year - year1) / (year2 - year1) * (ea2 - ea1))))
-                        emis_act_units.append(EmissionActivity.emis_act_units[i_tech])
-                        emis_act_notes.append(EmissionActivity.emis_act_notes[i_tech])
-
-            year_last = EmissionActivity.vintage[location[i_location + 1]]
-            eff = EmissionActivity.emis_act[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(EmissionActivity.regions[i_tech])
-                        emis_comm.append(EmissionActivity.emis_comm[i_tech])
-                        input_comm.append(EmissionActivity.input_comm[i_tech])
-                        tech.append(EmissionActivity.tech[i_tech])
-                        vintage.append(int(year))
-                        output_comm.append(EmissionActivity.output_comm[i_tech])
-                        emis_act.append(float(np.format_float_positional(EmissionActivity.emis_act[location[i_location + 1]])))
-                        emis_act_units.append(EmissionActivity.emis_act_units[i_tech])
-                        emis_act_notes.append(EmissionActivity.emis_act_notes[i_tech])
-            else:
-                regions.append(EmissionActivity.regions[i_tech])
-                emis_comm.append(EmissionActivity.emis_comm[i_tech])
-                input_comm.append(EmissionActivity.input_comm[i_tech])
-                tech.append(EmissionActivity.tech[i_tech])
-                vintage.append(int(year_last))
-                output_comm.append(EmissionActivity.output_comm[i_tech])
-                emis_act.append(float(np.format_float_positional(EmissionActivity.emis_act[location[i_location + 1]])))
-                emis_act_units.append(EmissionActivity.emis_act_units[i_tech])
-                emis_act_notes.append(EmissionActivity.emis_act_notes[i_tech])
-
-EmissionActivity_DF_1 = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "emis_comm": pd.Series(emis_comm, dtype='str'),
-        "input_comm": pd.Series(input_comm, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "output_comm": pd.Series(output_comm, dtype='str'),
-        "emis_act": pd.Series(emis_act, dtype='float'),
-        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
-        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
-    }
-)
-
-# CommodityEmissionFactor
-
-regions = list()
-emis_comm = list()
-input_comm = list()
-tech = list()
-vintage = list()
-output_comm = list()
-emis_act = list()
-emis_act_units = list()
-emis_act_notes = list()
-
-for i_tech in range(0, len(Efficiency.tech)):
-    for i_comm in range(0, len(CommodityEmissionFactor.input_comm)):
-        if Efficiency.input_comm[i_tech] == CommodityEmissionFactor.input_comm[i_comm]:
-            regions.append(Efficiency.regions[i_tech])
-            emis_comm.append(CommodityEmissionFactor.emis_comm[i_comm])
-            input_comm.append(CommodityEmissionFactor.input_comm[i_comm])
-            tech.append(Efficiency.tech[i_tech])
-            vintage.append(Efficiency.vintage[i_tech])
-            output_comm.append(Efficiency.output_comm[i_tech])
-            emis_act.append(float(np.format_float_positional(CommodityEmissionFactor.ef[i_comm] / Efficiency.efficiency[i_tech])))
-            emis_act_units.append('')
-            emis_act_notes.append('')
-
-EmissionActivity_DF_2 = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "emis_comm": pd.Series(emis_comm, dtype='str'),
-        "input_comm": pd.Series(input_comm, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "output_comm": pd.Series(output_comm, dtype='str'),
-        "emis_act": pd.Series(emis_act, dtype='float'),
-        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
-        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
-    }
-)
-
-# Combining the results
-
-regions = list()
-emis_comm = list()
-input_comm = list()
-tech = list()
-vintage = list()
-output_comm = list()
-emis_act = list()
-emis_act_units = list()
-emis_act_notes = list()
-
-index1_list = list()
-index1_flag = list()
-index2_list = list()
-index2_flag = list()
-
-for i1 in range(0, len(EmissionActivity_DF_1.tech)):
-    index1 = EmissionActivity_DF_1.emis_comm[i1] + EmissionActivity_DF_1.input_comm[i1] + EmissionActivity_DF_1.tech[i1] + str(EmissionActivity_DF_1.vintage[i1]) + EmissionActivity_DF_1.output_comm[i1]
-    index1_list.append(index1)
-
-for i2 in range(0, len(EmissionActivity_DF_2.tech)):
-    index2 = EmissionActivity_DF_2.emis_comm[i2] + EmissionActivity_DF_2.input_comm[i2] + EmissionActivity_DF_2.tech[i2] + str(EmissionActivity_DF_2.vintage[i2]) + EmissionActivity_DF_2.output_comm[i2]
-    index2_list.append(index2)
-
-for i1 in range(0, len(EmissionActivity_DF_1.tech)):
-    if index1_list[i1] in index2_list:
-        index1_flag.append(1)
-    else:
-        index1_flag.append(0)
-
-for i2 in range(0, len(EmissionActivity_DF_2.tech)):
-    if index2_list[i2] in index1_list:
-        index2_flag.append(1)
-    else:
-        index2_flag.append(0)
-
-flag_delete_1 = list()
-for i1 in range(0, len(EmissionActivity_DF_1.tech)):
-    if index1_flag[i1] == 0:
-        regions.append(EmissionActivity_DF_1.regions[i1])
-        emis_comm.append(EmissionActivity_DF_1.emis_comm[i1])
-        input_comm.append(EmissionActivity_DF_1.input_comm[i1])
-        tech.append(EmissionActivity_DF_1.tech[i1])
-        vintage.append(EmissionActivity_DF_1.vintage[i1])
-        output_comm.append(EmissionActivity_DF_1.output_comm[i1])
-        emis_act.append(float(np.format_float_positional(EmissionActivity_DF_1.emis_act[i1])))
-        emis_act_units.append(EmissionActivity_DF_1.emis_act_units[i1])
-        emis_act_notes.append(EmissionActivity_DF_1.emis_act_notes[i1])
-
-        flag_delete_1.append(i1)
-EmissionActivity_DF_1 = EmissionActivity_DF_1.drop(flag_delete_1)
-EmissionActivity_DF_1 = EmissionActivity_DF_1.reset_index(drop=True)
-
-flag_delete_2 = list()
-for i2 in range(0, len(EmissionActivity_DF_2.tech)):
-    if index2_flag[i2] == 0:
-        regions.append(EmissionActivity_DF_2.regions[i2])
-        emis_comm.append(EmissionActivity_DF_2.emis_comm[i2])
-        input_comm.append(EmissionActivity_DF_2.input_comm[i2])
-        tech.append(EmissionActivity_DF_2.tech[i2])
-        vintage.append(EmissionActivity_DF_2.vintage[i2])
-        output_comm.append(EmissionActivity_DF_2.output_comm[i2])
-        emis_act.append(float(np.format_float_positional(EmissionActivity_DF_2.emis_act[i2])))
-        emis_act_units.append(EmissionActivity_DF_2.emis_act_units[i2])
-        emis_act_notes.append(EmissionActivity_DF_2.emis_act_notes[i2])
-
-        flag_delete_2.append(i2)
-EmissionActivity_DF_2 = EmissionActivity_DF_2.drop(flag_delete_2)
-EmissionActivity_DF_2 = EmissionActivity_DF_2.reset_index(drop=True)
-
-for i1 in range(0, len(EmissionActivity_DF_1.tech)):
-    for i2 in range(0, len(EmissionActivity_DF_2.tech)):
-        index1 = EmissionActivity_DF_1.emis_comm[i1] + EmissionActivity_DF_1.input_comm[i1] + \
-                 EmissionActivity_DF_1.tech[i1] + str(EmissionActivity_DF_1.vintage[i1]) + \
-                 EmissionActivity_DF_1.output_comm[i1]
-        index2 = EmissionActivity_DF_2.emis_comm[i2] + EmissionActivity_DF_2.input_comm[i2] + \
-                 EmissionActivity_DF_2.tech[i2] + str(EmissionActivity_DF_2.vintage[i2]) + \
-                 EmissionActivity_DF_2.output_comm[i2]
-        if index1 == index2:
-            emis_act_save = float(np.format_float_positional(EmissionActivity_DF_1.emis_act[i1] + EmissionActivity_DF_2.emis_act[i2]))
-            if abs(emis_act_save) >= 1E-2:
-                regions.append(EmissionActivity_DF_1.regions[i1])
-                emis_comm.append(EmissionActivity_DF_1.emis_comm[i1])
-                input_comm.append(EmissionActivity_DF_1.input_comm[i1])
-                tech.append(EmissionActivity_DF_1.tech[i1])
-                vintage.append(EmissionActivity_DF_1.vintage[i1])
-                output_comm.append(EmissionActivity_DF_1.output_comm[i1])
-                emis_act.append(emis_act_save)
-                emis_act_units.append(EmissionActivity_DF_1.emis_act_units[i1])
-                emis_act_notes.append(EmissionActivity_DF_1.emis_act_notes[i1])
-
-EmissionActivity_DF = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "emis_comm": pd.Series(emis_comm, dtype='str'),
-        "input_comm": pd.Series(input_comm, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "output_comm": pd.Series(output_comm, dtype='str'),
-        "emis_act": pd.Series(emis_act, dtype='float'),
-        "emis_act_units": pd.Series(emis_act_units, dtype='str'),
-        "emis_act_notes": pd.Series(emis_act_notes, dtype='str')
-    }
-)
-
-EmissionActivity_DF = EmissionActivity_DF.sort_values(by=['tech', 'vintage', 'emis_comm'], ignore_index=True)
-
-if tosql_set['EmissionActivity']:
-    EmissionActivity_DF.to_sql("EmissionActivity", conn, index=False, if_exists='replace')
-
-if print_set['EmissionActivity']:
-    pd.set_option('display.max_rows', len(EmissionActivity_DF))
-    pd.set_option('display.max_columns', len(EmissionActivity_DF))
-    print("\nEmissionActivity DataFrame\n\n", EmissionActivity_DF)
-    pd.reset_option('display.max_rows')
-
-conn.close()
-print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     EmissionActivity updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     EmissionActivity updated...')
-
-# Currency
-
-conn = sqlite3.connect(database_name)
-Currency = pd.read_sql("select * from Currency", conn)
-CurrencyTech = pd.read_sql("select * from CurrencyTech", conn)
-CostInvest = pd.read_sql("select * from CostInvest", conn)
-CostFixed = pd.read_sql("select * from CostFixed", conn)
-CostVariable = pd.read_sql("select * from CostVariable", conn)
+Currency = pd.read_sql("SELECT * FROM Currency", conn)
+CurrencyTech = pd.read_sql("SELECT * FROM CurrencyTech", conn)
+CostInvest = pd.read_sql("SELECT * FROM CostInvest", conn)
+CostFixed = pd.read_sql("SELECT * FROM CostFixed", conn)
+CostVariable = pd.read_sql("SELECT * FROM CostVariable", conn)
 
 for i_Currency in range(0, len(Currency.ref)):
     if str(Currency.ref[i_Currency]) == 'REF':
@@ -962,7 +819,7 @@ for i_cost in range(0, len(CostInvest.tech)):
         cost_invest_units.append(CostInvest.cost_invest_units[i_cost])
         cost_invest_notes.append(CostInvest.cost_invest_notes[i_cost])
 
-CostInvest_DF = pd.DataFrame(
+CostInvest = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "tech": pd.Series(tech, dtype='str'),
@@ -973,14 +830,15 @@ CostInvest_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['Currency']:
-    CostInvest_DF.to_sql("CostInvest", conn, index=False, if_exists='replace')
+if save_tosql['Currency']:
+    CostInvest.to_sql("CostInvest", conn, index=False, if_exists='replace')
 
-if print_set['Currency']:
-    pd.set_option('display.max_rows', len(CostInvest_DF))
-    pd.set_option('display.max_columns', len(CostInvest_DF))
-    print("\nCostInvest DataFrame\n\n", CostInvest_DF)
+if print_outcome['CostInvest']:
+    pd.set_option('display.max_rows', len(CostInvest))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostInvest DataFrame\n\n", CostInvest)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
 regions = list()
 periods = list()
@@ -1017,7 +875,7 @@ for i_cost in range(0, len(CostVariable.tech)):
         cost_variable_units.append(CostVariable.cost_variable_units[i_cost])
         cost_variable_notes.append(CostVariable.cost_variable_notes[i_cost])
 
-CostVariable_DF = pd.DataFrame(
+CostVariable = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1029,14 +887,15 @@ CostVariable_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['Currency']:
-    CostVariable_DF.to_sql("CostVariable", conn, index=False, if_exists='replace')
+if save_tosql['Currency']:
+    CostVariable.to_sql("CostVariable", conn, index=False, if_exists='replace')
 
-if print_set['Currency']:
-    pd.set_option('display.max_rows', len(CostVariable_DF))
-    pd.set_option('display.max_columns', len(CostVariable_DF))
-    print("\nCostVariable DataFrame\n\n", CostVariable_DF)
+if print_outcome['CostVariable']:
+    pd.set_option('display.max_rows', len(CostVariable))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostVariable DataFrame\n\n", CostVariable)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
 regions = list()
 periods = list()
@@ -1073,7 +932,7 @@ for i_cost in range(0, len(CostFixed.tech)):
         cost_fixed_units.append(CostFixed.cost_fixed_units[i_cost])
         cost_fixed_notes.append(CostFixed.cost_fixed_notes[i_cost])
 
-CostFixed_DF = pd.DataFrame(
+CostFixed = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1085,27 +944,28 @@ CostFixed_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['Currency']:
-    CostFixed_DF.to_sql("CostFixed", conn, index=False, if_exists='replace')
+if save_tosql['Currency']:
+    CostFixed.to_sql("CostFixed", conn, index=False, if_exists='replace')
 
-if print_set['Currency']:
-    pd.set_option('display.max_rows', len(CostFixed_DF))
-    pd.set_option('display.max_columns', len(CostFixed_DF))
-    print("\nCostFixed DataFrame\n\n", CostFixed_DF)
+if print_outcome['CostFixed']:
+    pd.set_option('display.max_rows', len(CostFixed))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostFixed DataFrame\n\n", CostFixed)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     Currency converted...')
-else:
-    print('[', print_i, '/', len(print_set), ']     Currency converted...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'Currency updated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # CostInvest
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-CostInvest = pd.read_sql("select * from CostInvest", conn)
+start_time = time.time()
+
+CostInvest = pd.read_sql("SELECT * FROM CostInvest", conn)  # Loading the CostInvest table from the .SQLite database
 
 regions = list()
 tech = list()
@@ -1114,76 +974,52 @@ cost_invest = list()
 cost_invest_units = list()
 cost_invest_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(CostInvest.tech)):
-    tech_i = CostInvest.tech[i_tech]
+# Extracting the list of all indexes combinations for CostInvest
+indexes = list()
+for i in range(0, len(CostInvest)):
+    indexes.append(CostInvest.regions[i] + CostInvest.tech[i])
+CostInvest['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    for check in range(0, len(tech_already_considered)):
-        if tech_i == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    CostInvest_i = CostInvest[(CostInvest['indexes'] == index_i)]
+    CostInvest_i = CostInvest_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(CostInvest_i.vintage)):
+        if i < len(CostInvest_i.vintage) - 1:  # Interpolation
+            # Extracting time vintage involved in the interpolation
+            time_periods_i = [x for x in time_periods if CostInvest_i.vintage[i] <= x < CostInvest_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(CostInvest_i.regions[i])
+                    tech.append(CostInvest_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cost_invest.append(float(CostInvest_i.cost_invest[i]))
+                    cost_invest_units.append(CostInvest_i.cost_invest_units[i])
+                    cost_invest_notes.append(CostInvest_i.cost_invest_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(CostInvest_i.regions[i])
+                    tech.append(CostInvest_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cost_invest.append(float(CostInvest_i.cost_invest[i] +
+                                             (CostInvest_i.cost_invest[i + 1] - CostInvest_i.cost_invest[i]) *
+                                             (time_periods_i[j] - CostInvest_i.vintage[i]) /
+                                             (CostInvest_i.vintage[i + 1] - CostInvest_i.vintage[i])))
+                    cost_invest_units.append(CostInvest_i.cost_invest_units[i])
+                    cost_invest_notes.append(CostInvest_i.cost_invest_notes[i])
+        else:  # Extrapolation
+            # Extracting time vintage involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= CostInvest_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(CostInvest_i.regions[i])
+                tech.append(CostInvest_i.tech[i])
+                vintage.append(time_periods_i[j])
+                cost_invest.append(float(CostInvest_i.cost_invest[i]))
+                cost_invest_units.append(CostInvest_i.cost_invest_units[i])
+                cost_invest_notes.append(CostInvest_i.cost_invest_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(CostInvest.tech)):
-            if CostInvest.tech[j_tech] == tech_i:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i)
-
-        if flag == 0:  # No other values
-
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CostInvest.vintage[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(CostInvest.regions[i_tech])
-                    tech.append(CostInvest.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    cost_invest.append(float(np.format_float_scientific(CostInvest.cost_invest[i_tech])))
-                    cost_invest_units.append(CostInvest.cost_invest_units[i_tech])
-                    cost_invest_notes.append(CostInvest.cost_invest_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = CostInvest.vintage[location[i_location]]
-                year2 = CostInvest.vintage[location[i_location + 1]]
-                cost1 = CostInvest.cost_invest[location[i_location]]
-                cost2 = CostInvest.cost_invest[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(CostInvest.regions[i_tech])
-                        tech.append(CostInvest.tech[i_tech])
-                        vintage.append(int(year))
-                        cost_invest.append(float(np.format_float_scientific(cost1 + (year - year1) / (year2 - year1) * (cost2 - cost1))))
-                        cost_invest_units.append(CostInvest.cost_invest_units[i_tech])
-                        cost_invest_notes.append(CostInvest.cost_invest_notes[i_tech])
-
-            year_last = CostInvest.vintage[location[i_location + 1]]
-            cost = CostInvest.cost_invest[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(CostInvest.regions[i_tech])
-                        tech.append(CostInvest.tech[i_tech])
-                        vintage.append(int(year))
-                        cost_invest.append(float(np.format_float_scientific(CostInvest.cost_invest[location[i_location + 1]])))
-                        cost_invest_units.append(CostInvest.cost_invest_units[i_tech])
-                        cost_invest_notes.append(CostInvest.cost_invest_notes[i_tech])
-            else:
-                regions.append(CostInvest.regions[i_tech])
-                tech.append(CostInvest.tech[i_tech])
-                vintage.append(int(year_last))
-                cost_invest.append(float(np.format_float_scientific(CostInvest.cost_invest[location[i_location + 1]])))
-                cost_invest_units.append(CostInvest.cost_invest_units[i_tech])
-                cost_invest_notes.append(CostInvest.cost_invest_notes[i_tech])
-
-CostInvest_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+CostInvest = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "tech": pd.Series(tech, dtype='str'),
@@ -1194,30 +1030,28 @@ CostInvest_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['CostInvest']:
-    CostInvest_DF.to_sql("CostInvest", conn, index=False, if_exists='replace')
+if save_tosql['CostInvest']:
+    CostInvest.to_sql('CostInvest', conn, index=False, if_exists='replace')
 
-if print_set['CostInvest']:
-    pd.set_option('display.max_rows', len(CostInvest_DF))
-    pd.set_option('display.max_columns', len(CostInvest_DF))
-    print("\nCostInvest DataFrame\n\n", CostInvest_DF)
+if print_outcome['CostInvest']:
+    pd.set_option('display.max_rows', len(CostInvest))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostInvest DataFrame\n\n", CostInvest)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CostInvest updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     CostInvest updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CostInvest interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# CostFixed
+# CostFixed (adaptation of the previous database_preprocessing.py)
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-existing_periods = pd.read_sql("select t_periods from time_periods where flag = 'e'", conn)
-LifetimeTech = pd.read_sql("select * from LifetimeTech", conn)
-LifetimeProcess = pd.read_sql("select * from LifetimeProcess", conn)
-CostFixed = pd.read_sql("select * from CostFixed", conn)
+start_time = time.time()
+
+CostFixed = pd.read_sql("SELECT * FROM CostFixed", conn)
 
 regions = list()
 periods = list()
@@ -1263,9 +1097,8 @@ for i_tech in range(0, len(CostFixed.tech)):
 
         if flag == 0:  # No other values
             for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CostFixed.vintage[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    year_vintage = time_periods.t_periods[i_year]
+                if time_periods[i_year] >= CostFixed.vintage[i_tech]:
+                    year_vintage = time_periods[i_year]
                     for i in range(0, len(year_lifetime)):
                         if year_vintage == year_lifetime[i]:
                             lifetime = lifetime_process[i]
@@ -1273,10 +1106,9 @@ for i_tech in range(0, len(CostFixed.tech)):
                     stop = year_vintage + lifetime
 
                     for j_year in range(0, len(time_periods)):
-                        year_periods = time_periods.t_periods[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            if year_periods > existing_periods.t_periods[len(existing_periods.t_periods) - 1]:
+                        year_periods = time_periods[j_year]
+                        if start <= year_periods < stop:
+                            if year_periods > time_existing[len(time_existing) - 1]:
                                 regions.append(CostFixed.regions[i_tech])
                                 periods.append(int(year_periods))
                                 tech.append(CostFixed.tech[i_tech])
@@ -1295,17 +1127,17 @@ for i_tech in range(0, len(CostFixed.tech)):
                 cost2 = CostFixed.cost_fixed[location[i_location + 1]]
 
                 for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
+                    year = time_periods[i_year]
                     if year1 <= year < year2:
                         year_list.append(year)
                         cost_list.append(cost1 + (year - year1) / (year2 - year1) * (cost2 - cost1))
 
             year_last = CostFixed.vintage[location[i_location + 1]]
             cost_last = CostFixed.cost_fixed[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 2]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
+            if year_last != time_periods[len(time_periods) - 2]:
+                for i_year in range(0, len(time_periods)):
+                    year = time_periods[i_year]
+                    if year >= year_last:
                         year_list.append(year)
                         cost_list.append(cost_last)
             else:
@@ -1323,9 +1155,8 @@ for i_tech in range(0, len(CostFixed.tech)):
 
                     for j_year in range(0, len(year_list)):
                         year_periods = year_list[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            if year_periods > existing_periods.t_periods[len(existing_periods.t_periods) - 1]:
+                        if start <= year_periods < stop:
+                            if year_periods > time_existing[len(time_existing) - 1]:
                                 regions.append(CostFixed.regions[i_tech])
                                 periods.append(int(year_periods))
                                 tech.append(CostFixed.tech[i_tech])
@@ -1334,7 +1165,7 @@ for i_tech in range(0, len(CostFixed.tech)):
                                 cost_fixed_units.append(CostFixed.cost_fixed_units[i_tech])
                                 cost_fixed_notes.append(CostFixed.cost_fixed_notes[i_tech])
 
-CostFixed_DF = pd.DataFrame(
+CostFixed = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1346,30 +1177,28 @@ CostFixed_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['CostFixed']:
-    CostFixed_DF.to_sql("CostFixed", conn, index=False, if_exists='replace')
+if save_tosql['CostFixed']:
+    CostFixed.to_sql('CostFixed', conn, index=False, if_exists='replace')
 
-if print_set['CostFixed']:
-    pd.set_option('display.max_rows', len(CostFixed_DF))
-    pd.set_option('display.max_columns', len(CostFixed_DF))
-    print("\nCostFixed DataFrame\n\n", CostFixed_DF)
+if print_outcome['CostFixed']:
+    pd.set_option('display.max_rows', len(CostFixed))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostFixed DataFrame\n\n", CostFixed)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CostFixed updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     CostFixed updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CostFixed interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# CostVariable
+# CostVariable (adaptation of the previous database_preprocessing.py)
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-existing_periods = pd.read_sql("select t_periods from time_periods where flag = 'e'", conn)
-LifetimeTech = pd.read_sql("select * from LifetimeTech", conn)
-LifetimeProcess = pd.read_sql("select * from LifetimeProcess", conn)
-CostVariable = pd.read_sql("select * from CostVariable", conn)
+start_time = time.time()
+
+CostVariable = pd.read_sql("SELECT * FROM CostVariable", conn)
 
 regions = list()
 periods = list()
@@ -1394,12 +1223,12 @@ for i_tech in range(0, len(CostVariable.tech)):
         lifetime_process = list()
         for i_life in range(0, len(LifetimeTech.life)):
             if LifetimeTech.tech[i_life] == tech_i:
-                lifetime = float(LifetimeTech.life[i_life])
+                lifetime = LifetimeTech.life[i_life]
         if lifetime == 0:
             for i_life in range(0, len(LifetimeProcess.life_process)):
                 if LifetimeProcess.tech[i_life] == tech_i:
-                    year_lifetime.append(float(LifetimeProcess.vintage[i_life]))
-                    lifetime_process.append(float(LifetimeProcess.life_process[i_life]))
+                    year_lifetime.append(LifetimeProcess.vintage[i_life])
+                    lifetime_process.append(LifetimeProcess.life_process[i_life])
                 else:
                     lifetime = lifetime_default
 
@@ -1415,20 +1244,18 @@ for i_tech in range(0, len(CostVariable.tech)):
 
         if flag == 0:  # No other values
             for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CostVariable.vintage[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    year_vintage = float(time_periods.t_periods[i_year])
+                if time_periods[i_year] >= CostVariable.vintage[i_tech]:
+                    year_vintage = time_periods[i_year]
                     for i in range(0, len(year_lifetime)):
                         if year_vintage == year_lifetime[i]:
-                            lifetime = float(lifetime_process[i])
-                    start = float(year_vintage)
-                    stop = float(year_vintage) + lifetime
+                            lifetime = lifetime_process[i]
+                    start = year_vintage
+                    stop = year_vintage + lifetime
 
                     for j_year in range(0, len(time_periods)):
-                        year_periods = time_periods.t_periods[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            if year_periods > existing_periods.t_periods[len(existing_periods.t_periods) - 1]:
+                        year_periods = time_periods[j_year]
+                        if start <= year_periods < stop:
+                            if year_periods > time_existing[len(time_existing) - 1]:
                                 regions.append(CostVariable.regions[i_tech])
                                 periods.append(int(year_periods))
                                 tech.append(CostVariable.tech[i_tech])
@@ -1441,42 +1268,43 @@ for i_tech in range(0, len(CostVariable.tech)):
             year_list = list()
             cost_list = list()
             for i_location in range(0, len(location) - 1):
-                year1 = float(CostVariable.periods[location[i_location]])
-                year2 = float(CostVariable.periods[location[i_location + 1]])
-                cost1 = float(CostVariable.cost_variable[location[i_location]])
-                cost2 = float(CostVariable.cost_variable[location[i_location + 1]])
+                year1 = CostVariable.periods[location[i_location]]
+                year2 = CostVariable.periods[location[i_location + 1]]
+                cost1 = CostVariable.cost_variable[location[i_location]]
+                cost2 = CostVariable.cost_variable[location[i_location + 1]]
 
                 for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
+                    year = time_periods[i_year]
                     if year1 <= year < year2:
                         year_list.append(year)
                         cost_list.append(cost1 + (year - year1) / (year2 - year1) * (cost2 - cost1))
 
-            year_last = float(CostVariable.vintage[location[i_location + 1]])
-            cost_last = float(CostVariable.cost_variable[location[i_location + 1]])
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 2]:  # Different by 2050
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
+            year_last = CostVariable.vintage[location[i_location + 1]]
+            cost_last = CostVariable.cost_variable[location[i_location + 1]]
+            if year_last != time_periods[len(time_periods) - 2]:
+                for i_year in range(0, len(time_periods)):
+                    year = time_periods[i_year]
+                    if year >= year_last:
                         year_list.append(year)
                         cost_list.append(cost_last)
-            else:  # If year_last = 2050
+            else:
                 year_list.append(year_last)
                 cost_list.append(cost_last)
 
             for i_year in range(0, len(year_list)):
-                if float(year_list[i_year]) >= float(CostVariable.vintage[i_tech]):
+                if year_list[i_year] >= CostVariable.vintage[i_tech]:
                     year_vintage = year_list[i_year]
                     for i in range(0, len(year_lifetime)):
                         if year_vintage == year_lifetime[i]:
-                            lifetime = float(lifetime_process[i])
-                    start = float(year_vintage)
-                    stop = float(year_vintage) + lifetime
+                            lifetime = lifetime_process[i]
+                    start = year_vintage
+                    stop = year_vintage + lifetime
+
                     for j_year in range(0, len(year_list)):
                         year_periods = year_list[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            if year_periods > existing_periods.t_periods[len(existing_periods.t_periods) - 1]:
+                        if start <= year_periods < stop and year_periods != time_periods[
+                            len(time_periods) - 1]:
+                            if year_periods > time_existing[len(time_existing) - 1]:
                                 regions.append(CostVariable.regions[i_tech])
                                 periods.append(int(year_periods))
                                 tech.append(CostVariable.tech[i_tech])
@@ -1485,7 +1313,7 @@ for i_tech in range(0, len(CostVariable.tech)):
                                 cost_variable_units.append(CostVariable.cost_variable_units[i_tech])
                                 cost_variable_notes.append(CostVariable.cost_variable_notes[i_tech])
 
-CostVariable_DF = pd.DataFrame(
+CostVariable = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1497,27 +1325,28 @@ CostVariable_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['CostVariable']:
-    CostVariable_DF.to_sql("CostVariable", conn, index=False, if_exists='replace')
+if save_tosql['CostVariable']:
+    CostVariable.to_sql('CostVariable', conn, index=False, if_exists='replace')
 
-if print_set['CostVariable']:
-    pd.set_option('display.max_rows', len(CostVariable_DF))
-    pd.set_option('display.max_columns', len(CostVariable_DF))
-    print("\nCostVariable DataFrame\n\n", CostVariable_DF)
+if print_outcome['CostVariable']:
+    pd.set_option('display.max_rows', len(CostVariable))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostVariable DataFrame\n\n", CostVariable)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CostVariable updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     CostVariable updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CostVariable interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # DiscountRate
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-DiscountRate = pd.read_sql("select * from DiscountRate", conn)
+start_time = time.time()
+
+DiscountRate = pd.read_sql("SELECT * FROM DiscountRate", conn)  # Loading the DiscountRate table from the .SQLite database
 
 regions = list()
 tech = list()
@@ -1525,67 +1354,49 @@ vintage = list()
 tech_rate = list()
 tech_rate_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(DiscountRate.tech)):
-    tech_i = DiscountRate.tech[i_tech]
+# Extracting the list of all indexes combinations for DiscountRate
+indexes = list()
+for i in range(0, len(DiscountRate)):
+    indexes.append(DiscountRate.regions[i] + DiscountRate.tech[i])
+DiscountRate['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    DiscountRate_i = DiscountRate[(DiscountRate['indexes'] == index_i)]
+    DiscountRate_i = DiscountRate_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(DiscountRate_i.vintage)):
+        if i < len(DiscountRate_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if DiscountRate_i.vintage[i] <= x < DiscountRate_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(DiscountRate_i.regions[i])
+                    tech.append(DiscountRate_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    tech_rate.append(float(DiscountRate_i.tech_rate[i]))
+                    tech_rate_notes.append(DiscountRate_i.tech_rate_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(DiscountRate_i.regions[i])
+                    tech.append(DiscountRate_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    tech_rate.append(float(DiscountRate_i.tech_rate[i] +
+                                           (DiscountRate_i.tech_rate[i + 1] - DiscountRate_i.tech_rate[i]) *
+                                           (time_periods_i[j] - DiscountRate_i.vintage[i]) /
+                                           (DiscountRate_i.vintage[i + 1] - DiscountRate_i.vintage[i])))
+                    tech_rate_notes.append(DiscountRate_i.tech_rate_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= DiscountRate_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(DiscountRate_i.regions[i])
+                tech.append(DiscountRate_i.tech[i])
+                vintage.append(time_periods_i[j])
+                tech_rate.append(float(DiscountRate_i.tech_rate[i]))
+                tech_rate_notes.append(DiscountRate_i.tech_rate_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(DiscountRate.tech)):
-            tech_j_check = DiscountRate.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= DiscountRate.vintage[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(DiscountRate.regions[i_tech])
-                    tech.append(DiscountRate.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    tech_rate.append(float(np.format_float_scientific(DiscountRate.tech_rate[i_tech])))
-                    tech_rate_notes.append(DiscountRate.tech_rate_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = DiscountRate.vintage[location[i_location]]
-                year2 = DiscountRate.vintage[location[i_location + 1]]
-                min_cap1 = DiscountRate.tech_rate[location[i_location]]
-                min_cap2 = DiscountRate.tech_rate[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(DiscountRate.regions[i_tech])
-                        tech.append(DiscountRate.tech[i_tech])
-                        vintage.append(int(year))
-                        tech_rate.append(float(np.format_float_scientific(min_cap1 + (year - year1) / (year2 - year1) * (min_cap2 - min_cap1))))
-                        tech_rate_notes.append(DiscountRate.tech_rate_notes[i_tech])
-
-            year_last = DiscountRate.vintage[location[i_location + 1]]
-            min_cap = DiscountRate.tech_rate[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(DiscountRate.regions[i_tech])
-                        tech.append(DiscountRate.tech[i_tech])
-                        vintage.append(int(year))
-                        tech_rate.append(float(np.format_float_scientific(DiscountRate.tech_rate[location[i_location + 1]])))
-                        tech_rate_notes.append(DiscountRate.tech_rate_notes[i_tech])
-
-DiscountRate_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+DiscountRate = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "tech": pd.Series(tech, dtype='str'),
@@ -1595,27 +1406,28 @@ DiscountRate_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['DiscountRate']:
-    DiscountRate_DF.to_sql("DiscountRate", conn, index=False, if_exists='replace')
+if save_tosql['DiscountRate']:
+    DiscountRate.to_sql('DiscountRate', conn, index=False, if_exists='replace')
 
-if print_set['DiscountRate']:
-    pd.set_option('display.max_rows', len(DiscountRate_DF))
-    pd.set_option('display.max_columns', len(DiscountRate_DF))
-    print("\nDiscountRate DataFrame\n\n", DiscountRate_DF)
+if print_outcome['DiscountRate']:
+    pd.set_option('display.max_rows', len(DiscountRate))
+    pd.set_option('display.max_columns', 10)
+    print("\nDiscountRate DataFrame\n\n", DiscountRate)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     DiscountRate updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     DiscountRate updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'DiscountRate interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # MinCapacity
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MinCapacity = pd.read_sql("select * from MinCapacity", conn)
+start_time = time.time()
+
+MinCapacity = pd.read_sql("SELECT * FROM MinCapacity", conn)  # Loading the MinCapacity table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -1624,70 +1436,52 @@ mincap = list()
 mincap_units = list()
 mincap_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(MinCapacity.tech)):
-    tech_i = MinCapacity.tech[i_tech]
+# Extracting the list of all indexes combinations for MinCapacity
+indexes = list()
+for i in range(0, len(MinCapacity)):
+    indexes.append(MinCapacity.regions[i] + MinCapacity.tech[i])
+MinCapacity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    MinCapacity_i = MinCapacity[(MinCapacity['indexes'] == index_i)]
+    MinCapacity_i = MinCapacity_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinCapacity_i.periods)):
+        if i < len(MinCapacity_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinCapacity_i.periods[i] <= x < MinCapacity_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinCapacity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MinCapacity_i.tech[i])
+                    mincap.append(float(MinCapacity_i.mincap[i]))
+                    mincap_units.append(MinCapacity_i.mincap_units[i])
+                    mincap_notes.append(MinCapacity_i.mincap_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinCapacity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MinCapacity_i.tech[i])
+                    mincap.append(float(MinCapacity_i.mincap[i] +
+                                        (MinCapacity_i.mincap[i + 1] - MinCapacity_i.mincap[i]) *
+                                        (time_periods_i[j] - MinCapacity_i.periods[i]) /
+                                        (MinCapacity_i.periods[i + 1] - MinCapacity_i.periods[i])))
+                    mincap_units.append(MinCapacity_i.mincap_units[i])
+                    mincap_notes.append(MinCapacity_i.mincap_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= MinCapacity_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MinCapacity_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(MinCapacity_i.tech[i])
+                mincap.append(float(MinCapacity_i.mincap[i]))
+                mincap_units.append(MinCapacity_i.mincap_units[i])
+                mincap_notes.append(MinCapacity_i.mincap_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(MinCapacity.tech)):
-            tech_j_check = MinCapacity.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= MinCapacity.periods[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MinCapacity.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    tech.append(MinCapacity.tech[i_tech])
-                    mincap.append(float(np.format_float_scientific(MinCapacity.mincap[i_tech])))
-                    mincap_units.append(MinCapacity.mincap_units[i_tech])
-                    mincap_notes.append(MinCapacity.mincap_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MinCapacity.periods[location[i_location]]
-                year2 = MinCapacity.periods[location[i_location + 1]]
-                min_cap1 = MinCapacity.mincap[location[i_location]]
-                min_cap2 = MinCapacity.mincap[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MinCapacity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MinCapacity.tech[i_tech])
-                        mincap.append(float(np.format_float_scientific(min_cap1 + (year - year1) / (year2 - year1) * (min_cap2 - min_cap1))))
-                        mincap_units.append(MinCapacity.mincap_units[i_tech])
-                        mincap_notes.append(MinCapacity.mincap_notes[i_tech])
-
-            year_last = MinCapacity.periods[location[i_location + 1]]
-            min_cap = MinCapacity.mincap[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MinCapacity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MinCapacity.tech[i_tech])
-                        mincap.append(float(np.format_float_scientific(MinCapacity.mincap[location[i_location + 1]])))
-                        mincap_units.append(MinCapacity.mincap_units[i_tech])
-                        mincap_notes.append(MinCapacity.mincap_notes[i_tech])
-
-MinCapacity_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MinCapacity = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1698,27 +1492,28 @@ MinCapacity_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MinCapacity']:
-    MinCapacity_DF.to_sql("MinCapacity", conn, index=False, if_exists='replace')
+if save_tosql['MinCapacity']:
+    MinCapacity.to_sql('MinCapacity', conn, index=False, if_exists='replace')
 
-if print_set['MinCapacity']:
-    pd.set_option('display.max_rows', len(MinCapacity_DF))
-    pd.set_option('display.max_columns', len(MinCapacity_DF))
-    print("\nMinCapacity DataFrame\n\n", MinCapacity_DF)
+if print_outcome['MinCapacity']:
+    pd.set_option('display.max_rows', len(MinCapacity))
+    pd.set_option('display.max_columns', 10)
+    print("\nMinCapacity DataFrame\n\n", MinCapacity)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MinCapacity updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MinCapacity updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinCapacity interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # MinActivity
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MinActivity = pd.read_sql("select * from MinActivity", conn)
+start_time = time.time()
+
+MinActivity = pd.read_sql("SELECT * FROM MinActivity", conn)  # Loading the MinActivity table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -1727,70 +1522,52 @@ minact = list()
 minact_units = list()
 minact_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(MinActivity.tech)):
-    tech_i = MinActivity.tech[i_tech]
+# Extracting the list of all indexes combinations for MinActivity
+indexes = list()
+for i in range(0, len(MinActivity)):
+    indexes.append(MinActivity.regions[i] + MinActivity.tech[i])
+MinActivity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    MinActivity_i = MinActivity[(MinActivity['indexes'] == index_i)]
+    MinActivity_i = MinActivity_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinActivity_i.periods)):
+        if i < len(MinActivity_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinActivity_i.periods[i] <= x < MinActivity_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinActivity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MinActivity_i.tech[i])
+                    minact.append(float(MinActivity_i.minact[i]))
+                    minact_units.append(MinActivity_i.minact_units[i])
+                    minact_notes.append(MinActivity_i.minact_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinActivity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MinActivity_i.tech[i])
+                    minact.append(float(MinActivity_i.minact[i] +
+                                        (MinActivity_i.minact[i + 1] - MinActivity_i.minact[i]) *
+                                        (time_periods_i[j] - MinActivity_i.periods[i]) /
+                                        (MinActivity_i.periods[i + 1] - MinActivity_i.periods[i])))
+                    minact_units.append(MinActivity_i.minact_units[i])
+                    minact_notes.append(MinActivity_i.minact_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= MinActivity_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MinActivity_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(MinActivity_i.tech[i])
+                minact.append(float(MinActivity_i.minact[i]))
+                minact_units.append(MinActivity_i.minact_units[i])
+                minact_notes.append(MinActivity_i.minact_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(MinActivity.tech)):
-            tech_j_check = MinActivity.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= MinActivity.periods[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MinActivity.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    tech.append(MinActivity.tech[i_tech])
-                    minact.append(float(np.format_float_scientific(MinActivity.minact[i_tech])))
-                    minact_units.append(MinActivity.minact_units[i_tech])
-                    minact_notes.append(MinActivity.minact_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MinActivity.periods[location[i_location]]
-                year2 = MinActivity.periods[location[i_location + 1]]
-                min_act1 = MinActivity.minact[location[i_location]]
-                min_act2 = MinActivity.minact[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MinActivity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MinActivity.tech[i_tech])
-                        minact.append(float(np.format_float_scientific(min_act1 + (year - year1) / (year2 - year1) * (min_act2 - min_act1))))
-                        minact_units.append(MinActivity.minact_units[i_tech])
-                        minact_notes.append(MinActivity.minact_notes[i_tech])
-
-            year_last = MinActivity.periods[location[i_location + 1]]
-            min_act = MinActivity.minact[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MinActivity.regions[i_tech])
-                        periods.append(year)
-                        tech.append(MinActivity.tech[i_tech])
-                        minact.append(float(np.format_float_scientific(MinActivity.minact[location[i_location + 1]])))
-                        minact_units.append(MinActivity.minact_units[i_tech])
-                        minact_notes.append(MinActivity.minact_notes[i_tech])
-
-MinActivity_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MinActivity = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1801,27 +1578,28 @@ MinActivity_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MinActivity']:
-    MinActivity_DF.to_sql("MinActivity", conn, index=False, if_exists='replace')
+if save_tosql['MinActivity']:
+    MinActivity.to_sql('MinActivity', conn, index=False, if_exists='replace')
 
-if print_set['MinActivity']:
-    pd.set_option('display.max_rows', len(MinActivity_DF))
-    pd.set_option('display.max_columns', len(MinActivity_DF))
-    print("\nMinActivity DataFrame\n\n", MinActivity_DF)
+if print_outcome['MinActivity']:
+    pd.set_option('display.max_rows', len(MinActivity))
+    pd.set_option('display.max_columns', 10)
+    print("\nMinActivity DataFrame\n\n", MinActivity)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MinActivity updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MinActivity updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinActivity interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # MaxCapacity
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxCapacity = pd.read_sql("select * from MaxCapacity", conn)
+start_time = time.time()
+
+MaxCapacity = pd.read_sql("SELECT * FROM MaxCapacity", conn)  # Loading the MaxCapacity table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -1830,70 +1608,52 @@ maxcap = list()
 maxcap_units = list()
 maxcap_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(MaxCapacity.tech)):
-    tech_i = MaxCapacity.tech[i_tech]
+# Extracting the list of all indexes combinations for MaxCapacity
+indexes = list()
+for i in range(0, len(MaxCapacity)):
+    indexes.append(MaxCapacity.regions[i] + MaxCapacity.tech[i])
+MaxCapacity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    MaxCapacity_i = MaxCapacity[(MaxCapacity['indexes'] == index_i)]
+    MaxCapacity_i = MaxCapacity_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxCapacity_i.periods)):
+        if i < len(MaxCapacity_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxCapacity_i.periods[i] <= x < MaxCapacity_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxCapacity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MaxCapacity_i.tech[i])
+                    maxcap.append(float(MaxCapacity_i.maxcap[i]))
+                    maxcap_units.append(MaxCapacity_i.maxcap_units[i])
+                    maxcap_notes.append(MaxCapacity_i.maxcap_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxCapacity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MaxCapacity_i.tech[i])
+                    maxcap.append(float(MaxCapacity_i.maxcap[i] +
+                                        (MaxCapacity_i.maxcap[i + 1] - MaxCapacity_i.maxcap[i]) *
+                                        (time_periods_i[j] - MaxCapacity_i.periods[i]) /
+                                        (MaxCapacity_i.periods[i + 1] - MaxCapacity_i.periods[i])))
+                    maxcap_units.append(MaxCapacity_i.maxcap_units[i])
+                    maxcap_notes.append(MaxCapacity_i.maxcap_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= MaxCapacity_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MaxCapacity_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(MaxCapacity_i.tech[i])
+                maxcap.append(float(MaxCapacity_i.maxcap[i]))
+                maxcap_units.append(MaxCapacity_i.maxcap_units[i])
+                maxcap_notes.append(MaxCapacity_i.maxcap_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(MaxCapacity.tech)):
-            tech_j_check = MaxCapacity.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= MaxCapacity.periods[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MaxCapacity.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    tech.append(MaxCapacity.tech[i_tech])
-                    maxcap.append(float(np.format_float_scientific(MaxCapacity.maxcap[i_tech])))
-                    maxcap_units.append(MaxCapacity.maxcap_units[i_tech])
-                    maxcap_notes.append(MaxCapacity.maxcap_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxCapacity.periods[location[i_location]]
-                year2 = MaxCapacity.periods[location[i_location + 1]]
-                max_cap1 = MaxCapacity.maxcap[location[i_location]]
-                max_cap2 = MaxCapacity.maxcap[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MaxCapacity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MaxCapacity.tech[i_tech])
-                        maxcap.append(float(np.format_float_scientific(max_cap1 + (year - year1) / (year2 - year1) * (max_cap2 - max_cap1))))
-                        maxcap_units.append(MaxCapacity.maxcap_units[i_tech])
-                        maxcap_notes.append(MaxCapacity.maxcap_notes[i_tech])
-
-            year_last = MaxCapacity.periods[location[i_location + 1]]
-            max_cap = MaxCapacity.maxcap[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MaxCapacity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MaxCapacity.tech[i_tech])
-                        maxcap.append(float(np.format_float_scientific(MaxCapacity.maxcap[location[i_location + 1]], 2)))
-                        maxcap_units.append(MaxCapacity.maxcap_units[i_tech])
-                        maxcap_notes.append(MaxCapacity.maxcap_notes[i_tech])
-
-MaxCapacity_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxCapacity = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -1904,27 +1664,28 @@ MaxCapacity_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxCapacity']:
-    MaxCapacity_DF.to_sql("MaxCapacity", conn, index=False, if_exists='replace')
+if save_tosql['MaxCapacity']:
+    MaxCapacity.to_sql('MaxCapacity', conn, index=False, if_exists='replace')
 
-if print_set['MaxCapacity']:
-    pd.set_option('display.max_rows', len(MaxCapacity_DF))
-    pd.set_option('display.max_columns', len(MaxCapacity_DF))
-    print("\nMaxCapacity DataFrame\n\n", MaxCapacity_DF)
+if print_outcome['MaxCapacity']:
+    pd.set_option('display.max_rows', len(MaxCapacity))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxCapacity DataFrame\n\n", MaxCapacity)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxCapacity updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxCapacity updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxCapacity interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # MaxActivity
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxActivity = pd.read_sql("select * from MaxActivity", conn)
+start_time = time.time()
+
+MaxActivity = pd.read_sql("SELECT * FROM MaxActivity", conn)  # Loading the MaxActivity table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -1933,73 +1694,52 @@ maxact = list()
 maxact_units = list()
 maxact_notes = list()
 
-tech_already_considered = list()
-for i_tech in range(0, len(MaxActivity.tech)):
-    tech_i = MaxActivity.tech[i_tech]
+# Extracting the list of all indexes combinations for MaxActivity
+indexes = list()
+for i in range(0, len(MaxActivity)):
+    indexes.append(MaxActivity.regions[i] + MaxActivity.tech[i])
+MaxActivity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
+# Interpolating/extrapolating
+for index_i in indexes:
+    MaxActivity_i = MaxActivity[(MaxActivity['indexes'] == index_i)]
+    MaxActivity_i = MaxActivity_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxActivity_i.periods)):
+        if i < len(MaxActivity_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxActivity_i.periods[i] <= x < MaxActivity_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxActivity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MaxActivity_i.tech[i])
+                    maxact.append(float(MaxActivity_i.maxact[i]))
+                    maxact_units.append(MaxActivity_i.maxact_units[i])
+                    maxact_notes.append(MaxActivity_i.maxact_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxActivity_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(MaxActivity_i.tech[i])
+                    maxact.append(float(MaxActivity_i.maxact[i] +
+                                        (MaxActivity_i.maxact[i + 1] - MaxActivity_i.maxact[i]) *
+                                        (time_periods_i[j] - MaxActivity_i.periods[i]) /
+                                        (MaxActivity_i.periods[i + 1] - MaxActivity_i.periods[i])))
+                    maxact_units.append(MaxActivity_i.maxact_units[i])
+                    maxact_notes.append(MaxActivity_i.maxact_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= MaxActivity_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MaxActivity_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(MaxActivity_i.tech[i])
+                maxact.append(float(MaxActivity_i.maxact[i]))
+                maxact_units.append(MaxActivity_i.maxact_units[i])
+                maxact_notes.append(MaxActivity_i.maxact_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(MaxActivity.tech)):
-            tech_j_check = MaxActivity.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= MaxActivity.periods[i_tech] and time_periods.t_periods[i_year] != \
-                        time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MaxActivity.regions[i_tech])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    tech.append(MaxActivity.tech[i_tech])
-                    maxact.append(float(np.format_float_scientific(MaxActivity.maxact[i_tech])))
-                    maxact_units.append(MaxActivity.maxact_units[i_tech])
-                    maxact_notes.append(MaxActivity.maxact_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxActivity.periods[location[i_location]]
-                year2 = MaxActivity.periods[location[i_location + 1]]
-                max_act1 = MaxActivity.maxact[location[i_location]]
-                max_act2 = MaxActivity.maxact[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MaxActivity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MaxActivity.tech[i_tech])
-                        maxact.append(float(np.format_float_scientific(max_act1 + (year - year1) / (year2 - year1) * (max_act2 - max_act1))))
-                        maxact_units.append(MaxActivity.maxact_units[i_tech])
-                        maxact_notes.append(MaxActivity.maxact_notes[i_tech])
-
-            year_last = MaxActivity.periods[location[i_location + 1]]
-            max_act = MaxActivity.maxact[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MaxActivity.regions[i_tech])
-                        periods.append(int(year))
-                        tech.append(MaxActivity.tech[i_tech])
-                        maxact.append(float(np.format_float_positional(MaxActivity.maxact[location[i_location + 1]], 4)))
-                        maxact_units.append(MaxActivity.maxact_units[i_tech])
-                        maxact_notes.append(MaxActivity.maxact_notes[i_tech])
-
-MaxActivity_DF = pd.DataFrame(np.transpose([regions, periods, tech, maxact, maxact_units, maxact_notes]),
-                              columns=["regions", "periods", "tech", "maxact", "maxact_units", "maxact_notes"]);
-
-MaxActivity_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxActivity = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2010,27 +1750,28 @@ MaxActivity_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxActivity']:
-    MaxActivity_DF.to_sql("MaxActivity", conn, index=False, if_exists='replace')
+if save_tosql['MaxActivity']:
+    MaxActivity.to_sql('MaxActivity', conn, index=False, if_exists='replace')
 
-if print_set['MaxActivity']:
-    pd.set_option('display.max_rows', len(MaxActivity_DF))
-    pd.set_option('display.max_columns', len(MaxActivity_DF))
-    print("\nMaxActivity DataFrame\n\n", MaxActivity_DF)
+if print_outcome['MaxActivity']:
+    pd.set_option('display.max_rows', len(MaxActivity))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxActivity DataFrame\n\n", MaxActivity)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxActivity updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxActivity updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxActivity interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MinInputGroup (ONLY INTERPOLATION)
+# MinInputGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MinInputGroup = pd.read_sql("select * from MinInputGroup", conn)
+start_time = time.time()
+
+MinInputGroup = pd.read_sql("SELECT * FROM MinInputGroup", conn)  # Loading the MinInputGroup table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -2039,76 +1780,51 @@ group_name = list()
 gi_min = list()
 gi_min_notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MinInputGroup.group_name)):
-    group_name_i = MinInputGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MinInputGroup
+indexes = list()
+for i in range(0, len(MinInputGroup)):
+    indexes.append(MinInputGroup.regions[i] + MinInputGroup.input_comm[i] + MinInputGroup.group_name[i])
+MinInputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = MinInputGroup.input_comm[i_group_name] + group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MinInputGroup_i = MinInputGroup[(MinInputGroup['indexes'] == index_i)]
+    MinInputGroup_i = MinInputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinInputGroup_i.periods)):
+        if i < len(MinInputGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinInputGroup_i.periods[i] <= x < MinInputGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinInputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(MinInputGroup_i.input_comm[i])
+                    group_name.append(MinInputGroup_i.group_name[i])
+                    gi_min.append(float(MinInputGroup_i.gi_min[i]))
+                    gi_min_notes.append(MinInputGroup_i.gi_min_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinInputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(MinInputGroup_i.input_comm[i])
+                    group_name.append(MinInputGroup_i.group_name[i])
+                    gi_min.append(float(MinInputGroup_i.gi_min[i] +
+                                        (MinInputGroup_i.gi_min[i + 1] - MinInputGroup_i.gi_min[i]) *
+                                        (time_periods_i[j] - MinInputGroup_i.periods[i]) /
+                                        (MinInputGroup_i.periods[i + 1] - MinInputGroup_i.periods[i])))
+                    gi_min_notes.append(MinInputGroup_i.gi_min_notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MinInputGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MinInputGroup_i.regions[i])
+                periods.append(time_periods_i[j])
+                input_comm.append(MinInputGroup_i.input_comm[i])
+                group_name.append(MinInputGroup_i.group_name[i])
+                gi_min.append(float(MinInputGroup_i.gi_min[i]))
+                gi_min_notes.append(MinInputGroup_i.gi_min_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MinInputGroup.group_name)):
-            group_name_j_check = MinInputGroup.input_comm[j_group_name] + MinInputGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MinInputGroup.periods[i_group_name] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MinInputGroup.regions[i_group_name])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    input_comm.append(MinInputGroup.input_comm[i_group_name])
-                    group_name.append(MinInputGroup.group_name[i_group_name])
-                    gi_min.append(float(np.format_float_positional(MinInputGroup.gi_min[i_group_name], 3)))
-                    gi_min_notes.append(MinInputGroup.gi_min_notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MinInputGroup.periods[location[i_location]]
-                year2 = MinInputGroup.periods[location[i_location + 1]]
-                gi_min1 = MinInputGroup.gi_min[location[i_location]]
-                gi_min2 = MinInputGroup.gi_min[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MinInputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        input_comm.append(MinInputGroup.input_comm[i_group_name])
-                        group_name.append(MinInputGroup.group_name[i_group_name])
-                        gi_min.append(float(
-                            np.format_float_positional(gi_min1 + (year - year1) / (year2 - year1) * (gi_min2 - gi_min1),
-                                                       3)))
-                        gi_min_notes.append(MinInputGroup.gi_min_notes[i_group_name])
-
-            year_last = MinInputGroup.periods[location[i_location + 1]]
-            max_act = MinInputGroup.gi_min[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MinInputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        input_comm.append(MinInputGroup.input_comm[i_group_name])
-                        group_name.append(MinInputGroup.group_name[i_group_name])
-                        gi_min.append(
-                            float(np.format_float_positional(MinInputGroup.gi_min[location[i_location + 1]], 3)))
-                        gi_min_notes.append(MinInputGroup.gi_min_notes[i_group_name])
-
-MinInputGroup_DF = pd.DataFrame(np.transpose([periods, group_name, gi_min, gi_min_notes]),
-                                columns=["periods", "group_name", "gi_min", "gi_min_notes"]);
-
-MinInputGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MinInputGroup = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2119,27 +1835,28 @@ MinInputGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MinInputGroup']:
-    MinInputGroup_DF.to_sql("MinInputGroup", conn, index=False, if_exists='replace')
+if save_tosql['MinInputGroup']:
+    MinInputGroup.to_sql('MinInputGroup', conn, index=False, if_exists='replace')
 
-if print_set['MinInputGroup']:
-    pd.set_option('display.max_rows', len(MinInputGroup_DF))
-    pd.set_option('display.max_columns', len(MinInputGroup_DF))
-    print("\nMinInputGroup DataFrame\n\n", MinInputGroup_DF)
+if print_outcome['MinInputGroup']:
+    pd.set_option('display.max_rows', len(MinInputGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMinInputGroup DataFrame\n\n", MinInputGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MinInputGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MinInputGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinInputGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MaxInputGroup (ONLY INTERPOLATION)
+# MaxInputGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxInputGroup = pd.read_sql("select * from MaxInputGroup", conn)
+start_time = time.time()
+
+MaxInputGroup = pd.read_sql("SELECT * FROM MaxInputGroup", conn)  # Loading the MaxInputGroup table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -2148,76 +1865,51 @@ group_name = list()
 gi_max = list()
 gi_max_notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MaxInputGroup.group_name)):
-    group_name_i = MaxInputGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MaxInputGroup
+indexes = list()
+for i in range(0, len(MaxInputGroup)):
+    indexes.append(MaxInputGroup.regions[i] + MaxInputGroup.input_comm[i] + MaxInputGroup.group_name[i])
+MaxInputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = MaxInputGroup.input_comm[i_group_name] + group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MaxInputGroup_i = MaxInputGroup[(MaxInputGroup['indexes'] == index_i)]
+    MaxInputGroup_i = MaxInputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxInputGroup_i.periods)):
+        if i < len(MaxInputGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxInputGroup_i.periods[i] <= x < MaxInputGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxInputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(MaxInputGroup_i.input_comm[i])
+                    group_name.append(MaxInputGroup_i.group_name[i])
+                    gi_max.append(float(MaxInputGroup_i.gi_max[i]))
+                    gi_max_notes.append(MaxInputGroup_i.gi_max_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxInputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    input_comm.append(MaxInputGroup_i.input_comm[i])
+                    group_name.append(MaxInputGroup_i.group_name[i])
+                    gi_max.append(float(MaxInputGroup_i.gi_max[i] +
+                                        (MaxInputGroup_i.gi_max[i + 1] - MaxInputGroup_i.gi_max[i]) *
+                                        (time_periods_i[j] - MaxInputGroup_i.periods[i]) /
+                                        (MaxInputGroup_i.periods[i + 1] - MaxInputGroup_i.periods[i])))
+                    gi_max_notes.append(MaxInputGroup_i.gi_max_notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MaxInputGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MaxInputGroup_i.regions[i])
+                periods.append(time_periods_i[j])
+                input_comm.append(MaxInputGroup_i.input_comm[i])
+                group_name.append(MaxInputGroup_i.group_name[i])
+                gi_max.append(float(MaxInputGroup_i.gi_max[i]))
+                gi_max_notes.append(MaxInputGroup_i.gi_max_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MaxInputGroup.group_name)):
-            group_name_j_check = MaxInputGroup.input_comm[j_group_name] + MaxInputGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MaxInputGroup.periods[i_group_name] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MaxInputGroup.regions[i_group_name])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    input_comm.append(MaxInputGroup.input_comm[i_group_name])
-                    group_name.append(MaxInputGroup.group_name[i_group_name])
-                    gi_max.append(float(np.format_float_scientific(MaxInputGroup.gi_max[i_group_name], 3)))
-                    gi_max_notes.append(MaxInputGroup.gi_max_notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxInputGroup.periods[location[i_location]]
-                year2 = MaxInputGroup.periods[location[i_location + 1]]
-                gi_max1 = MaxInputGroup.gi_max[location[i_location]]
-                gi_max2 = MaxInputGroup.gi_max[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MaxInputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        input_comm.append(MaxInputGroup.input_comm[i_group_name])
-                        group_name.append(MaxInputGroup.group_name[i_group_name])
-                        gi_max.append(float(
-                            np.format_float_positional(gi_max1 + (year - year1) / (year2 - year1) * (gi_max2 - gi_max1),
-                                                       3)))
-                        gi_max_notes.append(MaxInputGroup.gi_max_notes[i_group_name])
-
-            year_last = MaxInputGroup.periods[location[i_location + 1]]
-            max_act = MaxInputGroup.gi_max[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MaxInputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        input_comm.append(MaxInputGroup.input_comm[i_group_name])
-                        group_name.append(MaxInputGroup.group_name[i_group_name])
-                        gi_max.append(
-                            float(np.format_float_positional(MaxInputGroup.gi_max[location[i_location + 1]], 3)))
-                        gi_max_notes.append(MaxInputGroup.gi_max_notes[i_group_name])
-
-MaxInputGroup_DF = pd.DataFrame(np.transpose([periods, group_name, gi_max, gi_max_notes]),
-                                columns=["periods", "group_name", "gi_max", "gi_max_notes"]);
-
-MaxInputGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxInputGroup = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2228,27 +1920,28 @@ MaxInputGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxInputGroup']:
-    MaxInputGroup_DF.to_sql("MaxInputGroup", conn, index=False, if_exists='replace')
+if save_tosql['MaxInputGroup']:
+    MaxInputGroup.to_sql('MaxInputGroup', conn, index=False, if_exists='replace')
 
-if print_set['MaxInputGroup']:
-    pd.set_option('display.max_rows', len(MaxInputGroup_DF))
-    pd.set_option('display.max_columns', len(MaxInputGroup_DF))
-    print("\nMaxInputGroup DataFrame\n\n", MaxInputGroup_DF)
+if print_outcome['MaxInputGroup']:
+    pd.set_option('display.max_rows', len(MaxInputGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxInputGroup DataFrame\n\n", MaxInputGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxInputGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxInputGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxInputGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MaxOutputGroup (ONLY INTERPOLATION)
+# MaxOutputGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxOutputGroup = pd.read_sql("select * from MaxOutputGroup", conn)
+start_time = time.time()
+
+MaxOutputGroup = pd.read_sql("SELECT * FROM MaxOutputGroup", conn)  # Loading the MaxOutputGroup table from the .SQLite database
 
 regions = list()
 periods = list()
@@ -2257,76 +1950,51 @@ group_name = list()
 go_max = list()
 go_max_notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MaxOutputGroup.group_name)):
-    group_name_i = MaxOutputGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MaxOutputGroup
+indexes = list()
+for i in range(0, len(MaxOutputGroup)):
+    indexes.append(MaxOutputGroup.regions[i] + MaxOutputGroup.output_comm[i] + MaxOutputGroup.group_name[i])
+MaxOutputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = MaxOutputGroup.output_comm[i_group_name] + group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MaxOutputGroup_i = MaxOutputGroup[(MaxOutputGroup['indexes'] == index_i)]
+    MaxOutputGroup_i = MaxOutputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxOutputGroup_i.periods)):
+        if i < len(MaxOutputGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxOutputGroup_i.periods[i] <= x < MaxOutputGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxOutputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    output_comm.append(MaxOutputGroup_i.output_comm[i])
+                    group_name.append(MaxOutputGroup_i.group_name[i])
+                    go_max.append(float(MaxOutputGroup_i.go_max[i]))
+                    go_max_notes.append(MaxOutputGroup_i.go_max_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxOutputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    output_comm.append(MaxOutputGroup_i.output_comm[i])
+                    group_name.append(MaxOutputGroup_i.group_name[i])
+                    go_max.append(float(MaxOutputGroup_i.go_max[i] +
+                                        (MaxOutputGroup_i.go_max[i + 1] - MaxOutputGroup_i.go_max[i]) *
+                                        (time_periods_i[j] - MaxOutputGroup_i.periods[i]) /
+                                        (MaxOutputGroup_i.periods[i + 1] - MaxOutputGroup_i.periods[i])))
+                    go_max_notes.append(MaxOutputGroup_i.go_max_notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MaxOutputGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MaxOutputGroup_i.regions[i])
+                periods.append(time_periods_i[j])
+                output_comm.append(MaxOutputGroup_i.output_comm[i])
+                group_name.append(MaxOutputGroup_i.group_name[i])
+                go_max.append(float(MaxOutputGroup_i.go_max[i]))
+                go_max_notes.append(MaxOutputGroup_i.go_max_notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MaxOutputGroup.group_name)):
-            group_name_j_check = MaxOutputGroup.output_comm[j_group_name] + MaxOutputGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MaxOutputGroup.periods[i_group_name] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(MaxOutputGroup.regions[i_group_name])
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    output_comm.append(MaxOutputGroup.output_comm[i_group_name])
-                    group_name.append(MaxOutputGroup.group_name[i_group_name])
-                    go_max.append(float(np.format_float_positional(MaxOutputGroup.go_max[i_group_name], 3)))
-                    go_max_notes.append(MaxOutputGroup.go_max_notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxOutputGroup.periods[location[i_location]]
-                year2 = MaxOutputGroup.periods[location[i_location + 1]]
-                go_max1 = MaxOutputGroup.go_max[location[i_location]]
-                go_max2 = MaxOutputGroup.go_max[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(MaxOutputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        output_comm.append(MaxOutputGroup.output_comm[i_group_name])
-                        group_name.append(MaxOutputGroup.group_name[i_group_name])
-                        go_max.append(float(
-                            np.format_float_positional(go_max1 + (year - year1) / (year2 - year1) * (go_max2 - go_max1),
-                                                       3)))
-                        go_max_notes.append(MaxOutputGroup.go_max_notes[i_group_name])
-
-            year_last = MaxOutputGroup.periods[location[i_location + 1]]
-            max_act = MaxOutputGroup.go_max[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(MaxOutputGroup.regions[i_group_name])
-                        periods.append(int(year))
-                        output_comm.append(MaxOutputGroup.output_comm[i_group_name])
-                        group_name.append(MaxOutputGroup.group_name[i_group_name])
-                        go_max.append(
-                            float(np.format_float_positional(MaxOutputGroup.go_max[location[i_location + 1]], 3)))
-                        go_max_notes.append(MaxOutputGroup.go_max_notes[i_group_name])
-
-MaxOutputGroup_DF = pd.DataFrame(np.transpose([periods, group_name, go_max, go_max_notes]),
-                                 columns=["periods", "group_name", "go_max", "go_max_notes"]);
-
-MaxOutputGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxOutputGroup = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2337,94 +2005,73 @@ MaxOutputGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxOutputGroup']:
-    MaxOutputGroup_DF.to_sql("MaxOutputGroup", conn, index=False, if_exists='replace')
+if save_tosql['MaxOutputGroup']:
+    MaxOutputGroup.to_sql('MaxOutputGroup', conn, index=False, if_exists='replace')
 
-if print_set['MaxOutputGroup']:
-    pd.set_option('display.max_rows', len(MaxOutputGroup_DF))
-    pd.set_option('display.max_columns', len(MaxOutputGroup_DF))
-    print("\nMaxOutputGroup DataFrame\n\n", MaxOutputGroup_DF)
+if print_outcome['MaxOutputGroup']:
+    pd.set_option('display.max_rows', len(MaxOutputGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxOutputGroup DataFrame\n\n", MaxOutputGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxOutputGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxOutputGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxOutputGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MinActivityGroup (ONLY INTERPOLATION)
+# MinActivityGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MinActivityGroup = pd.read_sql("select * from MinActivityGroup", conn)
+start_time = time.time()
+
+MinActivityGroup = pd.read_sql("SELECT * FROM MinActivityGroup", conn)  # Loading the MinActivityGroup table from the .SQLite database
 
 periods = list()
 group_name = list()
 min_act_g = list()
 notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MinActivityGroup.group_name)):
-    group_name_i = MinActivityGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MinActivityGroup
+indexes = list()
+for i in range(0, len(MinActivityGroup)):
+    indexes.append(MinActivityGroup.group_name[i])
+MinActivityGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MinActivityGroup_i = MinActivityGroup[(MinActivityGroup['indexes'] == index_i)]
+    MinActivityGroup_i = MinActivityGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinActivityGroup_i.periods)):
+        if i < len(MinActivityGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinActivityGroup_i.periods[i] <= x < MinActivityGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    periods.append(time_periods_i[j])
+                    group_name.append(MinActivityGroup_i.group_name[i])
+                    min_act_g.append(float(MinActivityGroup_i.min_act_g[i]))
+                    notes.append(MinActivityGroup_i.notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    periods.append(time_periods_i[j])
+                    group_name.append(MinActivityGroup_i.group_name[i])
+                    min_act_g.append(float(MinActivityGroup_i.min_act_g[i] +
+                                     (MinActivityGroup_i.min_act_g[i + 1] - MinActivityGroup_i.min_act_g[i]) *
+                                     (time_periods_i[j] - MinActivityGroup_i.periods[i]) /
+                                     (MinActivityGroup_i.periods[i + 1] - MinActivityGroup_i.periods[i])))
+                    notes.append(MinActivityGroup_i.notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MinActivityGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                periods.append(time_periods_i[j])
+                group_name.append(MinActivityGroup_i.group_name[i])
+                min_act_g.append(float(MinActivityGroup_i.min_act_g[i]))
+                notes.append(MinActivityGroup_i.notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MinActivityGroup.group_name)):
-            group_name_j_check = MinActivityGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MinActivityGroup.periods[i_group_name] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    group_name.append(MinActivityGroup.group_name[i_group_name])
-                    min_act_g.append(float(np.format_float_scientific(MinActivityGroup.min_act_g[i_group_name])))
-                    notes.append(MinActivityGroup.notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MinActivityGroup.periods[location[i_location]]
-                year2 = MinActivityGroup.periods[location[i_location + 1]]
-                min_act_g1 = MinActivityGroup.min_act_g[location[i_location]]
-                min_act_g2 = MinActivityGroup.min_act_g[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        periods.append(int(year))
-                        group_name.append(MinActivityGroup.group_name[i_group_name])
-                        min_act_g.append(float(np.format_float_scientific(min_act_g1 + (year - year1) / (year2 - year1) * (min_act_g2 - min_act_g1))))
-                        notes.append(MinActivityGroup.notes[i_group_name])
-
-            year_last = MinActivityGroup.periods[location[i_location + 1]]
-            min_act = MinActivityGroup.min_act_g[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        periods.append(int(year))
-                        group_name.append(MinActivityGroup.group_name[i_group_name])
-                        min_act_g.append(float(np.format_float_scientific(MinActivityGroup.min_act_g[location[i_location + 1]])))
-                        notes.append(MinActivityGroup.notes[i_group_name])
-
-MinActivityGroup_DF = pd.DataFrame(np.transpose([periods, group_name, min_act_g, notes]),
-                                    columns=["periods", "group_name", "min_act_g", "notes"]);
-
-MinActivityGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MinActivityGroup = pd.DataFrame(
     {
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
@@ -2433,94 +2080,73 @@ MinActivityGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MinActivityGroup']:
-    MinActivityGroup_DF.to_sql("MinActivityGroup", conn, index=False, if_exists='replace')
+if save_tosql['MinActivityGroup']:
+    MinActivityGroup.to_sql('MinActivityGroup', conn, index=False, if_exists='replace')
 
-if print_set['MinActivityGroup']:
-    pd.set_option('display.max_rows', len(MinActivityGroup_DF))
-    pd.set_option('display.max_columns', len(MinActivityGroup_DF))
-    print("\nMinActivityGroup DataFrame\n\n", MinActivityGroup_DF)
+if print_outcome['MinActivityGroup']:
+    pd.set_option('display.max_rows', len(MinActivityGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMinActivityGroup DataFrame\n\n", MinActivityGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MinActivityGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MinActivityGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinActivityGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MaxActivityGroup (ONLY INTERPOLATION)
+# MaxActivityGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxActivityGroup = pd.read_sql("select * from MaxActivityGroup", conn)
+start_time = time.time()
+
+MaxActivityGroup = pd.read_sql("SELECT * FROM MaxActivityGroup", conn)  # Loading the MaxActivityGroup table from the .SQLite database
 
 periods = list()
 group_name = list()
 max_act_g = list()
 notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MaxActivityGroup.group_name)):
-    group_name_i = MaxActivityGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MaxActivityGroup
+indexes = list()
+for i in range(0, len(MaxActivityGroup)):
+    indexes.append(MaxActivityGroup.group_name[i])
+MaxActivityGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MaxActivityGroup_i = MaxActivityGroup[(MaxActivityGroup['indexes'] == index_i)]
+    MaxActivityGroup_i = MaxActivityGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxActivityGroup_i.periods)):
+        if i < len(MaxActivityGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxActivityGroup_i.periods[i] <= x < MaxActivityGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    periods.append(time_periods_i[j])
+                    group_name.append(MaxActivityGroup_i.group_name[i])
+                    max_act_g.append(float(MaxActivityGroup_i.max_act_g[i]))
+                    notes.append(MaxActivityGroup_i.notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    periods.append(time_periods_i[j])
+                    group_name.append(MaxActivityGroup_i.group_name[i])
+                    max_act_g.append(float(MaxActivityGroup_i.max_act_g[i] +
+                                     (MaxActivityGroup_i.max_act_g[i + 1] - MaxActivityGroup_i.max_act_g[i]) *
+                                     (time_periods_i[j] - MaxActivityGroup_i.periods[i]) /
+                                     (MaxActivityGroup_i.periods[i + 1] - MaxActivityGroup_i.periods[i])))
+                    notes.append(MaxActivityGroup_i.notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MaxActivityGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                periods.append(time_periods_i[j])
+                group_name.append(MaxActivityGroup_i.group_name[i])
+                max_act_g.append(float(MaxActivityGroup_i.max_act_g[i]))
+                notes.append(MaxActivityGroup_i.notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MaxActivityGroup.group_name)):
-            group_name_j_check = MaxActivityGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MaxActivityGroup.periods[i_group_name] and \
-                        time_periods.t_periods[i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    group_name.append(MaxActivityGroup.group_name[i_group_name])
-                    max_act_g.append(float(np.format_float_scientific(MaxActivityGroup.max_act_g[i_group_name])))
-                    notes.append(MaxActivityGroup.notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxActivityGroup.periods[location[i_location]]
-                year2 = MaxActivityGroup.periods[location[i_location + 1]]
-                max_act_g1 = MaxActivityGroup.max_act_g[location[i_location]]
-                max_act_g2 = MaxActivityGroup.max_act_g[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        periods.append(int(year))
-                        group_name.append(MaxActivityGroup.group_name[i_group_name])
-                        max_act_g.append(float(np.format_float_scientific(max_act_g1 + (year - year1) / (year2 - year1) * (max_act_g2 - max_act_g1))))
-                        notes.append(MaxActivityGroup.notes[i_group_name])
-
-            year_last = MaxActivityGroup.periods[location[i_location + 1]]
-            max_act = MaxActivityGroup.max_act_g[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        periods.append(int(year))
-                        group_name.append(MaxActivityGroup.group_name[i_group_name])
-                        max_act_g.append(float(np.format_float_scientific(MaxActivityGroup.max_act_g[location[i_location + 1]])))
-                        notes.append(MaxActivityGroup.notes[i_group_name])
-
-MaxActivityGroup_DF = pd.DataFrame(np.transpose([periods, group_name, max_act_g, notes]),
-                                   columns=["periods", "group_name", "max_act_g", "notes"]);
-
-MaxActivityGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxActivityGroup = pd.DataFrame(
     {
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
@@ -2529,93 +2155,73 @@ MaxActivityGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxActivityGroup']:
-    MaxActivityGroup_DF.to_sql("MaxActivityGroup", conn, index=False, if_exists='replace')
+if save_tosql['MaxActivityGroup']:
+    MaxActivityGroup.to_sql('MaxActivityGroup', conn, index=False, if_exists='replace')
 
-if print_set['MaxActivityGroup']:
-    pd.set_option('display.max_rows', len(MaxActivityGroup_DF))
-    pd.set_option('display.max_columns', len(MaxActivityGroup_DF))
-    print("\nMaxActivityGroup DataFrame\n\n", MaxActivityGroup_DF)
+if print_outcome['MaxActivityGroup']:
+    pd.set_option('display.max_rows', len(MaxActivityGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxActivityGroup DataFrame\n\n", MaxActivityGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxActivityGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxActivityGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxActivityGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MinCapacityGroup (ONLY INTERPOLATION)
+# MinCapacityGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MinCapacityGroup = pd.read_sql("select * from MinCapacityGroup", conn)
+start_time = time.time()
+
+MinCapacityGroup = pd.read_sql("SELECT * FROM MinCapacityGroup", conn)  # Loading the MinCapacityGroup table from the .SQLite database
 
 periods = list()
 group_name = list()
 min_cap_g = list()
 notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MinCapacityGroup.group_name)):
-    group_name_i = MinCapacityGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MinCapacityGroup
+indexes = list()
+for i in range(0, len(MinCapacityGroup)):
+    indexes.append(MinCapacityGroup.group_name[i])
+MinCapacityGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MinCapacityGroup_i = MinCapacityGroup[(MinCapacityGroup['indexes'] == index_i)]
+    MinCapacityGroup_i = MinCapacityGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinCapacityGroup_i.periods)):
+        if i < len(MinCapacityGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinCapacityGroup_i.periods[i] <= x < MinCapacityGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    periods.append(time_periods_i[j])
+                    group_name.append(MinCapacityGroup_i.group_name[i])
+                    min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i]))
+                    notes.append(MinCapacityGroup_i.notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    periods.append(time_periods_i[j])
+                    group_name.append(MinCapacityGroup_i.group_name[i])
+                    min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i] +
+                                     (MinCapacityGroup_i.min_cap_g[i + 1] - MinCapacityGroup_i.min_cap_g[i]) *
+                                     (time_periods_i[j] - MinCapacityGroup_i.periods[i]) /
+                                     (MinCapacityGroup_i.periods[i + 1] - MinCapacityGroup_i.periods[i])))
+                    notes.append(MinCapacityGroup_i.notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MinCapacityGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                periods.append(time_periods_i[j])
+                group_name.append(MinCapacityGroup_i.group_name[i])
+                min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i]))
+                notes.append(MinCapacityGroup_i.notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MinCapacityGroup.group_name)):
-            group_name_j_check = MinCapacityGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MinCapacityGroup.periods[i_group_name] and time_periods.t_periods[i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    group_name.append(MinCapacityGroup.group_name[i_group_name])
-                    min_cap_g.append(float(np.format_float_scientific(MinCapacityGroup.min_cap_g[i_group_name])))
-                    notes.append(MinCapacityGroup.notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MinCapacityGroup.periods[location[i_location]]
-                year2 = MinCapacityGroup.periods[location[i_location + 1]]
-                min_cap_g1 = MinCapacityGroup.min_cap_g[location[i_location]]
-                min_cap_g2 = MinCapacityGroup.min_cap_g[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        periods.append(int(year))
-                        group_name.append(MinCapacityGroup.group_name[i_group_name])
-                        min_cap_g.append(float(np.format_float_scientific(min_cap_g1 + (year - year1) / (year2 - year1) * (min_cap_g2 - min_cap_g1))))
-                        notes.append(MinCapacityGroup.notes[i_group_name])
-
-            year_last = MinCapacityGroup.periods[location[i_location + 1]]
-            min_cap = MinCapacityGroup.min_cap_g[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        periods.append(int(year))
-                        group_name.append(MinCapacityGroup.group_name[i_group_name])
-                        min_cap_g.append(float(np.format_float_scientific(MinCapacityGroup.min_cap_g[location[i_location + 1]])))
-                        notes.append(MinCapacityGroup.notes[i_group_name])
-
-MinCapacityGroup_DF = pd.DataFrame(np.transpose([periods, group_name, min_cap_g, notes]),
-                                    columns=["periods", "group_name", "min_cap_g", "notes"]);
-
-MinCapacityGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MinCapacityGroup = pd.DataFrame(
     {
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
@@ -2624,93 +2230,73 @@ MinCapacityGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MinCapacityGroup']:
-    MinCapacityGroup_DF.to_sql("MinCapacityGroup", conn, index=False, if_exists='replace')
+if save_tosql['MinCapacityGroup']:
+    MinCapacityGroup.to_sql('MinCapacityGroup', conn, index=False, if_exists='replace')
 
-if print_set['MinCapacityGroup']:
-    pd.set_option('display.max_rows', len(MinCapacityGroup_DF))
-    pd.set_option('display.max_columns', len(MinCapacityGroup_DF))
-    print("\nMinCapacityGroup DataFrame\n\n", MinCapacityGroup_DF)
+if print_outcome['MinCapacityGroup']:
+    pd.set_option('display.max_rows', len(MinCapacityGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMinCapacityGroup DataFrame\n\n", MinCapacityGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MinCapacityGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MinCapacityGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinCapacityGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# MaxCapacityGroup (ONLY INTERPOLATION)
+# MaxCapacityGroup
 
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-MaxCapacityGroup = pd.read_sql("select * from MaxCapacityGroup", conn)
+start_time = time.time()
+
+MaxCapacityGroup = pd.read_sql("SELECT * FROM MaxCapacityGroup", conn)  # Loading the MaxCapacityGroup table from the .SQLite database
 
 periods = list()
 group_name = list()
 max_cap_g = list()
 notes = list()
 
-group_name_already_considered = list()
-for i_group_name in range(0, len(MaxCapacityGroup.group_name)):
-    group_name_i = MaxCapacityGroup.group_name[i_group_name]
+# Extracting the list of all indexes combinations for MaxCapacityGroup
+indexes = list()
+for i in range(0, len(MaxCapacityGroup)):
+    indexes.append(MaxCapacityGroup.group_name[i])
+MaxCapacityGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
-    flag_check = 0
-    group_name_i_check = group_name_i
-    for check in range(0, len(group_name_already_considered)):
-        if group_name_i_check == group_name_already_considered[check]:
-            flag_check = 1
+# Interpolating
+for index_i in indexes:
+    MaxCapacityGroup_i = MaxCapacityGroup[(MaxCapacityGroup['indexes'] == index_i)]
+    MaxCapacityGroup_i = MaxCapacityGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MaxCapacityGroup_i.periods)):
+        if i < len(MaxCapacityGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaxCapacityGroup_i.periods[i] <= x < MaxCapacityGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    periods.append(time_periods_i[j])
+                    group_name.append(MaxCapacityGroup_i.group_name[i])
+                    max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i]))
+                    notes.append(MaxCapacityGroup_i.notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    periods.append(time_periods_i[j])
+                    group_name.append(MaxCapacityGroup_i.group_name[i])
+                    max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i] +
+                                     (MaxCapacityGroup_i.max_cap_g[i + 1] - MaxCapacityGroup_i.max_cap_g[i]) *
+                                     (time_periods_i[j] - MaxCapacityGroup_i.periods[i]) /
+                                     (MaxCapacityGroup_i.periods[i + 1] - MaxCapacityGroup_i.periods[i])))
+                    notes.append(MaxCapacityGroup_i.notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MaxCapacityGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                periods.append(time_periods_i[j])
+                group_name.append(MaxCapacityGroup_i.group_name[i])
+                max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i]))
+                notes.append(MaxCapacityGroup_i.notes[i])
 
-    if flag_check == 0:
-        # Checking if other values are present for the group
-        flag = 0
-        location = list()
-        location.append(i_group_name)
-        for j_group_name in range(i_group_name + 1, len(MaxCapacityGroup.group_name)):
-            group_name_j_check = MaxCapacityGroup.group_name[j_group_name]
-            if group_name_j_check == group_name_i_check:
-                flag = 1
-                location.append(j_group_name)
-                group_name_already_considered.append(group_name_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] == MaxCapacityGroup.periods[i_group_name] and time_periods.t_periods[i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    periods.append(int(time_periods.t_periods[i_year]))
-                    group_name.append(MaxCapacityGroup.group_name[i_group_name])
-                    max_cap_g.append(float(np.format_float_scientific(MaxCapacityGroup.max_cap_g[i_group_name])))
-                    notes.append(MaxCapacityGroup.notes[i_group_name])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = MaxCapacityGroup.periods[location[i_location]]
-                year2 = MaxCapacityGroup.periods[location[i_location + 1]]
-                max_cap_g1 = MaxCapacityGroup.max_cap_g[location[i_location]]
-                max_cap_g2 = MaxCapacityGroup.max_cap_g[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        periods.append(int(year))
-                        group_name.append(MaxCapacityGroup.group_name[i_group_name])
-                        max_cap_g.append(float(np.format_float_scientific(max_cap_g1 + (year - year1) / (year2 - year1) * (max_cap_g2 - max_cap_g1))))
-                        notes.append(MaxCapacityGroup.notes[i_group_name])
-
-            year_last = MaxCapacityGroup.periods[location[i_location + 1]]
-            max_cap = MaxCapacityGroup.max_cap_g[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year == year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        periods.append(int(year))
-                        group_name.append(MaxCapacityGroup.group_name[i_group_name])
-                        max_cap_g.append(float(np.format_float_scientific(MaxCapacityGroup.max_cap_g[location[i_location + 1]])))
-                        notes.append(MaxCapacityGroup.notes[i_group_name])
-
-MaxCapacityGroup_DF = pd.DataFrame(np.transpose([periods, group_name, max_cap_g, notes]),
-                                    columns=["periods", "group_name", "max_cap_g", "notes"]);
-
-MaxCapacityGroup_DF = pd.DataFrame(
+# Converting lists into a DataFrame
+MaxCapacityGroup = pd.DataFrame(
     {
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
@@ -2719,29 +2305,345 @@ MaxCapacityGroup_DF = pd.DataFrame(
     }
 )
 
-if tosql_set['MaxCapacityGroup']:
-    MaxCapacityGroup_DF.to_sql("MaxCapacityGroup", conn, index=False, if_exists='replace')
+if save_tosql['MaxCapacityGroup']:
+    MaxCapacityGroup.to_sql('MaxCapacityGroup', conn, index=False, if_exists='replace')
 
-if print_set['MaxCapacityGroup']:
-    pd.set_option('display.max_rows', len(MaxCapacityGroup_DF))
-    pd.set_option('display.max_columns', len(MaxCapacityGroup_DF))
-    print("\nMaxCapacityGroup DataFrame\n\n", MaxCapacityGroup_DF)
+if print_outcome['MaxCapacityGroup']:
+    pd.set_option('display.max_rows', len(MaxCapacityGroup))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaxCapacityGroup DataFrame\n\n", MaxCapacityGroup)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     MaxCapacityGroup updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     MaxCapacityGroup updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxCapacityGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# Demand
+# CapacityFactor
 
-conn = sqlite3.connect(database_name)
+start_time = time.time()
+
+CapacityFactor = pd.read_sql("SELECT * FROM CapacityFactor", conn)  # Loading the CapacityFactor table from the .SQLite database
+
+regions = list()
+tech = list()
+vintage = list()
+cf = list()
+cf_notes = list()
+
+# Extracting the list of all indexes combinations for CapacityFactor
+indexes = list()
+for i in range(0, len(CapacityFactor)):
+    indexes.append(CapacityFactor.regions[i] + CapacityFactor.tech[i])
+CapacityFactor['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    CapacityFactor_i = CapacityFactor[(CapacityFactor['indexes'] == index_i)]
+    CapacityFactor_i = CapacityFactor_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(CapacityFactor_i.vintage)):
+        if i < len(CapacityFactor_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if CapacityFactor_i.vintage[i] <= x < CapacityFactor_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(CapacityFactor_i.regions[i])
+                    tech.append(CapacityFactor_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cf.append(float(CapacityFactor_i.cf[i]))
+                    cf_notes.append(CapacityFactor_i.cf_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(CapacityFactor_i.regions[i])
+                    tech.append(CapacityFactor_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cf.append(float(CapacityFactor_i.cf[i] +
+                                    (CapacityFactor_i.cf[i + 1] - CapacityFactor_i.cf[i]) *
+                                    (time_periods_i[j] - CapacityFactor_i.vintage[i]) /
+                                    (CapacityFactor_i.vintage[i + 1] - CapacityFactor_i.vintage[i])))
+                    cf_notes.append(CapacityFactor_i.cf_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= CapacityFactor_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(CapacityFactor_i.regions[i])
+                tech.append(CapacityFactor_i.tech[i])
+                vintage.append(time_periods_i[j])
+                cf.append(float(CapacityFactor_i.cf[i]))
+                cf_notes.append(CapacityFactor_i.cf_notes[i])
+
+# Converting lists into a DataFrame
+CapacityFactor = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "cf": pd.Series(cf, dtype='float'),
+        "cf_notes": pd.Series(cf_notes, dtype='str')
+    }
+)
+
+if save_tosql['CapacityFactor']:
+    CapacityFactor.to_sql('CapacityFactor', conn, index=False, if_exists='replace')
+
+if print_outcome['CapacityFactor']:
+    pd.set_option('display.max_rows', len(CapacityFactor))
+    pd.set_option('display.max_columns', 10)
+    print("\nCapacityFactor DataFrame\n\n", CapacityFactor)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CapacityFactor interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# CapacityFactorProcess
+
+start_time = time.time()
+
+CapacityFactorProcess = pd.read_sql("SELECT * FROM CapacityFactorProcess", conn)  # Loading the CapacityFactorProcess table from the .SQLite database
+
+regions = list()
+season_name = list()
+time_of_day_name = list()
+tech = list()
+vintage = list()
+cf_process = list()
+cf_process_notes = list()
+
+# Extracting the list of all indexes combinations for CapacityFactorProcess
+indexes = list()
+for i in range(0, len(CapacityFactorProcess)):
+    indexes.append(CapacityFactorProcess.regions[i] + CapacityFactorProcess.season_name[i] +
+                   CapacityFactorProcess.time_of_day_name[i] + CapacityFactorProcess.tech[i])
+CapacityFactorProcess['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    CapacityFactorProcess_i = CapacityFactorProcess[(CapacityFactorProcess['indexes'] == index_i)]
+    CapacityFactorProcess_i = CapacityFactorProcess_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(CapacityFactorProcess_i.vintage)):
+        if i < len(CapacityFactorProcess_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if CapacityFactorProcess_i.vintage[i] <= x < CapacityFactorProcess_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(CapacityFactorProcess_i.regions[i])
+                    season_name.append(CapacityFactorProcess_i.season_name[i])
+                    time_of_day_name.append(CapacityFactorProcess_i.time_of_day_name[i])
+                    tech.append(CapacityFactorProcess_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cf_process.append(float(CapacityFactorProcess_i.cf_process[i]))
+                    cf_process_notes.append(CapacityFactorProcess_i.cf_process_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(CapacityFactorProcess_i.regions[i])
+                    season_name.append(CapacityFactorProcess_i.season_name[i])
+                    time_of_day_name.append(CapacityFactorProcess_i.time_of_day_name[i])
+                    tech.append(CapacityFactorProcess_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    cf_process.append(float(CapacityFactorProcess_i.cf_process[i] +
+                                            (CapacityFactorProcess_i.cf_process[i + 1] - CapacityFactorProcess_i.cf_process[i]) *
+                                            (time_periods_i[j] - CapacityFactorProcess_i.vintage[i]) /
+                                            (CapacityFactorProcess_i.vintage[i + 1] - CapacityFactorProcess_i.vintage[i])))
+                    cf_process_notes.append(CapacityFactorProcess_i.cf_process_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= CapacityFactorProcess_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(CapacityFactorProcess_i.regions[i])
+                season_name.append(CapacityFactorProcess_i.season_name[i])
+                time_of_day_name.append(CapacityFactorProcess_i.time_of_day_name[i])
+                tech.append(CapacityFactorProcess_i.tech[i])
+                vintage.append(time_periods_i[j])
+                cf_process.append(float(CapacityFactorProcess_i.cf_process[i]))
+                cf_process_notes.append(CapacityFactorProcess_i.cf_process_notes[i])
+
+# Converting lists into a DataFrame
+CapacityFactorProcess = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "season_name": pd.Series(season_name, dtype='str'),
+        "time_of_day_name": pd.Series(time_of_day_name, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "cf_process": pd.Series(cf_process, dtype='float'),
+        "cf_process_notes": pd.Series(cf_process_notes, dtype='str')
+    }
+)
+
+if save_tosql['CapacityFactorProcess']:
+    CapacityFactorProcess.to_sql('CapacityFactorProcess', conn, index=False, if_exists='replace')
+
+if print_outcome['CapacityFactorProcess']:
+    pd.set_option('display.max_rows', len(CapacityFactorProcess))
+    pd.set_option('display.max_columns', 10)
+    print("\nCapacityFactorProcess DataFrame\n\n", CapacityFactorProcess)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CapacityFactorProcess interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# CapacityCredit
+
+start_time = time.time()
+
+CapacityCredit = pd.read_sql("SELECT * FROM CapacityCredit", conn)  # Loading the CapacityCredit table from the .SQLite database
+
+# Interpolation across vintages
+# Extracting the list of all indexes combinations for CapacityCredit
+indexes = list()
+for i in range(0, len(CapacityCredit)):
+    indexes.append(CapacityCredit.regions[i] + CapacityCredit.tech[i])
+CapacityCredit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+for index_i in indexes:
+    CapacityCredit_i = CapacityCredit[(CapacityCredit['indexes'] == index_i)]
+    CapacityCredit_i = CapacityCredit_i.sort_values(by=['vintage', 'periods'], ignore_index=True)
+    all_vintage = list(CapacityCredit_i.vintage)
+    for i in range(0, len(time_periods)):
+        # Piecewise constant interpolation across vintages, assuming the average of value(s) from the previous available vintage
+        if time_periods[i] not in all_vintage and time_periods[i] > all_vintage[0]:
+            CapacityCredit_ii = {
+                'regions': CapacityCredit_i.regions[0],
+                'periods': time_periods[i],
+                'tech': CapacityCredit_i.tech[0],
+                'vintage': time_periods[i],
+                'cf_tech': np.average(CapacityCredit_i.cf_tech[(CapacityCredit_i['vintage'] == time_periods[i-1])]),
+                'cf_tech_notes': CapacityCredit_i.cf_tech_notes[0],
+                'indexes': index_i
+            }
+            # Adding the value for the new vintage
+            CapacityCredit_i = CapacityCredit_i.append(CapacityCredit_ii, ignore_index=True)
+
+    # Updating CapacityCredit by removing the previous row for index_i and inserting the new ones with interpolation across vintages
+    CapacityCredit = CapacityCredit.drop(CapacityCredit[CapacityCredit.indexes == index_i].index)
+    CapacityCredit = pd.concat([CapacityCredit, CapacityCredit_i], ignore_index=True)
+
+CapacityCredit = CapacityCredit.sort_values(by=['tech', 'vintage', 'periods'], ignore_index=True)
+CapacityCredit = CapacityCredit.drop(columns=['indexes'])
+
+# Interpolation across periods
+regions = list()
+periods = list()
+tech = list()
+vintage = list()
+cf_tech = list()
+cf_tech_notes = list()
+
+# Extracting the list of all indexes combinations for CapacityCredit
+indexes = list()
+for i in range(0, len(CapacityCredit)):
+    indexes.append(CapacityCredit.regions[i] + CapacityCredit.tech[i] + str(CapacityCredit.vintage[i]))
+CapacityCredit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    CapacityCredit_i = CapacityCredit[(CapacityCredit['indexes'] == index_i)]
+    CapacityCredit_i = CapacityCredit_i.sort_values(by=['vintage', 'periods'], ignore_index=True)
+
+    for i in range(0, len(CapacityCredit_i.vintage)):
+        tech_i = CapacityCredit_i.tech[0]
+
+        # Reading the technology lifetime in the i-th vintage
+        LifetimeTech_i = LifetimeTech[(LifetimeTech['regions'] == CapacityCredit_i.regions[i]) & (LifetimeTech['tech'] == tech_i)]
+        LifetimeTech_i = LifetimeTech_i.reset_index(drop=True)
+        LifetimeProcess_i = LifetimeProcess[(LifetimeProcess['regions'] == CapacityCredit_i.regions[i]) &
+                                            (LifetimeProcess['tech'] == tech_i) &
+                                            (LifetimeProcess['vintage'] == CapacityCredit_i.vintage[i])]
+        LifetimeProcess_i = LifetimeProcess_i.reset_index(drop=True)
+        if len(LifetimeTech_i.life) > 0:
+            lifetime = LifetimeTech_i.life[0]
+        elif len(LifetimeProcess_i.life_process) > 0:
+            lifetime = LifetimeProcess_i.life_process[0]
+        else:
+            lifetime = lifetime_default
+
+        if i < len(CapacityCredit_i.vintage) - 1:  # Linear interpolation across time periods within the same vintage
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if CapacityCredit_i.periods[i] <= x < CapacityCredit_i.periods[i+1] and
+                              base_year < x < CapacityCredit_i.periods[i] + lifetime]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(CapacityCredit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(CapacityCredit_i.tech[i])
+                    vintage.append(CapacityCredit_i.vintage[i])
+                    cf_tech.append(float(CapacityCredit_i.cf_tech[i]))
+                    cf_tech_notes.append(CapacityCredit_i.cf_tech_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(CapacityCredit_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    tech.append(CapacityCredit_i.tech[i])
+                    vintage.append(CapacityCredit_i.vintage[i])
+                    cf_tech.append(float(CapacityCredit_i.cf_tech[i] +
+                                         (CapacityCredit_i.cf_tech[i + 1] - CapacityCredit_i.cf_tech[i]) *
+                                         (time_periods_i[j] - CapacityCredit_i.periods[i]) /
+                                         (CapacityCredit_i.periods[i + 1] - CapacityCredit_i.periods[i])))
+                    cf_tech_notes.append(CapacityCredit_i.cf_tech_notes[i])
+        else:  # Constant extrapolation across time periods within the same vintage
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if CapacityCredit_i.periods[i] <= x and
+                              base_year < x < CapacityCredit_i.periods[i] + lifetime]
+            for j in range(0, len(time_periods_i)):
+                regions.append(CapacityCredit_i.regions[i])
+                periods.append(time_periods_i[j])
+                tech.append(CapacityCredit_i.tech[i])
+                vintage.append(CapacityCredit_i.vintage[i])
+                cf_tech.append(float(CapacityCredit_i.cf_tech[i]))
+                cf_tech_notes.append(CapacityCredit_i.cf_tech_notes[i])
+
+# Converting lists into a DataFrame
+CapacityCredit = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "periods": pd.Series(periods, dtype='int'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "cf_tech": pd.Series(cf_tech, dtype='float'),
+        "cf_tech_notes": pd.Series(cf_tech_notes, dtype='str')
+    }
+)
+
+if save_tosql['CapacityCredit']:
+    CapacityCredit.to_sql('CapacityCredit', conn, index=False, if_exists='replace')
+
+if print_outcome['CapacityCredit']:
+    pd.set_option('display.max_rows', len(CapacityCredit))
+    pd.set_option('display.max_columns', 10)
+    print("\nCapacityCredit DataFrame\n\n", CapacityCredit)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CapacityCredit interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# Demand (from the previous database_preprocessing.py)
+
+start_time = time.time()
+
 Allocation = pd.read_sql("select * from Allocation", conn)
 Demand = pd.read_sql("select * from Demand", conn)
 Driver = pd.read_sql("select * from Driver", conn)
 Elasticity = pd.read_sql("select * from Elasticity", conn)
+
 regions = list()
 periods = list()
 demand_comm = list()
@@ -2771,7 +2673,7 @@ for i in range(0, len(Demand.demand_comm)):
                                     demand_units.append(demand_units[len(demand_units) - 1])
                                 demand_notes.append('')
 
-Demand_DF = pd.DataFrame(
+Demand_1 = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2782,10 +2684,10 @@ Demand_DF = pd.DataFrame(
     }
 )
 
-for i in range(0, len(Demand_DF)):
-    if Demand_DF.loc[i, lambda df: "periods"] == base_year:
-        Demand_DF = Demand_DF.drop(index=[i])
-Demand_DF = Demand_DF.reset_index(drop=True)
+for i in range(0, len(Demand_1)):
+    if Demand_1.loc[i, lambda df: "periods"] == base_year:
+        Demand_1 = Demand_1.drop(index=[i])
+Demand_1 = Demand_1.reset_index(drop=True)
 
 regions = list()
 periods = list()
@@ -2798,8 +2700,8 @@ flag_delete = list()
 for i in range(0, len(Demand.demand_comm)):
     if Demand.periods[i] != base_year:
         flag_check = 0
-        for j in range(0, len(Demand_DF)):
-            if Demand.regions[i] == Demand_DF.regions[j] and Demand.demand_comm[i] == Demand_DF.demand_comm[j] and Demand.periods[i] == Demand_DF.periods[j]:
+        for j in range(0, len(Demand_1)):
+            if Demand.regions[i] == Demand_1.regions[j] and Demand.demand_comm[i] == Demand_1.demand_comm[j] and Demand.periods[i] == Demand_1.periods[j]:
                 flag_delete.append(j)
         regions.append(Demand.regions[i])
         periods.append(int(Demand.periods[i]))
@@ -2808,10 +2710,10 @@ for i in range(0, len(Demand.demand_comm)):
         demand_units.append(Demand.demand_units[i])
         demand_notes.append(Demand.demand_notes[i])
 
-Demand_DF = Demand_DF.drop(flag_delete)
-Demand_DF = Demand_DF.reset_index(drop=True)
+Demand_1 = Demand_1.drop(flag_delete)
+Demand_1 = Demand_1.reset_index(drop=True)
 
-Demand_DF_2 = pd.DataFrame(
+Demand_2 = pd.DataFrame(
     {
         "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
@@ -2822,387 +2724,25 @@ Demand_DF_2 = pd.DataFrame(
     }
 )
 
-if len(Demand_DF) != 0 or len(Demand_DF_2) != 0:
-    Demand_DF = pd.merge(Demand_DF, Demand_DF_2, how='outer')
-    Demand_DF = Demand_DF.sort_values(by=['regions', 'demand_comm', 'periods'], ignore_index=True)
+if len(Demand_1) != 0 or len(Demand_2) != 0:
+    Demand = pd.merge(Demand_1, Demand_2, how='outer')
+    Demand = Demand.sort_values(by=['regions', 'demand_comm', 'periods'], ignore_index=True)
 
-if tosql_set['Demand']:
-    Demand_DF.to_sql("Demand", conn, index=False, if_exists='replace')
+if save_tosql['Demand']:
+    Demand.to_sql('Demand', conn, index=False, if_exists='replace')
 
-if print_set['Demand']:
-    pd.set_option('display.max_rows', len(Demand_DF))
-    pd.set_option('display.max_columns', len(Demand_DF))
-    print("\nDemand DataFrame\n\n", Demand_DF)
+if print_outcome['Demand']:
+    pd.set_option('display.max_rows', len(Demand))
+    pd.set_option('display.max_columns', 10)
+    print("\nDemand DataFrame\n\n", Demand)
     pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
 
-conn.close()
+end_time = time.time()
+
 print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     Demand updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     Demand updated...')
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'Demand projected.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
-# CapacityFactor
-
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-CapacityFactor = pd.read_sql("select * from CapacityFactor", conn)
-
-regions = list()
-tech = list()
-vintage = list()
-cf = list()
-cf_notes = list()
-
-tech_already_considered = list()
-for i_tech in range(0, len(CapacityFactor.tech)):
-    tech_i = CapacityFactor.tech[i_tech]
-
-    flag_check = 0
-    tech_i_check = tech_i
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
-
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(CapacityFactor.tech)):
-            tech_j_check = CapacityFactor.tech[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CapacityFactor.vintage[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(CapacityFactor.regions[i_tech])
-                    tech.append(CapacityFactor.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    cf.append(float(np.format_float_scientific(CapacityFactor.cf[i_tech])))
-                    cf_notes.append(CapacityFactor.cf_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = CapacityFactor.vintage[location[i_location]]
-                year2 = CapacityFactor.vintage[location[i_location + 1]]
-                cf1 = CapacityFactor.cf[location[i_location]]
-                cf2 = CapacityFactor.cf[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(CapacityFactor.regions[i_tech])
-                        tech.append(CapacityFactor.tech[i_tech])
-                        vintage.append(int(year))
-                        cf.append(float(np.format_float_scientific(cf1 + (year - year1) / (year2 - year1) * (cf2 - cf1))))
-                        cf_notes.append(CapacityFactor.cf_notes[i_tech])
-
-            year_last = CapacityFactor.vintage[location[i_location + 1]]
-            eff = CapacityFactor.cf[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(CapacityFactor.regions[i_tech])
-                        tech.append(CapacityFactor.tech[i_tech])
-                        vintage.append(int(year))
-                        cf.append(float(np.format_float_scientific(CapacityFactor.cf[location[i_location + 1]])))
-                        cf_notes.append(CapacityFactor.cf_notes[i_tech])
-            else:
-                regions.append(CapacityFactor.regions[i_tech])
-                tech.append(CapacityFactor.tech[i_tech])
-                vintage.append(int(year_last))
-                cf.append(float(np.format_float_scientific(CapacityFactor.cf[location[i_location + 1]])))
-                cf_notes.append(CapacityFactor.cf_notes[i_tech])
-
-CapacityFactor_DF = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "cf": pd.Series(cf, dtype='float'),
-        "cf_notes": pd.Series(cf_notes, dtype='str')
-    }
-)
-
-if tosql_set['CapacityFactor']:
-    CapacityFactor_DF.to_sql("CapacityFactor", conn, index=False, if_exists='replace')
-
-if print_set['CapacityFactor']:
-    pd.set_option('display.max_rows', len(CapacityFactor_DF))
-    pd.set_option('display.max_columns', len(CapacityFactor_DF))
-    print("\nCapacityFactor DataFrame\n\n", CapacityFactor_DF)
-    pd.reset_option('display.max_rows')
-
-conn.close()
-print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CapacityFactor updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     CapacityFactor updated...')
-
-# CapacityFactorProcess
-
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-CapacityFactorProcess = pd.read_sql("select * from CapacityFactorProcess", conn)
-
-regions = list()
-season_name = list()
-tech = list()
-vintage = list()
-time_of_day_name = list()
-cf_process = list()
-cf_process_notes = list()
-
-tech_already_considered = list()
-for i_tech in range(0, len(CapacityFactorProcess.tech)):
-    tech_i = CapacityFactorProcess.tech[i_tech]
-
-    flag_check = 0
-    tech_i_check = CapacityFactorProcess.season_name[i_tech] + tech_i + CapacityFactorProcess.time_of_day_name[i_tech]
-    for check in range(0, len(tech_already_considered)):
-        if tech_i_check == tech_already_considered[check]:
-            flag_check = 1
-
-    if flag_check == 0:
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(CapacityFactorProcess.tech)):
-            tech_j_check = CapacityFactorProcess.season_name[j_tech] + CapacityFactorProcess.tech[j_tech] + \
-                           CapacityFactorProcess.time_of_day_name[j_tech]
-            if tech_j_check == tech_i_check:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i_check)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CapacityFactorProcess.vintage[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    regions.append(CapacityFactorProcess.regions[i_tech])
-                    season_name.append(CapacityFactorProcess.season_name[i_tech])
-                    time_of_day_name.append(CapacityFactorProcess.time_of_day_name[i_tech])
-                    tech.append(CapacityFactorProcess.tech[i_tech])
-                    vintage.append(int(time_periods.t_periods[i_year]))
-                    cf_process.append(float(np.format_float_scientific(CapacityFactorProcess.cf_process[i_tech])))
-                    cf_process_notes.append(CapacityFactorProcess.cf_process_notes[i_tech])
-
-        else:
-            for i_location in range(0, len(location) - 1):
-                year1 = CapacityFactorProcess.vintage[location[i_location]]
-                year2 = CapacityFactorProcess.vintage[location[i_location + 1]]
-                cf1 = CapacityFactorProcess.cf_process[location[i_location]]
-                cf2 = CapacityFactorProcess.cf_process[location[i_location + 1]]
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        regions.append(CapacityFactorProcess.regions[i_tech])
-                        season_name.append(CapacityFactorProcess.season_name[i_tech])
-                        time_of_day_name.append(CapacityFactorProcess.time_of_day_name[i_tech])
-                        tech.append(CapacityFactorProcess.tech[i_tech])
-                        vintage.append(int(year))
-                        cf_process.append(float(np.format_float_scientific(cf1 + (year - year1) / (year2 - year1) * (cf2 - cf1))))
-                        cf_process_notes.append(CapacityFactorProcess.cf_process_notes[i_tech])
-
-            year_last = CapacityFactorProcess.vintage[location[i_location + 1]]
-            eff = CapacityFactorProcess.cf_process[location[i_location + 1]]
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        regions.append(CapacityFactorProcess.regions[i_tech])
-                        season_name.append(CapacityFactorProcess.season_name[i_tech])
-                        time_of_day_name.append(CapacityFactorProcess.time_of_day_name[i_tech])
-                        tech.append(CapacityFactorProcess.tech[i_tech])
-                        vintage.append(int(year))
-                        cf_process.append(float(np.format_float_scientific(CapacityFactorProcess.cf_process[location[i_location + 1]])))
-                        cf_process_notes.append(CapacityFactorProcess.cf_process_notes[i_tech])
-            else:
-                regions.append(CapacityFactorProcess.regions[i_tech])
-                season_name.append(CapacityFactorProcess.season_name[i_tech])
-                time_of_day_name.append(CapacityFactorProcess.time_of_day_name[i_tech])
-                tech.append(CapacityFactorProcess.tech[i_tech])
-                vintage.append(int(year_last))
-                cf_process.append(float(np.format_float_scientific(CapacityFactorProcess.cf_process[location[i_location + 1]])))
-                cf_process_notes.append(CapacityFactorProcess.cf_process_notes[i_tech])
-
-CapacityFactorProcess_DF = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "season_name": pd.Series(season_name, dtype='str'),
-        "time_of_day_name": pd.Series(time_of_day_name, dtype='str'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "cf_process": pd.Series(cf_process, dtype='float'),
-        "cf_process_notes": pd.Series(cf_process_notes, dtype='str')
-    }
-)
-
-if tosql_set['CapacityFactorProcess']:
-    CapacityFactorProcess_DF.to_sql("CapacityFactorProcess", conn, index=False, if_exists='replace')
-
-if print_set['CapacityFactorProcess']:
-    pd.set_option('display.max_rows', len(CapacityFactorProcess_DF))
-    pd.set_option('display.max_columns', len(CapacityFactorProcess_DF))
-    print("\nCapacityFactorProcess DataFrame\n\n", CapacityFactorProcess_DF)
-    pd.reset_option('display.max_rows')
-
-conn.close()
-print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CapacityFactorProcess updated...')
-else:
-    print('[', print_i, '/', len(print_set), ']     CapacityFactorProcess updated...')
-
-# CapacityCredit
-
-conn = sqlite3.connect(database_name)
-time_periods = pd.read_sql("select * from time_periods", conn)
-LifetimeTech = pd.read_sql("select * from LifetimeTech", conn)
-LifetimeProcess = pd.read_sql("select * from LifetimeProcess", conn)
-CapacityCredit = pd.read_sql("select * from CapacityCredit", conn)
-
-regions = list()
-periods = list()
-tech = list()
-vintage = list()
-cf_tech = list()
-cf_tech_notes = list()
-
-tech_already_considered = list()
-for i_tech in range(0, len(CapacityCredit.tech)):
-    tech_i = CapacityCredit.tech[i_tech]
-
-    flag_check = 0
-    for check in range(0, len(tech_already_considered)):
-        if tech_i == tech_already_considered[check]:
-            flag_check = 1
-
-    if flag_check == 0:
-        lifetime = 0
-        year_lifetime = list()
-        lifetime_process = list()
-        for i_life in range(0, len(LifetimeTech.life)):
-            if LifetimeTech.tech[i_life] == tech_i:
-                lifetime = float(LifetimeTech.life[i_life])
-        if lifetime == 0:
-            for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeProcess.tech[i_life] == tech_i:
-                    year_lifetime.append(float(LifetimeProcess.vintage[i_life]))
-                    lifetime_process.append(float(LifetimeProcess.life_process[i_life]))
-                else:
-                    lifetime = lifetime_default
-
-        # Checking if other values are present for the technology
-        flag = 0
-        location = list()
-        location.append(i_tech)
-        for j_tech in range(i_tech + 1, len(CapacityCredit.tech)):
-            if CapacityCredit.tech[j_tech] == tech_i:
-                flag = 1
-                location.append(j_tech)
-                tech_already_considered.append(tech_i)
-
-        if flag == 0:  # No other values
-            for i_year in range(0, len(time_periods)):
-                if time_periods.t_periods[i_year] >= CapacityCredit.vintage[i_tech] and time_periods.t_periods[
-                    i_year] != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                    year_vintage = float(time_periods.t_periods[i_year])
-                    for i in range(0, len(year_lifetime)):
-                        if year_vintage == year_lifetime[i]:
-                            lifetime = float(lifetime_process[i])
-                    start = float(year_vintage)
-                    stop = float(year_vintage) + lifetime
-
-                    for j_year in range(0, len(time_periods)):
-                        year_periods = time_periods.t_periods[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            regions.append(CapacityCredit.regions[i_tech])
-                            periods.append(int(year_periods))
-                            tech.append(CapacityCredit.tech[i_tech])
-                            vintage.append(int(year_vintage))
-                            cf_tech.append(float(np.format_float_scientific(CapacityCredit.cf_tech[i_tech])))
-                            cf_tech_notes.append(CapacityCredit.cf_tech_notes[i_tech])
-
-        else:
-            year_list = list()
-            cost_list = list()
-            for i_location in range(0, len(location) - 1):
-                year1 = float(CapacityCredit.periods[location[i_location]])
-                year2 = float(CapacityCredit.periods[location[i_location + 1]])
-                cost1 = float(CapacityCredit.cf_tech[location[i_location]])
-                cost2 = float(CapacityCredit.cf_tech[location[i_location + 1]])
-
-                for i_year in range(0, len(time_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year1 <= year < year2:
-                        year_list.append(year)
-                        cost_list.append(cost1 + (year - year1) / (year2 - year1) * (cost2 - cost1))
-
-            year_last = float(CapacityCredit.vintage[location[i_location + 1]])
-            cost_last = float(CapacityCredit.cf_tech[location[i_location + 1]])
-            if year_last != time_periods.t_periods[len(time_periods.t_periods) - 2]:  # Different by 2050
-                for i_year in range(0, len(time_periods.t_periods)):
-                    year = time_periods.t_periods[i_year]
-                    if year >= year_last and year != time_periods.t_periods[len(time_periods.t_periods) - 1]:
-                        year_list.append(year)
-                        cost_list.append(cost_last)
-            else:  # If year_last = 2050
-                year_list.append(year_last)
-                cost_list.append(cost_last)
-
-            for i_year in range(0, len(year_list)):
-                if float(year_list[i_year]) >= float(CapacityCredit.vintage[i_tech]):
-                    year_vintage = year_list[i_year]
-                    for i in range(0, len(year_lifetime)):
-                        if year_vintage == year_lifetime[i]:
-                            lifetime = float(lifetime_process[i])
-                    start = float(year_vintage)
-                    stop = float(year_vintage) + lifetime
-                    for j_year in range(0, len(year_list)):
-                        year_periods = year_list[j_year]
-                        if start <= year_periods < stop and year_periods != time_periods.t_periods[
-                            len(time_periods.t_periods) - 1]:
-                            regions.append(CapacityCredit.regions[i_tech])
-                            periods.append(int(year_periods))
-                            tech.append(CapacityCredit.tech[i_tech])
-                            vintage.append(int(year_vintage))
-                            cf_tech.append(float(np.format_float_scientific(cost_list[j_year])))
-                            cf_tech_notes.append(CapacityCredit.cf_tech_notes[i_tech])
-
-CapacityCredit_DF = pd.DataFrame(
-    {
-        "regions": pd.Series(regions, dtype='str'),
-        "periods": pd.Series(periods, dtype='int'),
-        "tech": pd.Series(tech, dtype='str'),
-        "vintage": pd.Series(vintage, dtype='int'),
-        "cf_tech": pd.Series(cf_tech, dtype='float'),
-        "cf_tech_notes": pd.Series(cf_tech_notes, dtype='str')
-    }
-)
-
-if tosql_set['CapacityCredit']:
-    CapacityCredit_DF.to_sql("CapacityCredit", conn, index=False, if_exists='replace')
-
-if print_set['CapacityCredit']:
-    pd.set_option('display.max_rows', len(CapacityCredit_DF))
-    pd.set_option('display.max_columns', len(CapacityCredit_DF))
-    print("\nCapacityCredit DataFrame\n\n", CapacityCredit_DF)
-    pd.reset_option('display.max_rows')
-
-conn.close()
-print_i = print_i + 1
-if print_i <= 9:
-    print('[', print_i, ' /', len(print_set), ']     CapacityCredit updated.')
-else:
-    print('[', print_i, '/', len(print_set), ']     CapacityCredit updated.')
+print('_______________________________________________________________________')
