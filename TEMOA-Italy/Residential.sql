@@ -1199,7 +1199,18 @@ INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'RES_BIO','RES_CK_GRP',0.06,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'RES_LPG','RES_CK_GRP',0.30,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2020,'RES_LPG','RES_CK_GRP',0.13,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'RES_LPG','RES_CK_GRP',0.13,'');
-
+CREATE TABLE "MinOutputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"output_comm"	text,
+	"group_name" 	text,
+	"go_min"	      real,
+	"go_min_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","output_comm","group_name")
+);
 CREATE TABLE "MaxOutputGroup" (
 	"regions"	      text,
 	"periods"	      integer,

@@ -317,6 +317,18 @@ CREATE TABLE "MaxInputGroup" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	PRIMARY KEY("regions","periods","input_comm","group_name")
 );
+CREATE TABLE "MinOutputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"output_comm"	text,
+	"group_name" 	text,
+	"go_min"	      real,
+	"go_min_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","output_comm","group_name")
+);
 CREATE TABLE "MaxOutputGroup" (
 	"regions"	      text,
 	"periods"	      integer,
@@ -1494,8 +1506,8 @@ INSERT INTO "CostVariable" VALUES ('IT',2035,'CCUS_ELC_SOFC_COA',2035,1.00,'M€
 INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_ELC_OXY_NGA',2030,0.34,'M€/PJ','');
 -- CCUS, Capture
 INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_DAC',2020,8.00E-05,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_DAC',2020,6.40E-05,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2050,'CCUS_DAC',2020,5.10E-05,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_DAC',2030,6.40E-05,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'CCUS_DAC',2050,5.10E-05,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_IND_CO2_AGG',2007,0.15,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_UPS_CO2_AGG',2007,0.50,'M€/kt','');
 -- CCUS, Synfuels (CO2 transportation costs are included)
@@ -1691,7 +1703,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_HOPO',2014,0.68,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_ELALK_CL',2020,0.48,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ELALK_CL',2025,0.48,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'H2_ELALK_CL',2030,0.38,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2050,'H2_ELALK_CL',2030,0.19,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2050,'H2_ELALK_CL',2050,0.19,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_ELALK_DS',2020,1.33,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ELALK_DS',2025,1.33,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'H2_ELALK_DS',2030,0.81,'M€/PJ','');

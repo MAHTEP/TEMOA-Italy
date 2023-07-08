@@ -29,6 +29,7 @@ print_outcome = {'EmissionActivity':        False,
                  'MaxActivity':             False,
                  'MinInputGroup':           False,
                  'MaxInputGroup':           False,
+                 'MinOutputGroup':          False,
                  'MaxOutputGroup':          False,
                  'MinActivityGroup':        False,
                  'MaxActivityGroup':        False,
@@ -56,6 +57,7 @@ save_tosql = {'EmissionActivity':           True,
               'MaxActivity':                True,
               'MinInputGroup':              True,
               'MaxInputGroup':              True,
+              'MinOutputGroup':             True,
               'MaxOutputGroup':             True,
               'MinActivityGroup':           True,
               'MaxActivityGroup':           True,
@@ -1935,6 +1937,91 @@ end_time = time.time()
 print_i = print_i + 1
 if print_status:
     print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaxInputGroup interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# MinOutputGroup
+
+start_time = time.time()
+
+MinOutputGroup = pd.read_sql("SELECT * FROM MinOutputGroup", conn)  # Loading the MinOutputGroup table from the .SQLite database
+
+regions = list()
+periods = list()
+output_comm = list()
+group_name = list()
+go_min = list()
+go_min_notes = list()
+
+# Extracting the list of all indexes combinations for MinOutputGroup
+indexes = list()
+for i in range(0, len(MinOutputGroup)):
+    indexes.append(MinOutputGroup.regions[i] + MinOutputGroup.output_comm[i] + MinOutputGroup.group_name[i])
+MinOutputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating
+for index_i in indexes:
+    MinOutputGroup_i = MinOutputGroup[(MinOutputGroup['indexes'] == index_i)]
+    MinOutputGroup_i = MinOutputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(MinOutputGroup_i.periods)):
+        if i < len(MinOutputGroup_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MinOutputGroup_i.periods[i] <= x < MinOutputGroup_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinOutputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    output_comm.append(MinOutputGroup_i.output_comm[i])
+                    group_name.append(MinOutputGroup_i.group_name[i])
+                    go_min.append(float(MinOutputGroup_i.go_min[i]))
+                    go_min_notes.append(MinOutputGroup_i.go_min_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinOutputGroup_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    output_comm.append(MinOutputGroup_i.output_comm[i])
+                    group_name.append(MinOutputGroup_i.group_name[i])
+                    go_min.append(float(MinOutputGroup_i.go_min[i] +
+                                        (MinOutputGroup_i.go_min[i + 1] - MinOutputGroup_i.go_min[i]) *
+                                        (time_periods_i[j] - MinOutputGroup_i.periods[i]) /
+                                        (MinOutputGroup_i.periods[i + 1] - MinOutputGroup_i.periods[i])))
+                    go_min_notes.append(MinOutputGroup_i.go_min_notes[i])
+        else:  # Last time period
+            time_periods_i = [x for x in time_periods if x == MinOutputGroup_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MinOutputGroup_i.regions[i])
+                periods.append(time_periods_i[j])
+                output_comm.append(MinOutputGroup_i.output_comm[i])
+                group_name.append(MinOutputGroup_i.group_name[i])
+                go_min.append(float(MinOutputGroup_i.go_min[i]))
+                go_min_notes.append(MinOutputGroup_i.go_min_notes[i])
+
+# Converting lists into a DataFrame
+MinOutputGroup = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "periods": pd.Series(periods, dtype='int'),
+        "output_comm": pd.Series(output_comm, dtype='str'),
+        "group_name": pd.Series(group_name, dtype='str'),
+        "go_min": pd.Series(go_min, dtype='float'),
+        "go_min_notes": pd.Series(go_min_notes, dtype='str')
+    }
+)
+
+if save_tosql['MinOutputGroup']:
+    MinOutputGroup.to_sql('MinOutputGroup', conn, index=False, if_exists='replace')
+
+if print_outcome['MinOutputGroup']:
+    pd.set_option('display.min_rows', len(MinOutputGroup))
+    pd.set_option('display.min_columns', 10)
+    print("\nMinOutputGroup DataFrame\n\n", MinOutputGroup)
+    pd.reset_option('display.min_rows')
+    pd.reset_option('display.min_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MinOutputGroup interpolated.',
                                                                     np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # MaxOutputGroup

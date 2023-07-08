@@ -840,7 +840,18 @@ INSERT INTO "MaxInputGroup" VALUES ('IT',2025,'TRA_ELC','TRA_ROA_HTR_GRP',0.00,'
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'TRA_ELC','TRA_ROA_HTR_GRP',0.05,''); -- Different from TIMES-Italy
 INSERT INTO "MaxInputGroup" VALUES ('IT',2025,'TRA_H2G','TRA_ROA_HTR_GRP',0.00,''); -- Different from TIMES-Italy
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'TRA_H2G','TRA_ROA_HTR_GRP',0.05,''); -- Different from TIMES-Italy
-
+CREATE TABLE "MinOutputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"output_comm"	text,
+	"group_name" 	text,
+	"go_min"	      real,
+	"go_min_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","output_comm","group_name")
+);
 CREATE TABLE "MaxOutputGroup" (
 	"regions"	      text,
 	"periods"	      integer,
@@ -2207,7 +2218,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_RAIL_FRG_ELC_N',2007,20.00,'M€/
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_RAIL_FRG_H2G_MNL_N',2030,32.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_DOM_DST_N',2007,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_DOM_HFO_N',2007,20.00,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2020,'TRA_NAV_DOM_LNG_N',2025,22.00,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_DOM_LNG_N',2025,22.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_DOM_DUAL_N',2025,24.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_MET_ICE_N',2030,30.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_H2L_ICE_N',2030,36.00,'M€/PJ','');
@@ -2215,7 +2226,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_MET_FCELL_N',2030,38.00,'
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_H2L_FCELL_N',2030,42.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_INT_DST_N',2007,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_INT_HFO_N',2007,20.00,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2020,'TRA_NAV_INT_LNG_N',2025,20.00,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_INT_LNG_N',2025,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_INT_DUAL_N',2025,24.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_INT_AMM_ICE_N',2030,26.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_INT_MET_N',2030,32.00,'M€/PJ','');

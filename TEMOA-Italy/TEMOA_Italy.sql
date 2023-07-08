@@ -974,49 +974,49 @@ INSERT INTO "technologies" VALUES ('HET_GEO_N','p','ELC','Geothermal heat plant 
 INSERT INTO "technologies" VALUES ('HET_GEO_SHA_N','p','ELC','Geothermal shallow heat plant - New','');
 -- Upstream sector
 -- Import/export prices
-INSERT INTO "technologies" VALUES ('UPS_IMP_WOD_E','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_DST','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_ETH','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_SLB','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_COA_HCO_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_COA_OVC_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_ELC_CEN','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_GAS_LNG','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_GAS_NGA','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_ADD_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_AVG_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_CRD_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_DST_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_FEE_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_GSL_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_HFO_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_JTK_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_KER_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_LPG_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_NAP_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_NSP_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_PTC_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_DST','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_ETH','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_SLB','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_COA_HCO','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_COA_OVC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_ELC_CEN','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_GAS_LNG','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_GAS_NGA','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_ADD_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_AVG','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_CRD','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_DST','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_FEE_NOPEC','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_GSL','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_HFO','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_JTK','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_KER','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_LPG','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_NAP','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_NSP','p','UPS','','');
-INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_PTC','p','UPS','','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_WOD_E','p','UPS','Import of Wood','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_DST','p','UPS','Import of Biodiesel','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_ETH','p','UPS','Import of Bioethanol','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_BIO_SLB','p','UPS','Import of Solid biomass','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_COA_HCO_NOPEC','p','UPS','Import of Coal','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_COA_OVC_NOPEC','p','UPS','Import of Coke oven coke','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_ELC_CEN','p','UPS','Import of Electricity','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_GAS_LNG','p','UPS','Import of Liquid natural gas (LNG)','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_GAS_NGA','p','UPS','Import of Natural gas','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_ADD_NOPEC','p','UPS','Import of Additive','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_AVG_NOPEC','p','UPS','Import of Aviation gasoline','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_CRD_NOPEC','p','UPS','Import of Crude oil','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_DST_NOPEC','p','UPS','Import of Diesel fuel','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_FEE_NOPEC','p','UPS','Import of Feedstock','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_GSL_NOPEC','p','UPS','Import of Gasoline','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_HFO_NOPEC','p','UPS','Import of Heavy fuel oil','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_JTK_NOPEC','p','UPS','Import of Jet kerosene','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_KER_NOPEC','p','UPS','Import of Kerosene','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_LPG_NOPEC','p','UPS','Import of Liqified petroleum gas (LPG)','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_NAP_NOPEC','p','UPS','Import of Naphtha','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_NSP_NOPEC','p','UPS','Import of Non-specified oil products','');
+INSERT INTO "technologies" VALUES ('UPS_IMP_OIL_PTC_NOPEC','p','UPS','Import of Petroluem coke','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_DST','p','UPS','Export of Biodiesel','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_ETH','p','UPS','Export of Bioethanol','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_BIO_SLB','p','UPS','Export of Solid biomass','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_COA_HCO','p','UPS','Export of Coal','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_COA_OVC','p','UPS','Export of Coke oven coke','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_ELC_CEN','p','UPS','Export of Electricity','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_GAS_LNG','p','UPS','Export of Liquid natural gas (LNG)','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_GAS_NGA','p','UPS','Export of Natural gas','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_ADD_NOPEC','p','UPS','Export of Additive','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_AVG','p','UPS','Export of Aviation gasoline','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_CRD','p','UPS','Export of Crude oil','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_DST','p','UPS','Export of Diesel fuel','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_FEE_NOPEC','p','UPS','Export of Feedstock','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_GSL','p','UPS','Export of Gasoline','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_HFO','p','UPS','Export of Heavy fuel oil','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_JTK','p','UPS','Export of Jet kerosene','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_KER','p','UPS','Export of Kerosene','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_LPG','p','UPS','Export of Liqified petroleum gas (LPG)','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_NAP','p','UPS','Export of Naphtha','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_NSP','p','UPS','Export of Non-specified oil products','');
+INSERT INTO "technologies" VALUES ('UPS_EXP_OIL_PTC','p','UPS','Export of Petroluem coke','');
 -- Re-grouping OPEC and NON-OPEC commodities
 INSERT INTO "technologies" VALUES ('UPS_REG_COA_HCO','p','UPS','Re-grouping of hard coal','');
 INSERT INTO "technologies" VALUES ('UPS_REG_COA_OVC','p','UPS','Re-grouping of coke oven coke','');
@@ -5065,6 +5065,18 @@ INSERT INTO "MaxInputGroup" VALUES ('IT',2025,'H2_BL','ELC_FT_NGA_GRP',0.03,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2030,'H2_BL','ELC_FT_NGA_GRP',0.06,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'H2_BL','ELC_FT_NGA_GRP',0.06,'');
 
+CREATE TABLE "MinOutputGroup" (
+	"regions"	      text,
+	"periods"	      integer,
+	"output_comm"	text,
+	"group_name" 	text,
+	"go_min"	      real,
+	"go_min_notes"    text,
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	PRIMARY KEY("regions","periods","output_comm","group_name")
+);
 CREATE TABLE "MaxOutputGroup" (
 	"regions"	      text,
 	"periods"	      integer,
@@ -8041,6 +8053,8 @@ INSERT INTO "LifetimeTech" VALUES ('IT','ELC_FT_SLB_RES',60,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','ELC_FT_SLB_VIR',60,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','ELC_FT_SOL',60,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','ELC_FT_WIN',60,'');
+-- Existing technologies
+INSERT INTO "LifetimeTech" VALUES ('IT','ELC_WIN_E',2,'Fictitious');
 -- Planned technologies
 INSERT INTO "LifetimeTech" VALUES ('IT','ELC_COA_STM_P',30,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','ELC_NGA_CC_P',25,'');
@@ -15022,8 +15036,8 @@ INSERT INTO "CostVariable" VALUES ('IT',2035,'CCUS_ELC_SOFC_COA',2035,1.00,'M€
 INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_ELC_OXY_NGA',2030,0.34,'M€/PJ','');
 -- CCUS, Capture
 INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_DAC',2020,8.00E-05,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_DAC',2020,6.40E-05,'M€/kt','');
-INSERT INTO "CostVariable" VALUES ('IT',2050,'CCUS_DAC',2020,5.10E-05,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'CCUS_DAC',2030,6.40E-05,'M€/kt','');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'CCUS_DAC',2050,5.10E-05,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_IND_CO2_AGG',2007,0.15,'M€/kt','');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'SNK_UPS_CO2_AGG',2007,0.50,'M€/kt','');
 -- CCUS, Synfuels (CO2 transportation costs are included)
@@ -16162,7 +16176,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_RAIL_FRG_ELC_N',2007,20.00,'M€/
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_RAIL_FRG_H2G_MNL_N',2030,32.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_DOM_DST_N',2007,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_DOM_HFO_N',2007,20.00,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2020,'TRA_NAV_DOM_LNG_N',2025,22.00,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_DOM_LNG_N',2025,22.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_DOM_DUAL_N',2025,24.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_MET_ICE_N',2030,30.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_H2L_ICE_N',2030,36.00,'M€/PJ','');
@@ -16170,7 +16184,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_MET_FCELL_N',2030,38.00,'
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_DOM_H2L_FCELL_N',2030,42.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_INT_DST_N',2007,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_NAV_INT_HFO_N',2007,20.00,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2020,'TRA_NAV_INT_LNG_N',2025,20.00,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_INT_LNG_N',2025,20.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'TRA_NAV_INT_DUAL_N',2025,24.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_INT_AMM_ICE_N',2030,26.00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'TRA_NAV_INT_MET_N',2030,32.00,'M€/PJ','');
@@ -16508,7 +16522,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_HOPO',2014,0.68,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_ELALK_CL',2020,0.48,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ELALK_CL',2025,0.48,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'H2_ELALK_CL',2030,0.38,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2050,'H2_ELALK_CL',2030,0.19,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2050,'H2_ELALK_CL',2050,0.19,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_ELALK_DS',2020,1.33,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ELALK_DS',2025,1.33,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'H2_ELALK_DS',2030,0.81,'M€/PJ','');
