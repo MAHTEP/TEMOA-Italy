@@ -36,7 +36,7 @@ INSERT INTO "time_periods" VALUES (2035,'f');
 INSERT INTO "time_periods" VALUES (2040,'f');
 INSERT INTO "time_periods" VALUES (2045,'f');
 INSERT INTO "time_periods" VALUES (2050,'f');
-INSERT INTO "time_periods" VALUES (2055,'f');
+INSERT INTO "time_periods" VALUES (2060,'f');
 
 CREATE TABLE "MyopicBaseyear" (
 	"year"	real,
@@ -47,18 +47,19 @@ CREATE TABLE "time_season" (
 	"t_season"	text,
 	PRIMARY KEY("t_season")
 );
-INSERT INTO "time_season" VALUES ('summer');
-INSERT INTO "time_season" VALUES ('fall');
-INSERT INTO "time_season" VALUES ('winter');
-INSERT INTO "time_season" VALUES ('spring');
+INSERT INTO "time_season" VALUES ('winter'); --January/March
+INSERT INTO "time_season" VALUES ('spring'); --April/June
+INSERT INTO "time_season" VALUES ('summer'); --July/September
+INSERT INTO "time_season" VALUES ('fall'); --October/December
 
 CREATE TABLE "time_of_day" (
 	"t_day"	text,
 	PRIMARY KEY("t_day")
 );
-INSERT INTO "time_of_day" VALUES ('day');
-INSERT INTO "time_of_day" VALUES ('night');
-INSERT INTO "time_of_day" VALUES ('peak');
+INSERT INTO "time_of_day" VALUES ('night'); --20:00/04:59
+INSERT INTO "time_of_day" VALUES ('morning'); --05:00/10:59
+INSERT INTO "time_of_day" VALUES ('noon'); --11:00/13:59
+INSERT INTO "time_of_day" VALUES ('afternoon'); --14:00/19:59
 
 CREATE TABLE "SegFrac" (
 	"season_name"	text,
@@ -69,18 +70,22 @@ CREATE TABLE "SegFrac" (
 	FOREIGN KEY("season_name") REFERENCES "time_season"("t_season"),
 	FOREIGN KEY("time_of_day_name") REFERENCES "time_of_day"("t_day")
 );
-INSERT INTO "SegFrac" VALUES ('summer','day'  ,0.125,'');
-INSERT INTO "SegFrac" VALUES ('summer','night',0.115,'');
-INSERT INTO "SegFrac" VALUES ('summer','peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'day'  ,0.125,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'night',0.115,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('winter','day'  ,0.105,'');
-INSERT INTO "SegFrac" VALUES ('winter','night',0.135,'');
-INSERT INTO "SegFrac" VALUES ('winter','peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('spring','day'  ,0.115,'');
-INSERT INTO "SegFrac" VALUES ('spring','night',0.125,'');
-INSERT INTO "SegFrac" VALUES ('spring','peak' ,0.010,'');
+INSERT INTO "SegFrac" VALUES ('winter','night',0.0925,'');
+INSERT INTO "SegFrac" VALUES ('winter','morning',0.0617,'');
+INSERT INTO "SegFrac" VALUES ('winter','noon',0.0308,'');
+INSERT INTO "SegFrac" VALUES ('winter','afternoon',0.0617,'');
+INSERT INTO "SegFrac" VALUES ('spring','night',0.0935,'');
+INSERT INTO "SegFrac" VALUES ('spring','morning',0.0623,'');
+INSERT INTO "SegFrac" VALUES ('spring','noon',0.0312,'');
+INSERT INTO "SegFrac" VALUES ('spring','afternoon',0.0623,'');
+INSERT INTO "SegFrac" VALUES ('summer','night',0.0945,'');
+INSERT INTO "SegFrac" VALUES ('summer','morning',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('summer','noon',0.0315,'');
+INSERT INTO "SegFrac" VALUES ('summer','afternoon',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('fall','night',0.0945,'');
+INSERT INTO "SegFrac" VALUES ('fall','morning',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('fall','noon',0.0315,'');
+INSERT INTO "SegFrac" VALUES ('fall','afternoon',0.0630,'');
 
 CREATE TABLE "sector_labels" (
 	"sector"	text,
@@ -2799,66 +2804,86 @@ CREATE TABLE "DemandSpecificDistribution" (
 	FOREIGN KEY("demand_name") REFERENCES "commodities"("comm_name")
 );
 -- Residential sector
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','RES_SC',0.700,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SC',0.100,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','RES_SC',0.110,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','RES_SC',0.000,'');
 INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','RES_SC',0.075,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SC',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','RES_SC',0.015,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','RES_SH_SO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_SO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','RES_SH_SO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','RES_SH_SO',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_SO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','RES_SH_SO',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','RES_SH_SO',0.520,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_SO',0.068,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','RES_SH_SO',0.052,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','RES_SH_SO',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_SO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','RES_SH_SO',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','RES_SH_MO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_MO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','RES_SH_MO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','RES_SH_MO',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_MO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','RES_SH_MO',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','RES_SH_MO',0.520,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_MO',0.068,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','RES_SH_MO',0.052,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','RES_SH_MO',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_MO',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','RES_SH_MO',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','RES_SH_SN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_SN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','RES_SH_SN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','RES_SH_SN',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_SN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','RES_SH_SN',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','RES_SH_SN',0.520,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_SN',0.068,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','RES_SH_SN',0.052,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','RES_SH_SN',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_SN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','RES_SH_SN',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','day','RES_SH_MN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_MN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','peak','RES_SH_MN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','day','RES_SH_MN',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_MN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','peak','RES_SH_MN',0.042,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','day','RES_SH_MN',0.520,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_MN',0.068,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','peak','RES_SH_MN',0.052,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','day','RES_SH_MN',0.138,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_MN',0.000,'');
-INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','peak','RES_SH_MN',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','morning','RES_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','afternoon','RES_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','noon','RES_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SC',0.060,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','morning','RES_SC',0.040,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','afternoon','RES_SC',0.040,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','noon','RES_SC',0.020,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SC',0.314,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','morning','RES_SC',0.209,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','afternoon','RES_SC',0.209,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','noon','RES_SC',0.105,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SC',0.001,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','morning','RES_SC',0.001,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','afternoon','RES_SC',0.001,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','noon','RES_SC',0.000,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_SO',0.196,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','morning','RES_SH_SO',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','afternoon','RES_SH_SO',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','noon','RES_SH_SO',0.065,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_SO',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','morning','RES_SH_SO',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','afternoon','RES_SH_SO',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','noon','RES_SH_SO',0.014,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_SO',0.008,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','morning','RES_SH_SO',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','afternoon','RES_SH_SO',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','noon','RES_SH_SO',0.003,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_SO',0.129,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','morning','RES_SH_SO',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','afternoon','RES_SH_SO',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','noon','RES_SH_SO',0.043,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_MO',0.196,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','morning','RES_SH_MO',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','afternoon','RES_SH_MO',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','noon','RES_SH_MO',0.065,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_MO',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','morning','RES_SH_MO',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','afternoon','RES_SH_MO',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','noon','RES_SH_MO',0.014,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_MO',0.008,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','morning','RES_SH_MO',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','afternoon','RES_SH_MO',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','noon','RES_SH_MO',0.003,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_MO',0.129,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','morning','RES_SH_MO',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','afternoon','RES_SH_MO',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','noon','RES_SH_MO',0.043,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_SN',0.196,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','morning','RES_SH_SN',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','afternoon','RES_SH_SN',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','noon','RES_SH_SN',0.065,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_SN',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','morning','RES_SH_SN',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','afternoon','RES_SH_SN',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','noon','RES_SH_SN',0.014,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_SN',0.008,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','morning','RES_SH_SN',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','afternoon','RES_SH_SN',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','noon','RES_SH_SN',0.003,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_SN',0.129,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','morning','RES_SH_SN',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','afternoon','RES_SH_SN',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','noon','RES_SH_SN',0.043,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','night','RES_SH_MN',0.196,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','morning','RES_SH_MN',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','afternoon','RES_SH_MN',0.131,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','winter','noon','RES_SH_MN',0.065,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','night','RES_SH_MN',0.042,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','morning','RES_SH_MN',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','afternoon','RES_SH_MN',0.028,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','spring','noon','RES_SH_MN',0.014,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','night','RES_SH_MN',0.008,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','morning','RES_SH_MN',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','afternoon','RES_SH_MN',0.005,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','summer','noon','RES_SH_MN',0.003,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','night','RES_SH_MN',0.129,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','morning','RES_SH_MN',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','afternoon','RES_SH_MN',0.086,'');
+INSERT INTO "DemandSpecificDistribution" VALUES ('IT','fall','noon','RES_SH_MN',0.043,'');
 
 CREATE TABLE "Driver" (
     "regions"       text,

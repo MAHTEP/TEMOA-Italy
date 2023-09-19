@@ -34,7 +34,7 @@ INSERT INTO "time_periods" VALUES (2025,'f');
 INSERT INTO "time_periods" VALUES (2030,'f');
 INSERT INTO "time_periods" VALUES (2040,'f');
 INSERT INTO "time_periods" VALUES (2050,'f');
-INSERT INTO "time_periods" VALUES (2055,'f');
+INSERT INTO "time_periods" VALUES (2060,'f');
 
 CREATE TABLE "MyopicBaseyear" (
 	"year"	real,
@@ -45,18 +45,19 @@ CREATE TABLE "time_season" (
 	"t_season"	text,
 	PRIMARY KEY("t_season")
 );
-INSERT INTO "time_season" VALUES ('summer');
-INSERT INTO "time_season" VALUES ('fall');
-INSERT INTO "time_season" VALUES ('winter');
-INSERT INTO "time_season" VALUES ('spring');
+INSERT INTO "time_season" VALUES ('winter'); --January/March
+INSERT INTO "time_season" VALUES ('spring'); --April/June
+INSERT INTO "time_season" VALUES ('summer'); --July/September
+INSERT INTO "time_season" VALUES ('fall'); --October/December
 
 CREATE TABLE "time_of_day" (
 	"t_day"	text,
 	PRIMARY KEY("t_day")
 );
-INSERT INTO "time_of_day" VALUES ('day');
-INSERT INTO "time_of_day" VALUES ('night');
-INSERT INTO "time_of_day" VALUES ('peak');
+INSERT INTO "time_of_day" VALUES ('night'); --20:00/04:59
+INSERT INTO "time_of_day" VALUES ('morning'); --05:00/10:59
+INSERT INTO "time_of_day" VALUES ('noon'); --11:00/13:59
+INSERT INTO "time_of_day" VALUES ('afternoon'); --14:00/19:59
 
 CREATE TABLE "SegFrac" (
 	"season_name"	text,
@@ -67,18 +68,22 @@ CREATE TABLE "SegFrac" (
 	FOREIGN KEY("season_name") REFERENCES "time_season"("t_season"),
 	FOREIGN KEY("time_of_day_name") REFERENCES "time_of_day"("t_day")
 );
-INSERT INTO "SegFrac" VALUES ('summer','day'  ,0.125,'');
-INSERT INTO "SegFrac" VALUES ('summer','night',0.115,'');
-INSERT INTO "SegFrac" VALUES ('summer','peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'day'  ,0.125,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'night',0.115,'');
-INSERT INTO "SegFrac" VALUES ('fall'  ,'peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('winter','day'  ,0.105,'');
-INSERT INTO "SegFrac" VALUES ('winter','night',0.135,'');
-INSERT INTO "SegFrac" VALUES ('winter','peak' ,0.010,'');
-INSERT INTO "SegFrac" VALUES ('spring','day'  ,0.115,'');
-INSERT INTO "SegFrac" VALUES ('spring','night',0.125,'');
-INSERT INTO "SegFrac" VALUES ('spring','peak' ,0.010,'');
+INSERT INTO "SegFrac" VALUES ('winter','night',0.0925,'');
+INSERT INTO "SegFrac" VALUES ('winter','morning',0.0617,'');
+INSERT INTO "SegFrac" VALUES ('winter','noon',0.0308,'');
+INSERT INTO "SegFrac" VALUES ('winter','afternoon',0.0617,'');
+INSERT INTO "SegFrac" VALUES ('spring','night',0.0935,'');
+INSERT INTO "SegFrac" VALUES ('spring','morning',0.0623,'');
+INSERT INTO "SegFrac" VALUES ('spring','noon',0.0312,'');
+INSERT INTO "SegFrac" VALUES ('spring','afternoon',0.0623,'');
+INSERT INTO "SegFrac" VALUES ('summer','night',0.0945,'');
+INSERT INTO "SegFrac" VALUES ('summer','morning',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('summer','noon',0.0315,'');
+INSERT INTO "SegFrac" VALUES ('summer','afternoon',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('fall','night',0.0945,'');
+INSERT INTO "SegFrac" VALUES ('fall','morning',0.0630,'');
+INSERT INTO "SegFrac" VALUES ('fall','noon',0.0315,'');
+INSERT INTO "SegFrac" VALUES ('fall','afternoon',0.0630,'');
 
 CREATE TABLE "sector_labels" (
 	"sector"	text,
@@ -131,9 +136,6 @@ INSERT INTO "technologies" VALUES ('H2_DMY_CTE','p','H2','Dummy - Centralized ta
 INSERT INTO "technologies" VALUES ('H2_DMY_CUE','p','H2','Dummy - Centralized underground H2 from electrolysis to delivery chains','');
 INSERT INTO "technologies" VALUES ('H2_DMY_DTE','p','H2','Dummy - Distributed tank H2 from electrolysis ready to delivery chains','');
 INSERT INTO "technologies" VALUES ('H2_DMY_SYNFUELS','p','H2','Dummy technology to produce hydrogen for synfuel production',''); -- Required to put together H2_CU and H2_CT, prior to synfuels production
-INSERT INTO "technologies" VALUES ('H2_ST_CT','p','H2','Centralized tank','');
-INSERT INTO "technologies" VALUES ('H2_ST_DT','p','H2','Decentralized tank','');
-INSERT INTO "technologies" VALUES ('H2_ST_UG','p','H2','Underground storage','');
 INSERT INTO "technologies" VALUES ('H2_IND_FT_GC','p','H2','Fuel Tech - H2 Delivery from centralized production (COMP+TR+DP - Industrial)','');
 INSERT INTO "technologies" VALUES ('H2_TRA_FT_LC1','p','H2','Fuel Tech - H2 Delivery from centralized production (COMP+USTOR+TR+LIQ+LSTORB+RTS+REFLL(large))','');
 INSERT INTO "technologies" VALUES ('H2_TRA_FT_GC1','p','H2','Fuel Tech - H2 Delivery from centralized production (COMP+USTOR+TR+LIQ+LSTORB+RTS+REFLG(large))','');
@@ -232,19 +234,60 @@ CREATE TABLE "tech_groups" (
 	"notes"	text,
 	PRIMARY KEY("tech")
 );
--- Hydrogen
+-- Hydrogen and CCUS
+INSERT INTO "tech_groups" VALUES ('H2_SMR_CL','');
+INSERT INTO "tech_groups" VALUES ('H2_SMR_CS','');
+INSERT INTO "tech_groups" VALUES ('H2_SMR_DM','');
+INSERT INTO "tech_groups" VALUES ('H2_SMR_DS','');
 INSERT INTO "tech_groups" VALUES ('H2_COA_CL','');
 INSERT INTO "tech_groups" VALUES ('H2_COA_CM','');
+INSERT INTO "tech_groups" VALUES ('H2_HOPO','');
+INSERT INTO "tech_groups" VALUES ('H2_ELALK_CL','');
+INSERT INTO "tech_groups" VALUES ('H2_ELALK_DS','');
+INSERT INTO "tech_groups" VALUES ('H2_ELPEM_CL','');
+INSERT INTO "tech_groups" VALUES ('H2_ELPEM_DS','');
+INSERT INTO "tech_groups" VALUES ('H2_SOEC_CL','');
+INSERT INTO "tech_groups" VALUES ('H2_SOEC_DS','');
+INSERT INTO "tech_groups" VALUES ('H2_AEM_DS','');
+INSERT INTO "tech_groups" VALUES ('H2_SBR_C','');
+INSERT INTO "tech_groups" VALUES ('H2_SBG_DS','');
+INSERT INTO "tech_groups" VALUES ('H2_SBG_CM','');
+INSERT INTO "tech_groups" VALUES ('H2_SER_D','');
+INSERT INTO "tech_groups" VALUES ('CCUS_H2_SMR_CL','');
+INSERT INTO "tech_groups" VALUES ('CCUS_H2_SMR_CS','');
 INSERT INTO "tech_groups" VALUES ('CCUS_H2_COA_CL','');
 INSERT INTO "tech_groups" VALUES ('CCUS_H2_COA_CM','');
+INSERT INTO "tech_groups" VALUES ('CCUS_H2_SBG_CM','');
+INSERT INTO "tech_groups" VALUES ('CCUS_ELC_IG_COA','');
+INSERT INTO "tech_groups" VALUES ('CCUS_ELC_OG_COA','');
+INSERT INTO "tech_groups" VALUES ('CCUS_ELC_OXY_COA','');
+INSERT INTO "tech_groups" VALUES ('CCUS_ELC_SOFC_COA','');
+INSERT INTO "tech_groups" VALUES ('CCUS_ELC_OXY_NGA','');
+INSERT INTO "tech_groups" VALUES ('CCUS_DAC','');
+INSERT INTO "tech_groups" VALUES ('SNK_ELC_CO2_AGG','');
+INSERT INTO "tech_groups" VALUES ('SNK_IND_CO2_AGG','');
+INSERT INTO "tech_groups" VALUES ('SNK_UPS_CO2_AGG','');
+INSERT INTO "tech_groups" VALUES ('SF_NGA_METH','');
+INSERT INTO "tech_groups" VALUES ('SF_DST_HYDR','');
+INSERT INTO "tech_groups" VALUES ('SF_DST_COELC','');
+INSERT INTO "tech_groups" VALUES ('SF_KER_HYDR','');
+INSERT INTO "tech_groups" VALUES ('SF_KER_COELC','');
+INSERT INTO "tech_groups" VALUES ('SF_DSTKER_DAC','');
+INSERT INTO "tech_groups" VALUES ('SF_MEOH_HYDR','');
+INSERT INTO "tech_groups" VALUES ('SF_MEOH_COELC','');
+INSERT INTO "tech_groups" VALUES ('SF_MEOH_DAC','');
+INSERT INTO "tech_groups" VALUES ('CCUS_SNK_DGF_ON','');
+INSERT INTO "tech_groups" VALUES ('CCUS_SNK_DGF_OFF','');
 
 CREATE TABLE "groups" (
 	"group_name"	text,
 	"notes"	text,
 	PRIMARY KEY("group_name")
 );
--- Hydrogen
-INSERT INTO "groups" VALUES ('H2_COA_GRP','');
+-- Hydrogen and CCUS
+INSERT INTO "groups" VALUES ('H2_PROD_GRP','');
+INSERT INTO "groups" VALUES ('SF_PROD_GRP','');
+INSERT INTO "groups" VALUES ('CCUS_GRP','');
 
 CREATE TABLE "TechGroupWeight" (
 	"regions"	        text,
@@ -254,11 +297,64 @@ CREATE TABLE "TechGroupWeight" (
 	"tech_desc"	        text,
 	PRIMARY KEY("tech","group_name","regions")
 );
--- Hydrogen
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_COA_CL','H2_COA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_COA_CM','H2_COA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CL','H2_COA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CM','H2_COA_GRP',1.0,'');
+-- Hydrogen and CCUS
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SMR_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SMR_CS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SMR_DM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SMR_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_COA_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_COA_CM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_HOPO','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_ELALK_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_ELALK_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_ELPEM_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_ELPEM_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SOEC_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SOEC_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_AEM_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SBR_C','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SBG_DS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SBG_CM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SER_D','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SMR_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SMR_CS','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SBG_CM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_NGA_METH','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DSTKER_DAC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_DAC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SMR_CL','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SMR_CS','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CL','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_COA_CM','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SBG_CM','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_IG_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_OG_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_OXY_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_SOFC_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_OXY_NGA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_ELC_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_IND_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_UPS_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_NGA_METH','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DSTKER_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_SNK_DGF_ON','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_SNK_DGF_OFF','CCUS_GRP',1.0,'');
 
 CREATE TABLE "MinActivityGroup" (
 	"regions"	text,
@@ -275,10 +371,6 @@ CREATE TABLE "MaxActivityGroup" (
 	"notes"	text,
 	PRIMARY KEY("periods","group_name")
 );
--- Hydrogen
-INSERT INTO "MaxActivityGroup" VALUES (2025,'H2_COA_GRP',0.00,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2050,'H2_COA_GRP',0.00,'PJ');
-
 CREATE TABLE "MinCapacityGroup" (
 	"periods"	integer,
 	"group_name"	text,
@@ -664,9 +756,6 @@ INSERT INTO "LifetimeTech" VALUES ('IT','H2_SER_D',10,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_DMY_CTE',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_DMY_CUE',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_DMY_DTE',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','H2_ST_CT',22,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','H2_ST_DT',22,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','H2_ST_UG',30,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_TRA_FT_LC1',20,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_TRA_FT_GC1',20,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','H2_TRA_FT_LC2',20,'');
@@ -1039,9 +1128,6 @@ INSERT INTO "Efficiency" VALUES ('IT','H2_CUE','H2_DMY_CUE',2014,'H2_CU',1.00,''
 INSERT INTO "Efficiency" VALUES ('IT','H2_DTE','H2_DMY_DTE',2014,'H2_DT',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','H2_CU','H2_DMY_SYNFUELS',2014,'H2_SF',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','H2_CT','H2_DMY_SYNFUELS',2014,'H2_SF',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','H2_CT','H2_ST_CT',2014,'H2_CT',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','H2_DT','H2_ST_DT',2014,'H2_DT',1.00,'');
-INSERT INTO "Efficiency" VALUES ('IT','H2_CU','H2_ST_UG',2014,'H2_CU',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','H2_DT','H2_BLEND',2020,'H2_BL',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','H2_CT','H2_BLEND',2020,'H2_BL',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','H2_CU','H2_BLEND',2020,'H2_BL',1.00,'');
@@ -1584,12 +1670,6 @@ INSERT INTO "CostInvest" VALUES ('IT','H2_SBG_DS',2020,98.27,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_SBG_CM',2014,83.64,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_SBG_CM',2020,40.92,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_SER_D',2014,233.99,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_CT',2014,4611.11,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_CT',2025,3611.11,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_DT',2014,2638.89,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_DT',2025,2083.33,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_UG',2014,972.22,'M€/PJ','');
-INSERT INTO "CostInvest" VALUES ('IT','H2_ST_UG',2025,750,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_TRA_FT_LC1',2014,38.7,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_TRA_FT_LC1',2020,30.2,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','H2_TRA_FT_LC1',2025,27.4,'M€/PJ','');
@@ -1729,12 +1809,6 @@ INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_SBR_C',2014,0.66,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_SBG_DS',2014,2.57,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_SBG_CM',2014,4.18,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_SBG_CM',2020,2.05,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_ST_CT',2014,222.22,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ST_CT',2025,166.67,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_ST_DT',2014,111.11,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ST_DT',2025,83.33,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_ST_UG',2014,83.33,'M€/PJ','');
-INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_ST_UG',2025,55.56,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2014,'H2_TRA_FT_LC1',2014,2,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2020,'H2_TRA_FT_LC1',2020,1.6,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'H2_TRA_FT_LC1',2025,1.4,'M€/PJ','');
@@ -1876,9 +1950,6 @@ INSERT INTO "CurrencyTech" VALUES ('H2_SBR_C','EUR10');
 INSERT INTO "CurrencyTech" VALUES ('H2_SBG_DS','EUR10');
 INSERT INTO "CurrencyTech" VALUES ('H2_SBG_CM','EUR10');
 INSERT INTO "CurrencyTech" VALUES ('H2_SER_D','EUR10');
-INSERT INTO "CurrencyTech" VALUES ('H2_ST_CT','EUR12');
-INSERT INTO "CurrencyTech" VALUES ('H2_ST_DT','EUR12');
-INSERT INTO "CurrencyTech" VALUES ('H2_ST_UG','EUR12');
 INSERT INTO "CurrencyTech" VALUES ('H2_IND_FT_GC','EUR12');
 INSERT INTO "CurrencyTech" VALUES ('H2_TRA_FT_LC1','EUR12');
 INSERT INTO "CurrencyTech" VALUES ('H2_TRA_FT_GC1','EUR12');
@@ -1956,8 +2027,6 @@ INSERT INTO "CapacityFactor" VALUES ('IT','H2_SBR_C',2014,0.90,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SBG_DS',2014,0.71,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SBG_CM',2014,0.90,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SER_D',2014,0.90,'');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_ST_CT',2014,0.98,'');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_ST_DT',2014,0.98,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_TRA_FT_LC1',2014,0.75,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_TRA_FT_GC1',2014,0.75,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_TRA_FT_LC2',2014,0.75,'');
