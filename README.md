@@ -4,7 +4,7 @@
 TEMOA-Italy is a model instance for the optimization of the Italian energy system developed within an [extended version](https://github.com/MAHTEP/TEMOA) of the [TEMOA](https://temoacloud.com/) (Tools for Energy Modeling Optimization and Analysis) modeling framework.
 
 The maintenance team currently includes [Matteo Nicoli](http://www.mahtep.polito.it/people/phd_students/nicoli_matteo), [Gianvito Colucci](http://www.mahtep.polito.it/people/phd_students/colucci_gianvito), [Daniele Lerede](http://www.mahtep.polito.it/people/phd_students/lerede_daniele) and Prof. [Laura Savoldi](http://www.mahtep.polito.it/people/head/savoldi_laura) from [MAHTEP Group](http://www.mahtep.polito.it) at [Department of Energy](https://www.denerg.polito.it/en/) of [Politecnico di Torino](https://www.polito.it/en).
-For any communication related to TEMOA-Italy, please write to [matteo.nicoli@polito.it](mailto:matteo.nicoli@polito.it) and [gianvito.colucci@polito.it](mailto:gianvito.colucci@polito.it).
+For any communication related to TEMOA-Italy, please write to [matteo.nicoli@polito.it and gianvito.colucci@polito.it](mailto:matteo.nicoli@polito.it;gianvito.colucci@polito.it).
 
 The TEMOA-Italy database was generated starting from the TIMES-Italy model, developed by ENEA in the [TIMES](https://iea-etsap.org/index.php/etsap-tools/model-generators/times) modeling framework. The current TEMOA-Italy is updated, integrated, and recalibrated to historical data up to 2020 with respect to the original TIMES-Italy 2010 version [1].
 
