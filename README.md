@@ -11,7 +11,7 @@ The TEMOA-Italy database was generated starting from the TIMES-Italy model, deve
 A schematic representation of the reference energy system (RES) is shown in Figure 1.
 
 ![](docs/ReferenceEnergySystem.svg)
-*Figure 1. Representation of the TEMOA-Italy energy ystem [2].*
+*Figure 1. Representation of the TEMOA-Italy energy system [2].*
 
 As Figure 1 highlights, the TEMOA-Italy RES is composed of several energy sectors.
 The supply side includes the upstream sector (producing and transforming fossil fuels, biofuels and renewable potentials and modeling import/export), the power sector (devoted to the production of electricity and heat), the hydrogen module (including hydrogen production, distribution, and storage technologies, see Figure 2) and the Carbon Capture Utilization and Storage (CCUS) module (modeling CO2 capture, utilization – through synfuels production – and storage, see Figure 3).
