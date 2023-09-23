@@ -18,10 +18,10 @@ The supply side includes the upstream sector (producing and transforming fossil 
 The demand side covers the building sector (which includes residential, commercial and agriculture end-uses), several road and non-road transport demands, and the energy intensive industrial subsectors.
 
 ![](docs/Hydrogen.svg)
-Figure 2. The TEMOA-Italy hydrogen module.
+*Figure 2. The TEMOA-Italy hydrogen module.*
 
 ![](docs/CCUS.svg)
-Figure 3. The TEMOA-Italy CCUS module.
+*Figure 3. The TEMOA-Italy CCUS module.*
 
 A detailed description of the methodology adopted for TEMOA-Italy construction, together with a detailed assessment of its reliability in reproducing equivalent results with respect to its counterpart TIMES-Italy, is available at [2] and [3].
 
