@@ -1073,19 +1073,17 @@ for i_tech in range(0, len(CostFixed.tech)):
             flag_check = 1
 
     if flag_check == 0:
-        lifetime = 0
+        lifetime = lifetime_default
         year_lifetime = list()
         lifetime_process = list()
         for i_life in range(0, len(LifetimeTech.life)):
             if LifetimeTech.tech[i_life] == tech_i:
                 lifetime = LifetimeTech.life[i_life]
-        if lifetime == 0:
+        if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
                 if LifetimeProcess.tech[i_life] == tech_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
-                else:
-                    lifetime = lifetime_default
 
         # Checking if other values are present for the technology
         flag = 0
@@ -1220,19 +1218,17 @@ for i_tech in range(0, len(CostVariable.tech)):
             flag_check = 1
 
     if flag_check == 0:
-        lifetime = 0
+        lifetime = lifetime_default
         year_lifetime = list()
         lifetime_process = list()
         for i_life in range(0, len(LifetimeTech.life)):
             if LifetimeTech.tech[i_life] == tech_i:
                 lifetime = LifetimeTech.life[i_life]
-        if lifetime == 0:
+        if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
                 if LifetimeProcess.tech[i_life] == tech_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
-                else:
-                    lifetime = lifetime_default
 
         # Checking if other values are present for the technology
         flag = 0
