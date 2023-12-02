@@ -179,7 +179,7 @@ for i in range(0, len(indexes)):
         EmissionActivity = pd.concat([EmissionActivity, EmissionActivity_PEF_i], ignore_index=True)
     if len(EmissionActivity_PEF_i.emis_act) == 1 and len(EmissionActivity_CEF_i.emis_act) == 1:
         emis_act = float(EmissionActivity_PEF_i.emis_act[0] + EmissionActivity_CEF_i.emis_act[0])
-        if abs(emis_act) >= 1E-2:  # To avoid to include negligible emission factors due to approximations in input data
+        if abs(emis_act) >= 1E-5:  # To avoid to include negligible emission factors due to approximations in input data
             EmissionActivity_NewRow = {'regions': EmissionActivity_PEF_i.regions[0],
                                        'emis_comm': EmissionActivity_PEF_i.emis_comm[0],
                                        'input_comm': EmissionActivity_PEF_i.input_comm[0],
@@ -2829,3 +2829,174 @@ if print_status:
                                                                     np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 print('_______________________________________________________________________')
+
+# Looking for errors in the .SQLite database
+
+TechInputSplit = pd.read_sql("SELECT * FROM TechInputSplit", conn)  # Loading the TechInputSplit table from the .SQLite database
+
+regions = list()
+periods = list()
+tech = list()
+ti_split_sum=list()
+
+# Extracting the list of all indexes combinations for TechInputSplit
+indexes = list()
+for i in range(0, len(TechInputSplit)):
+    indexes.append(TechInputSplit.regions[i] + str(TechInputSplit.periods[i]) + TechInputSplit.tech[i])
+TechInputSplit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Checking values to find errors
+for index_i in indexes:
+    TechInputSplit_i = TechInputSplit[(TechInputSplit['indexes'] == index_i)]
+    TechInputSplit_i = TechInputSplit_i.sort_values(by=['periods'], ignore_index=True)
+    check = round(sum(TechInputSplit_i.ti_split), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    if check > 1:
+        regions.append(TechInputSplit_i.regions[0])
+        periods.append(TechInputSplit_i.periods[0])
+        tech.append(TechInputSplit_i.tech[0])
+        ti_split_sum.append(check)
+
+if len(tech) > 0:
+    # Converting lists into a DataFrame
+    TechInputSplit_Errors = pd.DataFrame(
+        {
+            "regions": pd.Series(regions, dtype='str'),
+            "periods": pd.Series(periods, dtype='int'),
+            "tech": pd.Series(tech, dtype='str'),
+            "ti_split_sum": pd.Series(ti_split_sum, dtype='float')
+        }
+    )
+    # Printing warning
+    pd.set_option('display.max_rows', len(TechInputSplit_Errors))
+    pd.set_option('display.max_columns', 10)
+    print("\nWARNING: Errors detected in the TechInputSplit table. Check the following items:\n\n", TechInputSplit_Errors)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+        
+
+TechOutputSplit = pd.read_sql("SELECT * FROM TechOutputSplit", conn)  # Loading the TechOutputSplit table from the .SQLite database
+
+regions = list()
+periods = list()
+tech = list()
+to_split_sum=list()
+
+# Extracting the list of all indexes combinations for TechOutputSplit
+indexes = list()
+for i in range(0, len(TechOutputSplit)):
+    indexes.append(TechOutputSplit.regions[i] + str(TechOutputSplit.periods[i]) + TechOutputSplit.tech[i])
+TechOutputSplit['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Checking values to find errors
+for index_i in indexes:
+    TechOutputSplit_i = TechOutputSplit[(TechOutputSplit['indexes'] == index_i)]
+    TechOutputSplit_i = TechOutputSplit_i.sort_values(by=['periods'], ignore_index=True)
+    check = round(sum(TechOutputSplit_i.to_split), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    if check > 1:
+        regions.append(TechOutputSplit_i.regions[0])
+        periods.append(TechOutputSplit_i.periods[0])
+        tech.append(TechOutputSplit_i.tech[0])
+        to_split_sum.append(check)
+
+if len(tech) > 0:
+    # Converting lists into a DataFrame
+    TechOutputSplit_Errors = pd.DataFrame(
+        {
+            "regions": pd.Series(regions, dtype='str'),
+            "periods": pd.Series(periods, dtype='int'),
+            "tech": pd.Series(tech, dtype='str'),
+            "to_split_sum": pd.Series(to_split_sum, dtype='float')
+        }
+    )
+    # Printing warning
+    pd.set_option('display.max_rows', len(TechOutputSplit_Errors))
+    pd.set_option('display.max_columns', 10)
+    print("\nWARNING: Errors detected in the TechOutputSplit table. Check the following items:\n\n", TechOutputSplit_Errors)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+MinInputGroup = pd.read_sql("SELECT * FROM MinInputGroup", conn)  # Loading the MinInputGroup table from the .SQLite database
+
+regions = list()
+periods = list()
+group_name = list()
+gi_min_sum=list()
+
+# Extracting the list of all indexes combinations for TechOutputSplit
+indexes = list()
+for i in range(0, len(MinInputGroup)):
+    indexes.append(MinInputGroup.regions[i] + str(MinInputGroup.periods[i]) + MinInputGroup.group_name[i])
+MinInputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Checking values to find errors
+for index_i in indexes:
+    MinInputGroup_i = MinInputGroup[(MinInputGroup['indexes'] == index_i)]
+    MinInputGroup_i = MinInputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    check = round(sum(MinInputGroup_i.gi_min), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    if check > 1:
+        regions.append(MinInputGroup_i.regions[0])
+        periods.append(MinInputGroup_i.periods[0])
+        group_name.append(MinInputGroup_i.group_name[0])
+        gi_min_sum.append(check)
+
+if len(group_name) > 0:
+    # Converting lists into a DataFrame
+    MinInputGroup_Errors = pd.DataFrame(
+        {
+            "regions": pd.Series(regions, dtype='str'),
+            "periods": pd.Series(periods, dtype='int'),
+            "group_name": pd.Series(group_name, dtype='str'),
+            "gi_min_sum": pd.Series(gi_min_sum, dtype='float')
+        }
+    )
+    # Printing warning
+    pd.set_option('display.max_rows', len(MinInputGroup_Errors))
+    pd.set_option('display.max_columns', 10)
+    print("\nWARNING: Errors detected in the MinInputGroup table. Check the following items:\n\n", MinInputGroup_Errors)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+MinOutputGroup = pd.read_sql("SELECT * FROM MinOutputGroup", conn)  # Loading the MinOutputGroup table from the .SQLite database
+
+regions = list()
+periods = list()
+group_name = list()
+go_min_sum=list()
+
+# Extracting the list of all indexes combinations for TechOutputSplit
+indexes = list()
+for i in range(0, len(MinOutputGroup)):
+    indexes.append(MinOutputGroup.regions[i] + str(MinOutputGroup.periods[i]) + MinOutputGroup.group_name[i])
+MinOutputGroup['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Checking values to find errors
+for index_i in indexes:
+    MinOutputGroup_i = MinOutputGroup[(MinOutputGroup['indexes'] == index_i)]
+    MinOutputGroup_i = MinOutputGroup_i.sort_values(by=['periods'], ignore_index=True)
+    check = round(sum(MinOutputGroup_i.go_min), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    if check > 1:
+        regions.append(MinOutputGroup_i.regions[0])
+        periods.append(MinOutputGroup_i.periods[0])
+        group_name.append(MinOutputGroup_i.group_name[0])
+        go_min_sum.append(check)
+
+if len(group_name) > 0:
+    # Converting lists into a DataFrame
+    MinOutputGroup_Errors = pd.DataFrame(
+        {
+            "regions": pd.Series(regions, dtype='str'),
+            "periods": pd.Series(periods, dtype='int'),
+            "group_name": pd.Series(group_name, dtype='str'),
+            "go_min_sum": pd.Series(go_min_sum, dtype='float')
+        }
+    )
+    # Printing warning
+    pd.set_option('display.max_rows', len(MinOutputGroup_Errors))
+    pd.set_option('display.max_columns', 10)
+    print("\nWARNING: Errors detected in the MinOutputGroup table. Check the following items:\n\n", MinOutputGroup_Errors)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
