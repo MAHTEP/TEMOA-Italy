@@ -531,15 +531,15 @@ CREATE TABLE "StorageDuration" (
 );
 
 CREATE TABLE "PlanningReserveMargin" (
-	`regions`	text,
-	`reserve_margin`	REAL,
+	"regions"	text,
+	"reserve_margin"	REAL,
 	PRIMARY KEY(regions),
-	FOREIGN KEY(`regions`) REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES regions
 );
 
 CREATE TABLE "tech_groups" (
-	`tech`	text,
-	`notes`	text,
+	"tech"	text,
+	"notes"	text,
 	PRIMARY KEY(tech)
 );
 -- Agriculture sector
@@ -1908,77 +1908,6 @@ CREATE TABLE "DiscountRate" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
 	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
 );
--- Commercial sector
-INSERT INTO "DiscountRate" VALUES ('IT','COM_FT_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_FT_GEO_1_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_FT_GEO_2_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_FT_GEO_3_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_FT_HET_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_INC_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_SHAL_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_HAL_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_SFL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_LFL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_CFL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_KER_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_MER_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_LG_SOD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_DST_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_COND_DST_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_COND_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_LPG_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_COND_LPG_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_WPEL_BIO_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_ELC_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_AHP_ELC_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_HEX_HET_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_WH_SOL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_DST_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_COND_DST_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_COND_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_LPG_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_COND_LPG_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_HEX_HET_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_HP_AIR_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_HP_PRB_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_HP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_GEO_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_DST_SOL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_LPG_SOL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_NGA_SOL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SH_WPEL_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_DST_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_DST_N',2016,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_HP_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_HP_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ROOF_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ELC_GEO_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ELC_GEO_ADV_N',2010,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ROOF_ADV_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_REC_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_REC_IMP_N',2010,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_CNF_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_CNF_IMP_N',2016,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_CNT_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ROOM_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_GEO_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_ABS_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_NGA_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_SC_NGA_IMP_N',2010,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_CK_NGA_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_CK_LPG_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_CK_DST_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_CK_ELC_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_CK_BIO_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_OE_OFF_ELC_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_OE_OFF_ELC_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_OE_OFF_ADV_N',2010,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_RF_STD_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_RF_IMP_N',2007,0.40,'');
-INSERT INTO "DiscountRate" VALUES ('IT','COM_RF_N',2010,0.40,'');
-
 CREATE TABLE "DemandSpecificDistribution" (
 	"regions"	text,
 	"season_name"	text,
@@ -2364,21 +2293,25 @@ CREATE TABLE "CostVariable" (
 );
 -- Agriculture sector
 -- Fuel technologies
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_NGA',2006,2.17,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_DST',2006,3.26,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_GSL',2006,3.26,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_LPG',2006,3.26,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_BIO',2006,1.09,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_GEO',2006,0.10,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'AGR_FT_SOL',2007,0.10,'M€/PJ','');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_NGA',2006,2.17,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_DST',2006,3.26,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_GSL',2006,3.26,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_LPG',2006,3.26,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_BIO',2006,1.09,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'AGR_FT_GEO',2006,0.10,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'AGR_FT_SOL',2007,0.10,'M€/PJ','Distribution');
 -- Commercial sector
 -- Fuel technologies
-INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_NGA_N',2007,1.66,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_DST_N',2007,2.48,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_LPG_N',2007,2.48,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_BIO_N',2007,1.32,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_SOL_N',2007,0.10,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'COM_FT_ELC_E',2006,15.00,'M€/PJ','');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'COM_FT_ELC_E',2006,15.00,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'COM_FT_ELC_E',2006,15.00+6.31,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_BIO_N',2007,1.32,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_DST_N',2007,2.48,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_DST_N',2007,2.48+10.68,'M€/PJ','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_LPG_N',2007,2.48,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_LPG_N',2007,2.48+4.12,'M€/PJ','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_NGA_N',2007,1.66,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_NGA_N',2007,1.66+5.23,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_FT_SOL_N',2007,0.10,'M€/PJ','Distribution');
 -- Micro-CHP
 INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_CHP_NGA_CI_N',2007,4.17E+00,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'COM_CHP_NGA_MICRO_N',2007,2.78E+00,'M€/PJ','');

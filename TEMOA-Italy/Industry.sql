@@ -150,6 +150,8 @@ INSERT INTO "technologies" VALUES ('IND_FT_OIL_E','p','IND','Fuel Technology - R
 INSERT INTO "technologies" VALUES ('IND_FT_OIL_N','p','IND','Fuel Technology - Refined petroleum products - New ','');
 INSERT INTO "technologies" VALUES ('IND_FT_PTC_E','p','IND','Fuel Technology - Petroleum coke - Existing','');
 INSERT INTO "technologies" VALUES ('IND_FT_PTC_N','p','IND','Fuel Technology - Petroleum coke - New ','');
+INSERT INTO "technologies" VALUES ('IND_FT_H2_N','p','IND','Fuel technology - Hydrogen','');
+INSERT INTO "technologies" VALUES ('IND_FT_H2E_N','p','IND','Fuel technology - Hydrogen from electrolysis','');
 -- Base year technologies
 -- Machine drive and steam
 INSERT INTO "technologies" VALUES ('IND_MD_TECH','p','IND','Technology to produce sector-specific Machine Drive','');
@@ -426,6 +428,7 @@ INSERT INTO "tech_annual" VALUES ('IND_FT_OIL_E','');
 INSERT INTO "tech_annual" VALUES ('IND_FT_OIL_N','');
 INSERT INTO "tech_annual" VALUES ('IND_FT_PTC_E','');
 INSERT INTO "tech_annual" VALUES ('IND_FT_PTC_N','');
+INSERT INTO "tech_annual" VALUES ('IND_FT_H2_N','');
 -- Base year technologies
 -- Machine drive and steam
 INSERT INTO "tech_annual" VALUES ('IND_MD_TECH','');
@@ -784,6 +787,9 @@ INSERT INTO "commodities" VALUES('GAS_ETH','p','');
 INSERT INTO "commodities" VALUES('GAS_NGA','p','');
 INSERT INTO "commodities" VALUES('GAS_RFG','p','');
 INSERT INTO "commodities" VALUES('GEO','p','');
+INSERT INTO "commodities" VALUES('H2','p','');
+INSERT INTO "commodities" VALUES('H2_EL','p','');
+INSERT INTO "commodities" VALUES('H2_EL_SOEC','p','');
 INSERT INTO "commodities" VALUES('H2_BL','p','');
 INSERT INTO "commodities" VALUES('HET','p','');
 INSERT INTO "commodities" VALUES('MTH_SYN','p','');
@@ -1433,15 +1439,15 @@ CREATE TABLE "StorageDuration" (
 );
 
 CREATE TABLE "PlanningReserveMargin" (
-	`regions`	text,
-	`reserve_margin`	REAL,
+	"regions"	text,
+	"reserve_margin"	REAL,
 	PRIMARY KEY(regions),
-	FOREIGN KEY(`regions`) REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES regions
 );
 
 CREATE TABLE "tech_groups" (
-	`tech`	text,
-	`notes`	text,
+	"tech"	text,
+	"notes"	text,
 	PRIMARY KEY(tech)
 );
 -- Industrial sector
@@ -1458,6 +1464,7 @@ INSERT INTO "tech_groups" VALUES ('IND_FT_NGA_E','');
 INSERT INTO "tech_groups" VALUES ('IND_FT_NGA_N','');
 INSERT INTO "tech_groups" VALUES ('IND_FT_OIL_E','');
 INSERT INTO "tech_groups" VALUES ('IND_FT_OIL_N','');
+INSERT INTO "tech_groups" VALUES ('IND_FT_H2_N','');
 INSERT INTO "tech_groups" VALUES ('IND_MD_ELC_E','');
 INSERT INTO "tech_groups" VALUES ('IND_MD_DST_E','');
 INSERT INTO "tech_groups" VALUES ('IND_MD_DST_N','');
@@ -1519,6 +1526,7 @@ INSERT INTO "groups" VALUES ('IND_FT_HFO_GRP','');
 INSERT INTO "groups" VALUES ('IND_FT_NAP_GRP','');
 INSERT INTO "groups" VALUES ('IND_FT_NGA_GRP','');
 INSERT INTO "groups" VALUES ('IND_FT_OIL_GRP','');
+INSERT INTO "groups" VALUES ('IND_FT_H2_GRP','');
 INSERT INTO "groups" VALUES ('IND_MD_GRP','');
 INSERT INTO "groups" VALUES ('IND_CH_FS_NGA_GRP','');
 INSERT INTO "groups" VALUES ('IND_CH_FS_OIL_GRP','');
@@ -1549,6 +1557,7 @@ INSERT INTO "TechGroupWeight" VALUES ('IT','IND_FT_NGA_E','IND_FT_NGA_GRP',1.0,'
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_FT_NGA_N','IND_FT_NGA_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_FT_OIL_E','IND_FT_OIL_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_FT_OIL_N','IND_FT_OIL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('IT','IND_FT_H2_N','IND_FT_H2_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_MD_DST_E','IND_MD_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_MD_DST_N','IND_MD_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IT','IND_MD_ELC_E','IND_MD_GRP',1.0,'');
@@ -1725,6 +1734,7 @@ CREATE TABLE "MinInputGroup" (
 	PRIMARY KEY("regions","periods","input_comm","group_name")
 );
 -- Industrial sector
+INSERT INTO "MinInputGroup" VALUES ('IT',2014,'ELC_CEN','IND_FT_H2_GRP',0.94,'');
 INSERT INTO "MinInputGroup" VALUES ('IT',2007,'IND_ELC','IND_MD_GRP',0.99,'');
 INSERT INTO "MinInputGroup" VALUES ('IT',2050,'IND_ELC','IND_MD_GRP',1.00,'');
 INSERT INTO "MinInputGroup" VALUES ('IT',2007,'IND_NGA','IND_CH_OTH_GRP',0.50,'');
@@ -1750,6 +1760,7 @@ CREATE TABLE "MaxInputGroup" (
 	PRIMARY KEY("regions","periods","input_comm","group_name")
 );
 -- Industrial sector
+INSERT INTO "MaxInputGroup" VALUES ('IT',2014,'ELC_CEN','IND_FT_H2_GRP',0.94,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'BIO_GAS','IND_FT_BIO_GRP',0.10,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'BIO_GAS','IND_FT_BIO_GRP',0.10,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'SYN_MET','IND_FT_NAP_GRP',0.00,'');
@@ -2237,6 +2248,7 @@ INSERT INTO "LifetimeTech" VALUES ('IT','IND_FT_GEO_1_N',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','IND_FT_GEO_2_N',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','IND_FT_GEO_3_N',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','IND_FT_HET_N',100,'');
+INSERT INTO "LifetimeTech" VALUES ('IT','IND_FT_H2_N',20,'');
 -- Base year technologies
 INSERT INTO "LifetimeTech" VALUES ('IT','IND_MD_TECH',100,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','IND_MD_ELC_E',20,'');
@@ -2766,15 +2778,29 @@ INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_DRY_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_DRY_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_DRY_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_COA','IND_NM_CLK_DRY_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_DRY_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_DRY_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_DRY_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_DRY_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_DRY_BIO_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_DRY_BIO_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_DRY_BIO_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_DRY_BIO_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_DRY_BIO_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_DRY_BIO_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_DRY_BIO_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_DRY_BIO_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_COA','IND_NM_CLK_WET_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_WET_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_WET_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_WET_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_WET_N',2007,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_COA','IND_NM_CLK_WET_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_HFO','IND_NM_CLK_WET_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NGA','IND_NM_CLK_WET_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_BIO','IND_NM_CLK_WET_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2_PRC','IND_NM_EC','IND_NM_CLK_WET_N',2030,'IND_NM_CLK',505.20,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2','IND_COA','IND_NM_CLK_DRYCL_PCCS_N',2020,'IND_NM_CLK',-251.33,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2','IND_HFO','IND_NM_CLK_DRYCL_PCCS_N',2020,'IND_NM_CLK',-197.88,'[kt/act]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','IND_CO2','IND_NGA','IND_NM_CLK_DRYCL_PCCS_N',2020,'IND_NM_CLK',-143.48,'[kt/act]','');
@@ -2945,6 +2971,12 @@ INSERT INTO "Efficiency" VALUES ('IT','BIO_METH','IND_FT_NGA_N',2007,'IND_NGA',1
 INSERT INTO "Efficiency" VALUES ('IT','H2_BL','IND_FT_NGA_N',2020,'IND_NGA',1.0,'PJ/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','OIL_PTC','IND_FT_PTC_E',2006,'IND_PTC',1.0,'PJ/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','OIL_PTC','IND_FT_PTC_N',2007,'IND_PTC',1.0,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','H2','IND_FT_H2_N',2014,'IND_H2',0.94,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL','IND_FT_H2_N',2014,'IND_H2',0.94,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL_SOEC','IND_FT_H2_N',2014,'IND_H2',0.94,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','IND_FT_H2_N',2014,'IND_H2',0.94,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL','IND_FT_H2E_N',2014,'IND_H2E',1.00,'PJ/PJ');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL_SOEC','IND_FT_H2E_N',2014,'IND_H2E',1.00,'PJ/PJ');
 -- Base year technologies
 -- Machine drive and steam
 INSERT INTO "Efficiency" VALUES ('IT','IND_MD','IND_MD_TECH',2006,'IND_IS_MD',1.00,'PJ/PJ');
@@ -3938,104 +3970,69 @@ CREATE TABLE "DiscountRate" (
 	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
 );
 -- Industrial sector
-INSERT INTO "DiscountRate" VALUES ('IT','IND_FT_HET_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_FT_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_MD_DST_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_MD_LPG_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_MD_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_MD_ELC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_BFG_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_BIO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_COA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_COG_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_DST_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_ETH_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_HET_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_HFO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_LPG_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_STM_PTC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_NAPSC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_ETHSC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_GSOSC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_LPGSC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_NCC_N',2020,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_BDH_N',2020,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OLF_PDH_N',2010,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OLF_MTO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NGASR_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NGASR_CCS_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NAPPOX_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_COAGSF_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_BIOGSF_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_ELCSYS_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_NGASR_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_NGASR_CCS_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_COGSR_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_LPGSR_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_COAGSF_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_BIOGSF_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_ELCSYS_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_MERC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_DIAP_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_MEMB_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_EC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_COK_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_DST_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_ELC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_ETH_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_HFO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OTH_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFBOF_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFBOF_CCS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFTGRBOF_CCS_N',2040,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_DRIEAF_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_DRIEAF_CCS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_HDREAF_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_HISBOF_N',2025,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_HISBOF_CCS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCOWIN_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCOLYSIS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCORED_CCS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_AMN_BAY_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_HLH_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_SEC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_HLHIA_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_CBT_N',2050,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_KAO_N',2050,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_COP_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ZNC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_EC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_OTH_ELC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_OTH_DST_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_OTH_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRY_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRY_BIO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_WET_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_PCCS_N',2020,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_PCCS_BIO_N',2020,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_OCCS_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_OCCS_BIO_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_BLN_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_AAC_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_BEL_N',2030,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_LIM_LRK_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_GLS_FOSS_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_GLS_ELEC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CRM_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_KRF_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_SUL_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_MEC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_SCH_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_REC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PAP_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PH_HFO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PH_NGA_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_OTH_OTH_ELC_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_OTH_PH_DST_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_OTH_PH_HFO_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_OTH_PH_LPG_N',2007,0.30,'');
-INSERT INTO "DiscountRate" VALUES ('IT','IND_OTH_PH_NGA_N',2007,0.30,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_NAPSC_N',2007,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_ETHSC_N',2007,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_GSOSC_N',2007,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_LPGSC_N',2007,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_NCC_N',2020,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_HVC_BDH_N',2020,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OLF_PDH_N',2010,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_OLF_MTO_N',2007,0.079,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NGASR_N',2007,0.100,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NGASR_CCS_N',2025,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_NAPPOX_N',2007,0.100,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_COAGSF_N',2007,0.100,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_BIOGSF_N',2025,0.100,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_AMM_ELCSYS_N',2025,0.100,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_NGASR_N',2007,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_NGASR_CCS_N',2025,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_COGSR_N',2007,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_LPGSR_N',2007,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_COAGSF_N',2007,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_BIOGSF_N',2025,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_MTH_ELCSYS_N',2025,0.092,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_MERC_N',2007,0.084,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_DIAP_N',2007,0.084,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_CH_CHL_MEMB_N',2007,0.084,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFBOF_N',2007,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFBOF_CCS_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_BFTGRBOF_CCS_N',2040,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_DRIEAF_N',2007,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_DRIEAF_CCS_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_DRI_HDREAF_N',2030,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_HISBOF_N',2025,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_HISBOF_CCS_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCOWIN_N',2030,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCOLYSIS_N',2030,0.095,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_IS_BOF_ULCORED_CCS_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_AMN_BAY_N',2007,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_HLH_N',2007,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_SEC_N',2007,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_HLHIA_N',2030,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_CBT_N',2050,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ALU_KAO_N',2050,0.074,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_COP_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NF_ZNC_N',2007,0.098,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRY_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRY_BIO_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_WET_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_PCCS_N',2020,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_PCCS_BIO_N',2020,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_OCCS_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CLK_DRYCL_OCCS_BIO_N',2030,0.150,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_BLN_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_AAC_N',2030,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CEM_BEL_N',2030,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_LIM_LRK_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_GLS_FOSS_N',2007,0.065,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_GLS_ELEC_N',2007,0.065,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_NM_CRM_N',2007,0.094,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_KRF_N',2007,0.099,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_SUL_N',2007,0.099,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_MEC_N',2007,0.099,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_SCH_N',2007,0.099,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PUL_REC_N',2007,0.099,'');
+INSERT INTO "DiscountRate" VALUES ('IT','IND_PP_PAP_N',2007,0.099,'');
 
 CREATE TABLE "DemandSpecificDistribution" (
 	"regions"	text,
@@ -4498,20 +4495,61 @@ CREATE TABLE "CostVariable" (
 -- Industrial sector
 -- New technologies
 -- Fuel Technologies
-INSERT INTO "CostVariable" VALUES ('IT',2006,'IND_FT_ELC_E',2006,1.50E+01,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'IND_FT_HET_E',2006,5.00E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_BFG_N',2007,8.28E-01,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_BIO_N',2007,7.25E-01,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COA_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COG_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COK_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_ETH_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_HFO_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_LPG_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NAP_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NGA_N',2007,1.04E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_OIL_N',2007,1.55E+00,'M€/PJ','');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_PTC_N',2007,1.55E+00,'M€/PJ','');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'IND_FT_ELC_E',2006,15.00,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'IND_FT_ELC_E',2006,15.00+2.78,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'IND_FT_HET_E',2006,5.00,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_BFG_N',2007,0.83,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_BFG_N',2007,0.83+0.010*108.17,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_BFG_N',2030,0.83+0.030*108.17,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_BFG_N',2050,0.83+0.150*108.17,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_BIO_N',2007,0.73,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COA_N',2007,1.55,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COA_N',2007,1.55+0.45,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COA_N',2007,1.55+0.45+0.010*98.27,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_COA_N',2030,1.55+0.45+0.030*98.27,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_COA_N',2050,1.55+0.45+0.150*98.27,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COG_N',2007,1.55,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COG_N',2007,1.55+0.010*108.17,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_COG_N',2030,1.55+0.030*108.17,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_COG_N',2050,1.55+0.150*108.17,'M€/PJ','Distribution + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COK_N',2007,1.55,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COK_N',2007,1.55+0.45,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_COK_N',2007,1.55+0.45+0.010*94.60,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_COK_N',2030,1.55+0.45+0.030*94.60,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_COK_N',2050,1.55+0.45+0.150*94.60,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_ETH_N',2007,1.55,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_ETH_N',2007,1.55+0.010*54.10,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_ETH_N',2030,1.55+0.030*54.10,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_ETH_N',2050,1.55+0.150*54.10,'M€/PJ','Distribution + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_HFO_N',2007,1.55,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_HFO_N',2007,1.55+4.31,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_HFO_N',2007,1.55+4.31+0.010*77.37,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_HFO_N',2030,1.55+4.31+0.030*77.37,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_HFO_N',2050,1.55+4.31+0.150*77.37,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_LPG_N',2007,1.55,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_LPG_N',2007,1.55+0.010*63.07,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_LPG_N',2030,1.55+0.030*63.07,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_LPG_N',2050,1.55+0.150*63.07,'M€/PJ','Distribution + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NAP_N',2007,1.55,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NAP_N',2007,1.55+4.31,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NAP_N',2007,1.55+4.31+0.010*73.33,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_NAP_N',2030,1.55+4.31+0.030*73.33,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_NAP_N',2050,1.55+4.31+0.150*73.33,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NGA_N',2007,1.04,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NGA_N',2007,1.04+0.37,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_NGA_N',2007,1.04+0.37+0.010*56.10,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_NGA_N',2030,1.04+0.37+0.030*56.10,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_NGA_N',2050,1.04+0.37+0.150*56.10,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_OIL_N',2007,1.55,'M€/PJ','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_OIL_N',2007,1.55+4.31,'M€/PJ','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_OIL_N',2007,1.55+4.31+0.010*71.98,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_OIL_N',2030,1.55+4.31+0.030*71.98,'M€/PJ','Distribution + Excise + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_OIL_N',2050,1.55+4.31+0.150*71.98,'M€/PJ','Distribution + Excise + ETS');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_PTC_N',2007,1.55,'M€/PJ','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_FT_PTC_N',2007,1.55+0.010*100.80,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_FT_PTC_N',2030,1.55+0.030*100.80,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_FT_PTC_N',2050,1.55+0.150*100.80,'M€/PJ','Distribution + ETS');
+INSERT INTO "CostVariable" VALUES ('IT',2014,'IND_FT_H2_N',2014,0.32,'M€/PJ','Distribution');
 -- Micro-CHP
 INSERT INTO "CostVariable" VALUES ('IT',2007,'IND_CHP_NGA_CI_N',2007,4.17E+00,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2014,'IND_CHP_NGA_CI_N',2014,3.75E+00,'M€/PJ','');
@@ -4541,6 +4579,7 @@ CREATE TABLE "CostInvest" (
 -- Fuel technologies
 INSERT INTO "CostInvest" VALUES ('IT','IND_FT_HET_N',2007,5.07,'M€/PJ','');
 INSERT INTO "CostInvest" VALUES ('IT','IND_FT_NGA_N',2007,20.0,'M€/PJ','');
+INSERT INTO "CostInvest" VALUES ('IT','IND_FT_H2_N',2014,30.29,'M€/PJ','');
 -- New technologies
 -- Machine drive and steam
 INSERT INTO "CostInvest" VALUES ('IT','IND_MD_DST_N',2007,19.25,'M€/PJ','');
@@ -4699,6 +4738,7 @@ INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_FT_NAP_N',2007,3.08E+00,'M€/PJ'
 INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_FT_NGA_N',2007,2.05E+00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_FT_OIL_N',2007,3.08E+00,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_FT_PTC_N',2007,3.08E+00,'M€/PJ','');
+INSERT INTO "CostFixed" VALUES ('IT',2014,'IND_FT_H2_N',2014,1.57,'M€/PJ','');
 -- Machine drive and steam
 INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_MD_DST_N',2007,1.93,'M€/PJ','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'IND_MD_LPG_N',2007,1.93,'M€/PJ','');
@@ -4861,6 +4901,8 @@ CREATE TABLE "CurrencyTech" (
 	PRIMARY KEY("tech","curr")
 );
 -- Industry
+-- Fuel technologies
+INSERT INTO "CurrencyTech" VALUES ('IND_FT_H2_N','EUR12');
 -- Chemicals
 INSERT INTO "CurrencyTech" VALUES ('IND_CH_HVC_NAPSC_N','USD16');
 INSERT INTO "CurrencyTech" VALUES ('IND_CH_HVC_ETHSC_N','USD16');
@@ -4990,6 +5032,9 @@ CREATE TABLE "CapacityFactor" (
 	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
 );
 -- Industrial sector
+-- Fuel technologies
+INSERT INTO "CapacityFactor" VALUES ('IT','IND_FT_H2_N',2014,0.75,'');
+INSERT INTO "CapacityFactor" VALUES ('IT','IND_FT_H2E_N',2014,0.75,'');
 -- Base year technologies
 -- Machine drive and steam
 INSERT INTO "CapacityFactor" VALUES ('IT','IND_MD_ELC_E',2006,0.70,'');
