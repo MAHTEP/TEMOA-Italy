@@ -43,3 +43,7 @@ if Simplifying:
     conn.commit()
     conn.close()
     print("{:>62}".format('SQLite database simplified.'))
+
+conn = sqlite3.connect(sqlite_database)
+conn.execute("VACUUM")
+conn.close()
