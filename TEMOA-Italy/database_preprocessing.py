@@ -2110,6 +2110,7 @@ start_time = time.time()
 
 MinActivityGroup = pd.read_sql("SELECT * FROM MinActivityGroup", conn)  # Loading the MinActivityGroup table from the .SQLite database
 
+regions = list()
 periods = list()
 group_name = list()
 min_act_g = list()
@@ -2118,7 +2119,7 @@ notes = list()
 # Extracting the list of all indexes combinations for MinActivityGroup
 indexes = list()
 for i in range(0, len(MinActivityGroup)):
-    indexes.append(MinActivityGroup.group_name[i])
+    indexes.append(MinActivityGroup.regions[i] + MinActivityGroup.group_name[i])
 MinActivityGroup['indexes'] = indexes
 indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
@@ -2132,11 +2133,13 @@ for index_i in indexes:
             time_periods_i = [x for x in time_periods if MinActivityGroup_i.periods[i] <= x < MinActivityGroup_i.periods[i+1]]
             for j in range(0, len(time_periods_i)):
                 if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinActivityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MinActivityGroup_i.group_name[i])
                     min_act_g.append(float(MinActivityGroup_i.min_act_g[i]))
                     notes.append(MinActivityGroup_i.notes[i])
                 else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinActivityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MinActivityGroup_i.group_name[i])
                     min_act_g.append(float(MinActivityGroup_i.min_act_g[i] +
@@ -2147,6 +2150,7 @@ for index_i in indexes:
         else:  # Last time period
             time_periods_i = [x for x in time_periods if x == MinActivityGroup_i.periods[i]]
             for j in range(0, len(time_periods_i)):
+                regions.append(MinActivityGroup_i.regions[i])
                 periods.append(time_periods_i[j])
                 group_name.append(MinActivityGroup_i.group_name[i])
                 min_act_g.append(float(MinActivityGroup_i.min_act_g[i]))
@@ -2155,6 +2159,7 @@ for index_i in indexes:
 # Converting lists into a DataFrame
 MinActivityGroup = pd.DataFrame(
     {
+        "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
         "min_act_g": pd.Series(min_act_g, dtype='float'),
@@ -2185,6 +2190,7 @@ start_time = time.time()
 
 MaxActivityGroup = pd.read_sql("SELECT * FROM MaxActivityGroup", conn)  # Loading the MaxActivityGroup table from the .SQLite database
 
+regions = list()
 periods = list()
 group_name = list()
 max_act_g = list()
@@ -2193,7 +2199,7 @@ notes = list()
 # Extracting the list of all indexes combinations for MaxActivityGroup
 indexes = list()
 for i in range(0, len(MaxActivityGroup)):
-    indexes.append(MaxActivityGroup.group_name[i])
+    indexes.append(MaxActivityGroup.regions[i] + MaxActivityGroup.group_name[i])
 MaxActivityGroup['indexes'] = indexes
 indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
@@ -2207,11 +2213,13 @@ for index_i in indexes:
             time_periods_i = [x for x in time_periods if MaxActivityGroup_i.periods[i] <= x < MaxActivityGroup_i.periods[i+1]]
             for j in range(0, len(time_periods_i)):
                 if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxActivityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MaxActivityGroup_i.group_name[i])
                     max_act_g.append(float(MaxActivityGroup_i.max_act_g[i]))
                     notes.append(MaxActivityGroup_i.notes[i])
                 else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxActivityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MaxActivityGroup_i.group_name[i])
                     max_act_g.append(float(MaxActivityGroup_i.max_act_g[i] +
@@ -2222,6 +2230,7 @@ for index_i in indexes:
         else:  # Last time period
             time_periods_i = [x for x in time_periods if x == MaxActivityGroup_i.periods[i]]
             for j in range(0, len(time_periods_i)):
+                regions.append(MaxActivityGroup_i.regions[i])
                 periods.append(time_periods_i[j])
                 group_name.append(MaxActivityGroup_i.group_name[i])
                 max_act_g.append(float(MaxActivityGroup_i.max_act_g[i]))
@@ -2230,6 +2239,7 @@ for index_i in indexes:
 # Converting lists into a DataFrame
 MaxActivityGroup = pd.DataFrame(
     {
+        "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
         "max_act_g": pd.Series(max_act_g, dtype='float'),
@@ -2260,6 +2270,7 @@ start_time = time.time()
 
 MinCapacityGroup = pd.read_sql("SELECT * FROM MinCapacityGroup", conn)  # Loading the MinCapacityGroup table from the .SQLite database
 
+regions = list()
 periods = list()
 group_name = list()
 min_cap_g = list()
@@ -2268,7 +2279,7 @@ notes = list()
 # Extracting the list of all indexes combinations for MinCapacityGroup
 indexes = list()
 for i in range(0, len(MinCapacityGroup)):
-    indexes.append(MinCapacityGroup.group_name[i])
+    indexes.append(MinCapacityGroup.regions[i] + MinCapacityGroup.group_name[i])
 MinCapacityGroup['indexes'] = indexes
 indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
@@ -2282,11 +2293,13 @@ for index_i in indexes:
             time_periods_i = [x for x in time_periods if MinCapacityGroup_i.periods[i] <= x < MinCapacityGroup_i.periods[i+1]]
             for j in range(0, len(time_periods_i)):
                 if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MinCapacityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MinCapacityGroup_i.group_name[i])
                     min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i]))
                     notes.append(MinCapacityGroup_i.notes[i])
                 else:  # Linear interpolation for intermediate time periods
+                    regions.append(MinCapacityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MinCapacityGroup_i.group_name[i])
                     min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i] +
@@ -2297,6 +2310,7 @@ for index_i in indexes:
         else:  # Last time period
             time_periods_i = [x for x in time_periods if x == MinCapacityGroup_i.periods[i]]
             for j in range(0, len(time_periods_i)):
+                regions.append(MinCapacityGroup_i.regions[i])
                 periods.append(time_periods_i[j])
                 group_name.append(MinCapacityGroup_i.group_name[i])
                 min_cap_g.append(float(MinCapacityGroup_i.min_cap_g[i]))
@@ -2305,6 +2319,7 @@ for index_i in indexes:
 # Converting lists into a DataFrame
 MinCapacityGroup = pd.DataFrame(
     {
+        "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
         "min_cap_g": pd.Series(min_cap_g, dtype='float'),
@@ -2335,6 +2350,7 @@ start_time = time.time()
 
 MaxCapacityGroup = pd.read_sql("SELECT * FROM MaxCapacityGroup", conn)  # Loading the MaxCapacityGroup table from the .SQLite database
 
+regions = list()
 periods = list()
 group_name = list()
 max_cap_g = list()
@@ -2343,7 +2359,7 @@ notes = list()
 # Extracting the list of all indexes combinations for MaxCapacityGroup
 indexes = list()
 for i in range(0, len(MaxCapacityGroup)):
-    indexes.append(MaxCapacityGroup.group_name[i])
+    indexes.append(MaxCapacityGroup.regions[i] + MaxCapacityGroup.group_name[i])
 MaxCapacityGroup['indexes'] = indexes
 indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 
@@ -2357,11 +2373,13 @@ for index_i in indexes:
             time_periods_i = [x for x in time_periods if MaxCapacityGroup_i.periods[i] <= x < MaxCapacityGroup_i.periods[i+1]]
             for j in range(0, len(time_periods_i)):
                 if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaxCapacityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MaxCapacityGroup_i.group_name[i])
                     max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i]))
                     notes.append(MaxCapacityGroup_i.notes[i])
                 else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaxCapacityGroup_i.regions[i])
                     periods.append(time_periods_i[j])
                     group_name.append(MaxCapacityGroup_i.group_name[i])
                     max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i] +
@@ -2372,6 +2390,7 @@ for index_i in indexes:
         else:  # Last time period
             time_periods_i = [x for x in time_periods if x == MaxCapacityGroup_i.periods[i]]
             for j in range(0, len(time_periods_i)):
+                regions.append(MaxCapacityGroup_i.regions[i])
                 periods.append(time_periods_i[j])
                 group_name.append(MaxCapacityGroup_i.group_name[i])
                 max_cap_g.append(float(MaxCapacityGroup_i.max_cap_g[i]))
@@ -2380,6 +2399,7 @@ for index_i in indexes:
 # Converting lists into a DataFrame
 MaxCapacityGroup = pd.DataFrame(
     {
+        "regions": pd.Series(regions, dtype='str'),
         "periods": pd.Series(periods, dtype='int'),
         "group_name": pd.Series(group_name, dtype='str'),
         "max_cap_g": pd.Series(max_cap_g, dtype='float'),

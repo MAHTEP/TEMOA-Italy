@@ -643,85 +643,85 @@ INSERT INTO "groups" VALUES ('COM_WH_GRP','');
 INSERT INTO "groups" VALUES ('COM_CK_GRP','');
 
 CREATE TABLE "TechGroupWeight" (
-	"regions"	        text,
 	"tech"		        text,
 	"group_name"	    text,
 	"weight"        	real,
 	"tech_desc"	        text,
-	PRIMARY KEY("tech","group_name","regions")
+	PRIMARY KEY("tech","group_name")
 );
 -- Agriculture sector
-INSERT INTO "TechGroupWeight" VALUES ('IT','AGR_TECH','AGR_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','AGR_FT_DST','AGR_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','AGR_FT_GSL','AGR_FT_GSL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','AGR_FT_NGA','AGR_FT_NGA_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('AGR_TECH','AGR_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('AGR_FT_DST','AGR_FT_DST_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('AGR_FT_GSL','AGR_FT_GSL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('AGR_FT_NGA','AGR_FT_NGA_GRP',1.0,'');
 -- Commercial sector
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_BIO_E','COM_FT_BIO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_BIO_N','COM_FT_BIO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_DST_E','COM_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_DST_N','COM_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_ELC_E','COM_FT_ELC_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_E','COM_FT_GEO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_1_N','COM_FT_GEO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_2_N','COM_FT_GEO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_GEO_3_N','COM_FT_GEO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_LPG_E','COM_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_LPG_N','COM_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_NGA_E','COM_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_NGA_N','COM_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_SOL_E','COM_FT_SOL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_FT_SOL_N','COM_FT_SOL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_COND_DST_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_COND_LPG_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_COND_NGA_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_DST_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_DST_SOL_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_GEO_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HEX_GEO_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HEX_HET_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HEX_HET_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HP_AIR_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HP_ELC_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HP_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HP_NGA_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HP_PRB_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HT_BIO_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HT_DST_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HT_LPG_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_HT_NGA_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_LPG_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_LPG_SOL_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_NGA_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_NGA_SOL_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_RES_ELC_E','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_SH_WPEL_N','COM_SH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_AHP_ELC_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_COND_DST_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_COND_LPG_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_COND_NGA_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_DST_E','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_DST_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_ELC_E','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_ELC_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_HET_E','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_HEX_HET_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_LPG_E','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_LPG_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_NGA_E','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_NGA_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_SOL_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_WH_WPEL_BIO_N','COM_WH_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_BIO_E','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_BIO_N','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_DST_N','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_ELC_E','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_ELC_N','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_LPG_E','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_LPG_N','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_NGA_E','COM_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','COM_CK_NGA_N','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_BIO_E','COM_FT_BIO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_BIO_N','COM_FT_BIO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_DST_E','COM_FT_DST_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_DST_N','COM_FT_DST_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_ELC_E','COM_FT_ELC_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_GEO_E','COM_FT_GEO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_GEO_1_N','COM_FT_GEO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_GEO_2_N','COM_FT_GEO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_GEO_3_N','COM_FT_GEO_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_LPG_E','COM_FT_LPG_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_LPG_N','COM_FT_LPG_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_NGA_E','COM_FT_NGA_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_NGA_N','COM_FT_NGA_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_SOL_E','COM_FT_SOL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_FT_SOL_N','COM_FT_SOL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_COND_DST_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_COND_LPG_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_COND_NGA_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_DST_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_DST_SOL_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_GEO_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HEX_GEO_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HEX_HET_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HEX_HET_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HP_AIR_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HP_ELC_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HP_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HP_NGA_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HP_PRB_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HT_BIO_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HT_DST_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HT_LPG_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_HT_NGA_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_LPG_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_LPG_SOL_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_NGA_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_NGA_SOL_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_RES_ELC_E','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_SH_WPEL_N','COM_SH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_AHP_ELC_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_COND_DST_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_COND_LPG_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_COND_NGA_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_DST_E','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_DST_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_ELC_E','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_ELC_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_HET_E','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_HEX_HET_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_LPG_E','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_LPG_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_NGA_E','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_NGA_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_SOL_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_WH_WPEL_BIO_N','COM_WH_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_BIO_E','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_BIO_N','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_DST_N','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_ELC_E','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_ELC_N','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_LPG_E','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_LPG_N','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_NGA_E','COM_CK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('COM_CK_NGA_N','COM_CK_GRP',1.0,'');
 
 CREATE TABLE "MinActivityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"min_act_g"	real,
@@ -729,26 +729,27 @@ CREATE TABLE "MinActivityGroup" (
 	PRIMARY KEY("periods","group_name")
 );
 -- Commercial sector
-INSERT INTO "MinActivityGroup" VALUES (2010,'COM_FT_ELC_GRP',292.79,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2012,'COM_FT_ELC_GRP',306.54,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2014,'COM_FT_ELC_GRP',308.78,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2016,'COM_FT_ELC_GRP',316.74,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2018,'COM_FT_ELC_GRP',314.14,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2020,'COM_FT_ELC_GRP',257.39,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2010,'COM_FT_LPG_GRP',22.72,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2012,'COM_FT_LPG_GRP',17.81,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2014,'COM_FT_LPG_GRP',16.74,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2016,'COM_FT_LPG_GRP',17.40,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2018,'COM_FT_LPG_GRP',17.15,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2020,'COM_FT_LPG_GRP',17.29,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2010,'COM_FT_NGA_GRP',324.54,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2012,'COM_FT_NGA_GRP',289.07,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2014,'COM_FT_NGA_GRP',248.82,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2016,'COM_FT_NGA_GRP',261.19,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2018,'COM_FT_NGA_GRP',285.39,'PJ');
-INSERT INTO "MinActivityGroup" VALUES (2020,'COM_FT_NGA_GRP',266.79,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'COM_FT_ELC_GRP',292.79,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'COM_FT_ELC_GRP',306.54,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'COM_FT_ELC_GRP',308.78,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'COM_FT_ELC_GRP',316.74,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'COM_FT_ELC_GRP',314.14,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'COM_FT_ELC_GRP',257.39,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'COM_FT_LPG_GRP',22.72,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'COM_FT_LPG_GRP',17.81,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'COM_FT_LPG_GRP',16.74,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'COM_FT_LPG_GRP',17.40,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'COM_FT_LPG_GRP',17.15,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'COM_FT_LPG_GRP',17.29,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'COM_FT_NGA_GRP',324.54,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'COM_FT_NGA_GRP',289.07,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'COM_FT_NGA_GRP',248.82,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'COM_FT_NGA_GRP',261.19,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'COM_FT_NGA_GRP',285.39,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'COM_FT_NGA_GRP',266.79,'PJ');
 
 CREATE TABLE "MaxActivityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"max_act_g"	real,
@@ -756,50 +757,51 @@ CREATE TABLE "MaxActivityGroup" (
 	PRIMARY KEY("periods","group_name")
 );
 -- Commercial sector
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_BIO_GRP',0.86,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_BIO_GRP',2.33,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_BIO_GRP',3.51,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_BIO_GRP',3.89,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_BIO_GRP',3.92,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_BIO_GRP',4.09,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_DST_GRP',14.81,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_DST_GRP',12.41,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_DST_GRP',10.94,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_DST_GRP',8.24,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_DST_GRP',6.31,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_DST_GRP',4.97,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_ELC_GRP',323.61,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_ELC_GRP',338.80,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_ELC_GRP',341.28,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_ELC_GRP',350.08,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_ELC_GRP',347.20,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_ELC_GRP',284.48,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_GEO_GRP',5.16,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_GEO_GRP',5.16,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_GEO_GRP',5.04,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_GEO_GRP',5.22,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_GEO_GRP',5.28,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_GEO_GRP',5.05,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_LPG_GRP',25.12,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_LPG_GRP',19.68,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_LPG_GRP',18.50,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_LPG_GRP',19.23,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_LPG_GRP',18.96,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_LPG_GRP',19.11,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_NGA_GRP',358.70,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_NGA_GRP',319.50,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_NGA_GRP',275.01,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_NGA_GRP',288.69,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_NGA_GRP',315.43,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_NGA_GRP',294.87,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2010,'COM_FT_SOL_GRP',1.07,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2012,'COM_FT_SOL_GRP',1.42,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2014,'COM_FT_SOL_GRP',1.62,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2016,'COM_FT_SOL_GRP',1.80,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2018,'COM_FT_SOL_GRP',1.96,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES (2020,'COM_FT_SOL_GRP',1.90,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_BIO_GRP',0.86,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_BIO_GRP',2.33,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_BIO_GRP',3.51,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_BIO_GRP',3.89,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_BIO_GRP',3.92,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_BIO_GRP',4.09,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_DST_GRP',14.81,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_DST_GRP',12.41,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_DST_GRP',10.94,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_DST_GRP',8.24,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_DST_GRP',6.31,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_DST_GRP',4.97,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_ELC_GRP',323.61,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_ELC_GRP',338.80,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_ELC_GRP',341.28,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_ELC_GRP',350.08,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_ELC_GRP',347.20,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_ELC_GRP',284.48,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_GEO_GRP',5.16,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_GEO_GRP',5.16,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_GEO_GRP',5.04,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_GEO_GRP',5.22,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_GEO_GRP',5.28,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_GEO_GRP',5.05,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_LPG_GRP',25.12,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_LPG_GRP',19.68,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_LPG_GRP',18.50,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_LPG_GRP',19.23,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_LPG_GRP',18.96,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_LPG_GRP',19.11,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_NGA_GRP',358.70,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_NGA_GRP',319.50,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_NGA_GRP',275.01,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_NGA_GRP',288.69,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_NGA_GRP',315.43,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_NGA_GRP',294.87,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_SOL_GRP',1.07,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'COM_FT_SOL_GRP',1.42,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'COM_FT_SOL_GRP',1.62,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'COM_FT_SOL_GRP',1.80,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'COM_FT_SOL_GRP',1.96,'PJ');
+INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'COM_FT_SOL_GRP',1.90,'PJ');
 
 CREATE TABLE "MinCapacityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"min_cap_g"	real,
@@ -808,6 +810,7 @@ CREATE TABLE "MinCapacityGroup" (
 );
 
 CREATE TABLE "MaxCapacityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"max_cap_g"	real,

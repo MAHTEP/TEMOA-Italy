@@ -242,56 +242,55 @@ INSERT INTO "groups" VALUES ('SF_PROD_GRP','');
 INSERT INTO "groups" VALUES ('CCUS_GRP','');
 
 CREATE TABLE "TechGroupWeight" (
-	"regions"	        text,
 	"tech"		        text,
 	"group_name"	    text,
 	"weight"	real,
 	"tech_desc"	        text,
-	PRIMARY KEY("tech","group_name","regions")
+	PRIMARY KEY("tech","group_name")
 );
 -- Hydrogen and CCUS
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SR_NGA','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_GS_COA','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_PO_OIL','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SR_BIO','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_GS_BIO','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_SR_ETH','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_EL_ALK','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_EL_PEM','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_EL_SOEC','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','H2_EL_AEM','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SR_NGA','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_GS_COA','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_GS_BIO','H2_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_NGA_METH','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_HYDR','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_COELC','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_HYDR','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_COELC','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DSTKER_DAC','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_HYDR','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_COELC','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_DAC','SF_PROD_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_SR_NGA','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_GS_COA','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_H2_GS_BIO','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_COA','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_ELC_NGA','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_DAC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_ELC_CO2_AGG','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_IND_CO2_AGG','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SNK_UPS_CO2_AGG','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_NGA_METH','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_HYDR','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DST_COELC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_HYDR','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_KER_COELC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_DSTKER_DAC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_HYDR','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_COELC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','SF_MEOH_DAC','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_SNK_DGF_ON','CCUS_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('IT','CCUS_SNK_DGF_OFF','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_SR_NGA','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_GS_COA','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_PO_OIL','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_SR_BIO','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_GS_BIO','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_SR_ETH','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_EL_ALK','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_EL_PEM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_EL_SOEC','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('H2_EL_AEM','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_SR_NGA','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_GS_COA','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_GS_BIO','H2_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_NGA_METH','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DST_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DST_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_KER_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_KER_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DSTKER_DAC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_HYDR','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_COELC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_DAC','SF_PROD_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_SR_NGA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_GS_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_H2_GS_BIO','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_ELC_COA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_ELC_NGA','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SNK_ELC_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SNK_IND_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SNK_UPS_CO2_AGG','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_NGA_METH','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DST_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DST_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_KER_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_KER_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_DSTKER_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_HYDR','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_COELC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('SF_MEOH_DAC','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_SNK_DGF_ON','CCUS_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('CCUS_SNK_DGF_OFF','CCUS_GRP',1.0,'');
 
 CREATE TABLE "MinActivityGroup" (
 	"regions"	text,
@@ -302,6 +301,7 @@ CREATE TABLE "MinActivityGroup" (
 	PRIMARY KEY("periods","group_name","regions")
 );
 CREATE TABLE "MaxActivityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"max_act_g"	real,
@@ -309,6 +309,7 @@ CREATE TABLE "MaxActivityGroup" (
 	PRIMARY KEY("periods","group_name")
 );
 CREATE TABLE "MinCapacityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"min_cap_g"	real,
@@ -316,6 +317,7 @@ CREATE TABLE "MinCapacityGroup" (
 	PRIMARY KEY("periods","group_name")
 );
 CREATE TABLE "MaxCapacityGroup" (
+	"regions"	text,
 	"periods"	integer,
 	"group_name"	text,
 	"max_cap_g"	real,
@@ -1355,7 +1357,7 @@ INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_ETH',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_AEM',2014,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_AEM',2050,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_BL_DMY',2020,0.70,'Assumption');
 -- CCUS
 INSERT INTO "CapacityFactor" VALUES ('IT','CCUS_H2_SR_NGA',2020,0.90,'Assumption');
