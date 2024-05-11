@@ -1065,11 +1065,11 @@ cost_fixed_notes = list()
 
 tech_already_considered = list()
 for i_tech in range(0, len(CostFixed.tech)):
-    tech_i = CostFixed.tech[i_tech]
+    index_i = CostFixed.regions[i_tech] + CostFixed.tech[i_tech]
 
     flag_check = 0
     for check in range(0, len(tech_already_considered)):
-        if tech_i == tech_already_considered[check]:
+        if index_i == tech_already_considered[check]:
             flag_check = 1
 
     if flag_check == 0:
@@ -1077,11 +1077,11 @@ for i_tech in range(0, len(CostFixed.tech)):
         year_lifetime = list()
         lifetime_process = list()
         for i_life in range(0, len(LifetimeTech.life)):
-            if LifetimeTech.tech[i_life] == tech_i:
+            if LifetimeTech.regions[i_life] + LifetimeTech.tech[i_life] == index_i:
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeProcess.tech[i_life] == tech_i:
+                if LifetimeProcess.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
@@ -1090,10 +1090,10 @@ for i_tech in range(0, len(CostFixed.tech)):
         location = list()
         location.append(i_tech)
         for j_tech in range(i_tech + 1, len(CostFixed.tech)):
-            if CostFixed.tech[j_tech] == tech_i:
+            if CostFixed.regions[j_tech] + CostFixed.tech[j_tech] == index_i:
                 flag = 1
                 location.append(j_tech)
-                tech_already_considered.append(tech_i)
+                tech_already_considered.append(index_i)
 
         if flag == 0:  # No other values
             for i_year in range(0, len(time_periods)):
@@ -1210,11 +1210,11 @@ cost_variable_notes = list()
 
 tech_already_considered = list()
 for i_tech in range(0, len(CostVariable.tech)):
-    tech_i = CostVariable.tech[i_tech]
+    index_i = CostVariable.regions[i_tech] + CostVariable.tech[i_tech]
 
     flag_check = 0
     for check in range(0, len(tech_already_considered)):
-        if tech_i == tech_already_considered[check]:
+        if index_i == tech_already_considered[check]:
             flag_check = 1
 
     if flag_check == 0:
@@ -1222,11 +1222,11 @@ for i_tech in range(0, len(CostVariable.tech)):
         year_lifetime = list()
         lifetime_process = list()
         for i_life in range(0, len(LifetimeTech.life)):
-            if LifetimeTech.tech[i_life] == tech_i:
+            if LifetimeTech.regions[i_life] + LifetimeTech.tech[i_life] == index_i:
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeProcess.tech[i_life] == tech_i:
+                if LifetimeTech.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
@@ -1235,10 +1235,10 @@ for i_tech in range(0, len(CostVariable.tech)):
         location = list()
         location.append(i_tech)
         for j_tech in range(i_tech + 1, len(CostVariable.tech)):
-            if CostVariable.tech[j_tech] == tech_i:
+            if CostVariable.regions[j_tech] + CostVariable.tech[j_tech] == index_i:
                 flag = 1
                 location.append(j_tech)
-                tech_already_considered.append(tech_i)
+                tech_already_considered.append(index_i)
 
         if flag == 0:  # No other values
             for i_year in range(0, len(time_periods)):
