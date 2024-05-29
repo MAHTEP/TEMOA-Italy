@@ -1,4 +1,3 @@
-
 CREATE TABLE "regions" (
 	"regions"	TEXT,
 	"region_note"	TEXT,
@@ -8623,9 +8622,9 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
-INSERT INTO "EmissionLimit" VALUES ('IT',2030,'GWP_100',220000,'kt','');
-INSERT INTO "EmissionLimit" VALUES ('IT',2040,'GWP_100',120000,'kt','');
-INSERT INTO "EmissionLimit" VALUES ('IT',2050,'GWP_100',20000,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2030,'GWP_100',220000,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2040,'GWP_100',120000,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2050,'GWP_100',20000,'kt','');
 
 CREATE TABLE "EmissionActivity" (
 	"regions"	text,
@@ -8949,8 +8948,8 @@ INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_COA','CCUS_ELC_COA',2
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_COA','CCUS_ELC_COA',2020,'ELC_CEN',101.16/0.32*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_COA','CCUS_ELC_COA',2030,'ELC_CEN',101.16/0.35*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',-56.10/0.48*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',-56.10/0.55*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',56.10/0.48*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',-56.10/0.48*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',56.10/0.55*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',56.10/0.55*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','TOT_CO2','ELC_DST','CCUS_DAC',2020,'SNK_CO2',-1.0,'kt/kt','');
 INSERT INTO "EmissionActivity" VALUES ('IT','TOT_CO2','HET','CCUS_DAC',2020,'SNK_CO2',-1.0,'kt/kt','');
