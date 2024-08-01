@@ -1354,9 +1354,9 @@ INSERT INTO "CapacityFactor" VALUES ('IT','H2_PO_OIL',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_GS_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_ETH',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2014,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2020,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_AEM',2050,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_BL_DMY',2020,0.70,'Assumption');
 -- CCUS

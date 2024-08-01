@@ -4062,7 +4062,7 @@ INSERT INTO "TechGroupWeight" VALUES ('IND_NM_OTH_DST_E','IND_NM_OTH_GRP',1.0,''
 INSERT INTO "TechGroupWeight" VALUES ('IND_NM_OTH_ELC_E','IND_NM_OTH_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IND_NM_OTH_LPG_E','IND_NM_OTH_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('IND_NM_OTH_NGA_E','IND_NM_OTH_GRP',1.0,'');
--- Power sector
+-- Electricity sector
 INSERT INTO "TechGroupWeight" VALUES ('ELC_FT_BLQ','ELC_FT_BLQ_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_FT_SLB_RES','ELC_FT_SLB_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_FT_SLB_VIR','ELC_FT_SLB_GRP',1.0,'');
@@ -5039,7 +5039,7 @@ INSERT INTO "MaxInputGroup" VALUES ('IT',2014,'ELC_CEN','IND_FT_H2_GRP',0.06,'')
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'ELC_CEN','IND_FT_H2_GRP',0.06,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'IND_COK','IND_CH_OTH_GRP',0.004,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'IND_COK','IND_CH_OTH_GRP',0.031,'');
--- Power sector
+-- Electricity sector
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'COA_HCO','ELC_FT_COA_GRP',0.89,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'COA_OVC','ELC_FT_COA_GRP',0.01,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'GAS_BFG','ELC_FT_COA_GRP',0.10,'');
@@ -8622,9 +8622,6 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
---INSERT INTO "EmissionLimit" VALUES ('IT',2030,'GWP_100',220000,'kt','');
---INSERT INTO "EmissionLimit" VALUES ('IT',2040,'GWP_100',120000,'kt','');
---INSERT INTO "EmissionLimit" VALUES ('IT',2050,'GWP_100',20000,'kt','');
 
 CREATE TABLE "EmissionActivity" (
 	"regions"	text,
@@ -17428,9 +17425,9 @@ INSERT INTO "CapacityFactor" VALUES ('IT','H2_PO_OIL',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_GS_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_ETH',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2014,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2020,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_AEM',2050,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_BL_DMY',2020,0.70,'Assumption');
 -- CCUS
