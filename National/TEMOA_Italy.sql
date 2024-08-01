@@ -17535,9 +17535,9 @@ INSERT INTO "CapacityFactor" VALUES ('IT','H2_PO_OIL',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_GS_BIO',2014,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_SR_ETH',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2014,0.90,'Assumption');
-INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2014,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_ALK',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_PEM',2020,0.90,'Assumption');
+INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_SOEC',2020,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_EL_AEM',2050,0.90,'Assumption');
 INSERT INTO "CapacityFactor" VALUES ('IT','H2_BL_DMY',2020,0.70,'Assumption');
 -- CCUS
@@ -18432,9 +18432,9 @@ INSERT INTO "MaterialIntensity" VALUES ('IT','PHO','STG_ELC_DST_BTT',2020,4.14E+
 -- Hydrogen
 INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','H2_EL_ALK',2020,3.94,'t/PJ','');
 INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','H2_EL_ALK',2020,0.49,'t/PJ','');
-INSERT INTO "MaterialIntensity" VALUES ('IT','IRI','H2_EL_PEM',2020,0.00097,'t/PJ','');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IRI','H2_EL_PEM',2020,0.000353,'t/PJ','');
 INSERT INTO "MaterialIntensity" VALUES ('IT','PAL','H2_EL_PEM',2020,0.00097,'t/PJ','');
-INSERT INTO "MaterialIntensity" VALUES ('IT','PLA','H2_EL_PEM',2020,0.000353,'t/PJ','');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PLA','H2_EL_PEM',2020,0.00097,'t/PJ','');
 INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','H2_EL_SOEC',2020,0.6,'t/PJ','');
 INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','H2_EL_SOEC',2020,0.16,'t/PJ','');
 INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','H2_EL_SOEC',2020,0.09,'t/PJ','');
