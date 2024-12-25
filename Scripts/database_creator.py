@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 sqlite_database = 'TEMOA_Italy.sqlite'
-sql_modules = ['TEMOA_Italy.sql']
+sql_modules = ['Transport.sql']
 
 Deleting = True
 Reading = True

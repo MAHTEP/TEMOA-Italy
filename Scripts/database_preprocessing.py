@@ -12,61 +12,67 @@ print_i = 0
 
 print_status = True
 
-print_outcome = {'EmissionActivity':        False,
-                 'EmissionLimit':           False,
-                 'LifetimeProcess':         False,
-                 'Efficiency':              False,
-                 'TechInputSplit':          False,
-                 'TechOutputSplit':         False,
-                 'Currency':                False,
-                 'CostInvest':              False,
-                 'CostFixed':               False,
-                 'CostVariable':            False,
-                 'DiscountRate':            False,
-                 'MinCapacity':             False,
-                 'MinActivity':             False,
-                 'MaxCapacity':             False,
-                 'MaxActivity':             False,
-                 'MinInputGroup':           False,
-                 'MaxInputGroup':           False,
-                 'MinOutputGroup':          False,
-                 'MaxOutputGroup':          False,
-                 'MinActivityGroup':        False,
-                 'MaxActivityGroup':        False,
-                 'MinCapacityGroup':        False,
-                 'MaxCapacityGroup':        False,
-                 'Demand':                  False,
-                 'CapacityFactor':          False,
-                 'CapacityFactorProcess':   False,
-                 'CapacityCredit':          False}
+print_outcome = {'EmissionActivity':                    False,
+                 'EmissionLimit':                       False,
+                 'LifetimeProcess':                     False,
+                 'Efficiency':                          False,
+                 'TechInputSplit':                      False,
+                 'TechOutputSplit':                     False,
+                 'Currency':                            False,
+                 'CostInvest':                          False,
+                 'CostFixed':                           False,
+                 'CostVariable':                        False,
+                 'DiscountRate':                        False,
+                 'MinCapacity':                         False,
+                 'MinActivity':                         False,
+                 'MaxCapacity':                         False,
+                 'MaxActivity':                         False,
+                 'MinInputGroup':                       False,
+                 'MaxInputGroup':                       False,
+                 'MinOutputGroup':                      False,
+                 'MaxOutputGroup':                      False,
+                 'MinActivityGroup':                    False,
+                 'MaxActivityGroup':                    False,
+                 'MinCapacityGroup':                    False,
+                 'MaxCapacityGroup':                    False,
+                 'Demand':                              False,
+                 'CapacityFactor':                      False,
+                 'CapacityFactorProcess':               False,
+                 'CapacityCredit':                      False,
+                 'EnergyCommodityConcentrationIndex':   False,  #EnergySR
+                 'TechnologyMaterialSupplyRisk':        False,  #MaterialSR
+                 'MaterialIntensity':                   False}  #MaterialSR
 
-save_tosql = {'EmissionActivity':           True,
-              'EmissionLimit':              True,
-              'LifetimeProcess':            True,
-              'Efficiency':                 True,
-              'TechInputSplit':             True,
-              'TechOutputSplit':            True,
-              'Currency':                   True,
-              'CostInvest':                 True,
-              'CostFixed':                  True,
-              'CostVariable':               True,
-              'DiscountRate':               True,
-              'MinCapacity':                True,
-              'MinActivity':                True,
-              'MaxCapacity':                True,
-              'MaxActivity':                True,
-              'MinInputGroup':              True,
-              'MaxInputGroup':              True,
-              'MinOutputGroup':             True,
-              'MaxOutputGroup':             True,
-              'MinActivityGroup':           True,
-              'MaxActivityGroup':           True,
-              'MinCapacityGroup':           True,
-              'MaxCapacityGroup':           True,
-              'Demand':                     True,
-              'CapacityFactor':             True,
-              'CapacityFactorProcess':      True,
-              'CapacityCredit':             True}
+save_tosql = {'EmissionActivity':                    True,
+              'EmissionLimit':                       True,
+              'LifetimeProcess':                     True,
+              'Efficiency':                          True,
+              'TechInputSplit':                      True,
+              'TechOutputSplit':                     True,
+              'Currency':                            True,
+              'CostInvest':                          True,
+              'CostFixed':                           True,
+              'CostVariable':                        True,
+              'DiscountRate':                        True,
+              'MinCapacity':                         True,
+              'MinActivity':                         True,
+              'MaxCapacity':                         True,
+              'MaxActivity':                         True,
+              'MinInputGroup':                       True,
+              'MaxInputGroup':                       True,
+              'MinOutputGroup':                      True,
+              'MaxOutputGroup':                      True,
+              'MinActivityGroup':                    True,
+              'MaxActivityGroup':                    True,
+              'MinCapacityGroup':                    True,
+              'MaxCapacityGroup':                    True,
+              'Demand':                              True,
+              'CapacityFactor':                      True,
+              'CapacityFactorProcess':               True,
+              'CapacityCredit':                      True,
+              'EnergyCommodityConcentrationIndex':   True,  #EnergySR
+              'TechnologyMaterialSupplyRisk':        True,  #MaterialSR
+              'MaterialIntensity':                   True}  #MaterialSR
 
 time_periods = pd.read_sql("SELECT * FROM time_periods", conn)  # Extracting the time_periods
 time_periods = time_periods.sort_values(by=['t_periods'], ignore_index=True)
@@ -1081,7 +1087,7 @@ for i_tech in range(0, len(CostFixed.tech)):
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeProcess.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
+                if LifetimeTech.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
@@ -2847,16 +2853,280 @@ if print_status:
     print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'Demand projected.',
                                                                     np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
+# EnergyCommodityConcentrationIndex  #EnergySR
+
+start_time = time.time()
+
+EnergyCommodityConcentrationIndex = pd.read_sql("SELECT * FROM EnergyCommodityConcentrationIndex", conn)  # Loading the EnergyCommodityConcentrationIndex table from the .SQLite database
+
+regions = list()
+comm_name = list()
+periods = list()
+concentration_index = list()
+concentration_index_units = list()
+concentration_index_notes = list()
+
+# Extracting the list of all indexes combinations for EnergyCommodityConcentrationIndex
+indexes = list()
+for i in range(0, len(EnergyCommodityConcentrationIndex)):
+    indexes.append(EnergyCommodityConcentrationIndex.regions[i] + EnergyCommodityConcentrationIndex.comm_name[i])
+EnergyCommodityConcentrationIndex['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    EnergyCommodityConcentrationIndex_i = EnergyCommodityConcentrationIndex[(EnergyCommodityConcentrationIndex['indexes'] == index_i)]
+    EnergyCommodityConcentrationIndex_i = EnergyCommodityConcentrationIndex_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(EnergyCommodityConcentrationIndex_i.periods)):
+        if i < len(EnergyCommodityConcentrationIndex_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if EnergyCommodityConcentrationIndex_i.periods[i] <= x < EnergyCommodityConcentrationIndex_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(EnergyCommodityConcentrationIndex_i.regions[i])
+                    comm_name.append(EnergyCommodityConcentrationIndex_i.comm_name[i])
+                    periods.append(time_periods_i[j])
+                    concentration_index.append(float(EnergyCommodityConcentrationIndex_i.concentration_index[i]))
+                    concentration_index_units.append(EnergyCommodityConcentrationIndex_i.concentration_index_units[i])
+                    concentration_index_notes.append(EnergyCommodityConcentrationIndex_i.concentration_index_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(EnergyCommodityConcentrationIndex_i.regions[i])
+                    comm_name.append(EnergyCommodityConcentrationIndex_i.comm_name[i])
+                    periods.append(time_periods_i[j])
+                    concentration_index.append(float(EnergyCommodityConcentrationIndex_i.concentration_index[i] +
+                                        (EnergyCommodityConcentrationIndex_i.concentration_index[i + 1] - EnergyCommodityConcentrationIndex_i.concentration_index[i]) *
+                                        (time_periods_i[j] - EnergyCommodityConcentrationIndex_i.periods[i]) /
+                                        (EnergyCommodityConcentrationIndex_i.periods[i + 1] - EnergyCommodityConcentrationIndex_i.periods[i])))
+                    concentration_index_units.append(EnergyCommodityConcentrationIndex_i.concentration_index_units[i])
+                    concentration_index_notes.append(EnergyCommodityConcentrationIndex_i.concentration_index_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= EnergyCommodityConcentrationIndex_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(EnergyCommodityConcentrationIndex_i.regions[i])
+                comm_name.append(EnergyCommodityConcentrationIndex_i.comm_name[i])
+                periods.append(time_periods_i[j])
+                concentration_index.append(float(EnergyCommodityConcentrationIndex_i.concentration_index[i]))
+                concentration_index_units.append(EnergyCommodityConcentrationIndex_i.concentration_index_units[i])
+                concentration_index_notes.append(EnergyCommodityConcentrationIndex_i.concentration_index_notes[i])
+
+# Converting lists into a DataFrame
+EnergyCommodityConcentrationIndex = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "comm_name": pd.Series(comm_name, dtype='str'),
+        "periods": pd.Series(periods, dtype='int'),
+        "concentration_index": pd.Series(concentration_index, dtype='float'),
+        "concentration_index_units": pd.Series(concentration_index_units, dtype='str'),
+        "concentration_index_notes": pd.Series(concentration_index_notes, dtype='str')
+    }
+)
+
+if save_tosql['EnergyCommodityConcentrationIndex']:
+    EnergyCommodityConcentrationIndex.to_sql('EnergyCommodityConcentrationIndex', conn, index=False, if_exists='replace')
+
+if print_outcome['EnergyCommodityConcentrationIndex']:
+    pd.set_option('display.max_rows', len(EnergyCommodityConcentrationIndex))
+    pd.set_option('display.max_columns', 10)
+    print("\nEnergyCommodityConcentrationIndex DataFrame\n\n", EnergyCommodityConcentrationIndex)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'EnergyCommodityConcentrationIndex interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# TechnologyMaterialSupplyRisk  #MaterialSR
+
+start_time = time.time()
+
+TechnologyMaterialSupplyRisk = pd.read_sql("SELECT * FROM TechnologyMaterialSupplyRisk", conn)  # Loading the TechnologyMaterialSupplyRisk table from the .SQLite database
+
+regions = list()
+tech = list()
+vintage = list()
+tech_msr = list()
+tech_msr_units = list()
+tech_msr_notes = list()
+
+# Extracting the list of all indexes combinations for TechnologyMaterialSupplyRisk
+indexes = list()
+for i in range(0, len(TechnologyMaterialSupplyRisk)):
+    indexes.append(TechnologyMaterialSupplyRisk.regions[i] + TechnologyMaterialSupplyRisk.tech[i])
+TechnologyMaterialSupplyRisk['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    TechnologyMaterialSupplyRisk_i = TechnologyMaterialSupplyRisk[(TechnologyMaterialSupplyRisk['indexes'] == index_i)]
+    TechnologyMaterialSupplyRisk_i = TechnologyMaterialSupplyRisk_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(TechnologyMaterialSupplyRisk_i.vintage)):
+        if i < len(TechnologyMaterialSupplyRisk_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if TechnologyMaterialSupplyRisk_i.vintage[i] <= x < TechnologyMaterialSupplyRisk_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(TechnologyMaterialSupplyRisk_i.regions[i])
+                    tech.append(TechnologyMaterialSupplyRisk_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    tech_msr.append(float(TechnologyMaterialSupplyRisk_i.tech_msr[i]))
+                    tech_msr_units.append(TechnologyMaterialSupplyRisk_i.tech_msr_units[i])
+                    tech_msr_notes.append(TechnologyMaterialSupplyRisk_i.tech_msr_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(TechnologyMaterialSupplyRisk_i.regions[i])
+                    tech.append(TechnologyMaterialSupplyRisk_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    tech_msr.append(float(TechnologyMaterialSupplyRisk_i.tech_msr[i] +
+                                        (TechnologyMaterialSupplyRisk_i.tech_msr[i + 1] - TechnologyMaterialSupplyRisk_i.tech_msr[i]) *
+                                        (time_periods_i[j] - TechnologyMaterialSupplyRisk_i.vintage[i]) /
+                                        (TechnologyMaterialSupplyRisk_i.vintage[i + 1] - TechnologyMaterialSupplyRisk_i.vintage[i])))
+                    tech_msr_units.append(TechnologyMaterialSupplyRisk_i.tech_msr_units[i])
+                    tech_msr_notes.append(TechnologyMaterialSupplyRisk_i.tech_msr_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= TechnologyMaterialSupplyRisk_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(TechnologyMaterialSupplyRisk_i.regions[i])
+                tech.append(TechnologyMaterialSupplyRisk_i.tech[i])
+                vintage.append(time_periods_i[j])
+                tech_msr.append(float(TechnologyMaterialSupplyRisk_i.tech_msr[i]))
+                tech_msr_units.append(TechnologyMaterialSupplyRisk_i.tech_msr_units[i])
+                tech_msr_notes.append(TechnologyMaterialSupplyRisk_i.tech_msr_notes[i])
+
+# Converting lists into a DataFrame
+TechnologyMaterialSupplyRisk = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "tech_msr": pd.Series(tech_msr, dtype='float'),
+        "tech_msr_units": pd.Series(tech_msr_units, dtype='str'),
+        "tech_msr_notes": pd.Series(tech_msr_notes, dtype='str')
+    }
+)
+
+if save_tosql['TechnologyMaterialSupplyRisk']:
+    TechnologyMaterialSupplyRisk.to_sql('TechnologyMaterialSupplyRisk', conn, index=False, if_exists='replace')
+
+if print_outcome['TechnologyMaterialSupplyRisk']:
+    pd.set_option('display.max_rows', len(TechnologyMaterialSupplyRisk))
+    pd.set_option('display.max_columns', 10)
+    print("\nTechnologyMaterialSupplyRisk DataFrame\n\n", TechnologyMaterialSupplyRisk)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'TechnologyMaterialSupplyRisk interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# MaterialIntensity  #MaterialSR
+
+start_time = time.time()
+
+MaterialIntensity = pd.read_sql("SELECT * FROM MaterialIntensity", conn)  # Loading the MaterialIntensity table from the .SQLite database
+
+regions = list()
+comm_name = list()
+tech = list()
+vintage = list()
+mat_int = list()
+mat_int_units = list()
+mat_int_notes = list()
+
+# Extracting the list of all indexes combinations for MaterialIntensity
+indexes = list()
+for i in range(0, len(MaterialIntensity)):
+    indexes.append(MaterialIntensity.regions[i] + MaterialIntensity.comm_name[i] + MaterialIntensity.tech[i])
+MaterialIntensity['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    MaterialIntensity_i = MaterialIntensity[(MaterialIntensity['indexes'] == index_i)]
+    MaterialIntensity_i = MaterialIntensity_i.sort_values(by=['vintage'], ignore_index=True)
+    for i in range(0, len(MaterialIntensity_i.vintage)):
+        if i < len(MaterialIntensity_i.vintage) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if MaterialIntensity_i.vintage[i] <= x < MaterialIntensity_i.vintage[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(MaterialIntensity_i.regions[i])
+                    comm_name.append(MaterialIntensity_i.comm_name[i])
+                    tech.append(MaterialIntensity_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    mat_int.append(float(MaterialIntensity_i.mat_int[i]))
+                    mat_int_units.append(MaterialIntensity_i.mat_int_units[i])
+                    mat_int_notes.append(MaterialIntensity_i.mat_int_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(MaterialIntensity_i.regions[i])
+                    comm_name.append(MaterialIntensity_i.comm_name[i])
+                    tech.append(MaterialIntensity_i.tech[i])
+                    vintage.append(time_periods_i[j])
+                    mat_int.append(float(MaterialIntensity_i.mat_int[i] +
+                                        (MaterialIntensity_i.mat_int[i + 1] - MaterialIntensity_i.mat_int[i]) *
+                                        (time_periods_i[j] - MaterialIntensity_i.vintage[i]) /
+                                        (MaterialIntensity_i.vintage[i + 1] - MaterialIntensity_i.vintage[i])))
+                    mat_int_units.append(MaterialIntensity_i.mat_int_units[i])
+                    mat_int_notes.append(MaterialIntensity_i.mat_int_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= MaterialIntensity_i.vintage[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(MaterialIntensity_i.regions[i])
+                comm_name.append(MaterialIntensity_i.comm_name[i])
+                tech.append(MaterialIntensity_i.tech[i])
+                vintage.append(time_periods_i[j])
+                mat_int.append(float(MaterialIntensity_i.mat_int[i]))
+                mat_int_units.append(MaterialIntensity_i.mat_int_units[i])
+                mat_int_notes.append(MaterialIntensity_i.mat_int_notes[i])
+
+# Converting lists into a DataFrame
+MaterialIntensity = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "comm_name": pd.Series(comm_name, dtype='str'),
+        "tech": pd.Series(tech, dtype='str'),
+        "vintage": pd.Series(vintage, dtype='int'),
+        "mat_int": pd.Series(mat_int, dtype='float'),
+        "mat_int_units": pd.Series(mat_int_units, dtype='str'),
+        "mat_int_notes": pd.Series(mat_int_notes, dtype='str')
+    }
+)
+
+if save_tosql['MaterialIntensity']:
+    MaterialIntensity.to_sql('MaterialIntensity', conn, index=False, if_exists='replace')
+
+if print_outcome['MaterialIntensity']:
+    pd.set_option('display.max_rows', len(MaterialIntensity))
+    pd.set_option('display.max_columns', 10)
+    print("\nMaterialIntensity DataFrame\n\n", MaterialIntensity)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'MaterialIntensity interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
 print('_______________________________________________________________________')
 
 # Looking for errors in the .SQLite database
 
-TechInputSplit = pd.read_sql("SELECT * FROM TechInputSplit", conn)  # Loading the TechInputSplit table from the .SQLite database
+TechInputSplit = pd.read_sql("SELECT * FROM TechInputSplit",
+                             conn)  # Loading the TechInputSplit table from the .SQLite database
 
 regions = list()
 periods = list()
 tech = list()
-ti_split_sum=list()
+ti_split_sum = list()
 
 # Extracting the list of all indexes combinations for TechInputSplit
 indexes = list()
@@ -2869,7 +3139,8 @@ indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 for index_i in indexes:
     TechInputSplit_i = TechInputSplit[(TechInputSplit['indexes'] == index_i)]
     TechInputSplit_i = TechInputSplit_i.sort_values(by=['periods'], ignore_index=True)
-    check = round(sum(TechInputSplit_i.ti_split), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    check = round(sum(TechInputSplit_i.ti_split),
+                  15)  # Rounding to 15 decimals to avoid problems due to the machine precision
     if check > 1:
         regions.append(TechInputSplit_i.regions[0])
         periods.append(TechInputSplit_i.periods[0])
@@ -2889,17 +3160,18 @@ if len(tech) > 0:
     # Printing warning
     pd.set_option('display.max_rows', len(TechInputSplit_Errors))
     pd.set_option('display.max_columns', 10)
-    print("\nWARNING: Errors detected in the TechInputSplit table. Check the following items:\n\n", TechInputSplit_Errors)
+    print("\nWARNING: Errors detected in the TechInputSplit table. Check the following items:\n\n",
+          TechInputSplit_Errors)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
-        
 
-TechOutputSplit = pd.read_sql("SELECT * FROM TechOutputSplit", conn)  # Loading the TechOutputSplit table from the .SQLite database
+TechOutputSplit = pd.read_sql("SELECT * FROM TechOutputSplit",
+                              conn)  # Loading the TechOutputSplit table from the .SQLite database
 
 regions = list()
 periods = list()
 tech = list()
-to_split_sum=list()
+to_split_sum = list()
 
 # Extracting the list of all indexes combinations for TechOutputSplit
 indexes = list()
@@ -2912,7 +3184,8 @@ indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 for index_i in indexes:
     TechOutputSplit_i = TechOutputSplit[(TechOutputSplit['indexes'] == index_i)]
     TechOutputSplit_i = TechOutputSplit_i.sort_values(by=['periods'], ignore_index=True)
-    check = round(sum(TechOutputSplit_i.to_split), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    check = round(sum(TechOutputSplit_i.to_split),
+                  15)  # Rounding to 15 decimals to avoid problems due to the machine precision
     if check > 1:
         regions.append(TechOutputSplit_i.regions[0])
         periods.append(TechOutputSplit_i.periods[0])
@@ -2932,16 +3205,18 @@ if len(tech) > 0:
     # Printing warning
     pd.set_option('display.max_rows', len(TechOutputSplit_Errors))
     pd.set_option('display.max_columns', 10)
-    print("\nWARNING: Errors detected in the TechOutputSplit table. Check the following items:\n\n", TechOutputSplit_Errors)
+    print("\nWARNING: Errors detected in the TechOutputSplit table. Check the following items:\n\n",
+          TechOutputSplit_Errors)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
 
-MinInputGroup = pd.read_sql("SELECT * FROM MinInputGroup", conn)  # Loading the MinInputGroup table from the .SQLite database
+MinInputGroup = pd.read_sql("SELECT * FROM MinInputGroup",
+                            conn)  # Loading the MinInputGroup table from the .SQLite database
 
 regions = list()
 periods = list()
 group_name = list()
-gi_min_sum=list()
+gi_min_sum = list()
 
 # Extracting the list of all indexes combinations for TechOutputSplit
 indexes = list()
@@ -2954,7 +3229,8 @@ indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 for index_i in indexes:
     MinInputGroup_i = MinInputGroup[(MinInputGroup['indexes'] == index_i)]
     MinInputGroup_i = MinInputGroup_i.sort_values(by=['periods'], ignore_index=True)
-    check = round(sum(MinInputGroup_i.gi_min), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    check = round(sum(MinInputGroup_i.gi_min),
+                  15)  # Rounding to 15 decimals to avoid problems due to the machine precision
     if check > 1:
         regions.append(MinInputGroup_i.regions[0])
         periods.append(MinInputGroup_i.periods[0])
@@ -2978,12 +3254,13 @@ if len(group_name) > 0:
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
 
-MinOutputGroup = pd.read_sql("SELECT * FROM MinOutputGroup", conn)  # Loading the MinOutputGroup table from the .SQLite database
+MinOutputGroup = pd.read_sql("SELECT * FROM MinOutputGroup",
+                             conn)  # Loading the MinOutputGroup table from the .SQLite database
 
 regions = list()
 periods = list()
 group_name = list()
-go_min_sum=list()
+go_min_sum = list()
 
 # Extracting the list of all indexes combinations for TechOutputSplit
 indexes = list()
@@ -2996,7 +3273,8 @@ indexes = list(dict.fromkeys(indexes))  # Removing duplicates
 for index_i in indexes:
     MinOutputGroup_i = MinOutputGroup[(MinOutputGroup['indexes'] == index_i)]
     MinOutputGroup_i = MinOutputGroup_i.sort_values(by=['periods'], ignore_index=True)
-    check = round(sum(MinOutputGroup_i.go_min), 15) # Rounding to 15 decimals to avoid problems due to the machine precision
+    check = round(sum(MinOutputGroup_i.go_min),
+                  15)  # Rounding to 15 decimals to avoid problems due to the machine precision
     if check > 1:
         regions.append(MinOutputGroup_i.regions[0])
         periods.append(MinOutputGroup_i.periods[0])
@@ -3016,6 +3294,7 @@ if len(group_name) > 0:
     # Printing warning
     pd.set_option('display.max_rows', len(MinOutputGroup_Errors))
     pd.set_option('display.max_columns', 10)
-    print("\nWARNING: Errors detected in the MinOutputGroup table. Check the following items:\n\n", MinOutputGroup_Errors)
+    print("\nWARNING: Errors detected in the MinOutputGroup table. Check the following items:\n\n",
+          MinOutputGroup_Errors)
     pd.reset_option('display.max_rows')
     pd.reset_option('display.max_columns')
