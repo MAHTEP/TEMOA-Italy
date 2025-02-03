@@ -1,3 +1,4 @@
+BEGIN TRANSACTION;
 
 CREATE TABLE "regions" (
 	"regions"	TEXT,
@@ -91,13 +92,17 @@ CREATE TABLE "sector_labels" (
 	"sector"	text,
 	PRIMARY KEY("sector")
 );
-INSERT INTO "sector_labels" VALUES('AGR');
-INSERT INTO "sector_labels" VALUES('COM');
-INSERT INTO "sector_labels" VALUES('RES');
-INSERT INTO "sector_labels" VALUES('TRA');
-INSERT INTO "sector_labels" VALUES('IND');
-INSERT INTO "sector_labels" VALUES('ELC');
-INSERT INTO "sector_labels" VALUES('UPS');
+INSERT INTO "sector_labels" VALUES ('AGR');
+INSERT INTO "sector_labels" VALUES ('COM');
+INSERT INTO "sector_labels" VALUES ('RES');
+INSERT INTO "sector_labels" VALUES ('TRA');
+INSERT INTO "sector_labels" VALUES ('IND');
+INSERT INTO "sector_labels" VALUES ('ELC');
+INSERT INTO "sector_labels" VALUES ('STG');
+INSERT INTO "sector_labels" VALUES ('UPS');
+INSERT INTO "sector_labels" VALUES ('H2');
+INSERT INTO "sector_labels" VALUES ('CCUS');
+INSERT INTO "sector_labels" VALUES ('MAT');
 
 CREATE TABLE "technology_labels" (
 	"tech_labels"	text,
@@ -358,6 +363,13 @@ INSERT INTO "technologies" VALUES ('RES_CHP_NGA_CC_N','p','RES','mCHP - Resident
 INSERT INTO "technologies" VALUES ('RES_CHP_NGA_STR_N','p','RES','mCHP - Residential - Stirling engine - Natural gas','');
 INSERT INTO "technologies" VALUES ('RES_CHP_NGA_SOFC_N','p','RES','mCHP - Residential - Solid oxide fuel cell - Natural gas','');
 INSERT INTO "technologies" VALUES ('RES_CHP_H2_PEMFC_N','p','RES','mCHP - Residential - Solid oxide fuel cell - Hydrogen','');
+-- Materials
+INSERT INTO "technologies" VALUES ('MAT_SUP_CHR','p','MAT','Material Supply - Chromium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_COP','p','MAT','Material Supply - Copper','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_LAN','p','MAT','Material Supply - Lanthanum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_NIC','p','MAT','Material Supply - Nickel','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_YTT','p','MAT','Material Supply - Yttrium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_ZIR','p','MAT','Material Supply - Zirconium','');
 
 CREATE TABLE "tech_reserve" (
 	"tech"	text,
@@ -471,6 +483,7 @@ CREATE TABLE "commodity_labels" (
 INSERT INTO "commodity_labels" VALUES ('p','physical commodity');
 INSERT INTO "commodity_labels" VALUES ('e','emissions commodity');
 INSERT INTO "commodity_labels" VALUES ('d','service demand commodity');
+INSERT INTO "commodity_labels" VALUES ('m','Material commodity');
 
 CREATE TABLE "commodities" (
 	"comm_name"	text,
@@ -522,7 +535,15 @@ INSERT INTO "commodities" VALUES('RES_RF_RFG','p','Refrigeration - Refrigerators
 INSERT INTO "commodities" VALUES('RES_CH4','e','Residential - CH4 emission');
 INSERT INTO "commodities" VALUES('RES_CO2','e','Residential - CO2 emission');
 INSERT INTO "commodities" VALUES('RES_N2O','e','Residential - N2O emission');
+-- Materials
+INSERT INTO "commodities" VALUES('CHR','m','Chromium');
+INSERT INTO "commodities" VALUES('COP','m','Copper');
+INSERT INTO "commodities" VALUES('LAN','m','Lanthanum');
+INSERT INTO "commodities" VALUES('NIC','m','Nickel');
+INSERT INTO "commodities" VALUES('YTT','m','Yttrium');
+INSERT INTO "commodities" VALUES('ZIR','m','Zirconium');
 -- Input commodities
+INSERT INTO "commodities" VALUES('ethos','p','');
 INSERT INTO "commodities" VALUES('BIO_METH','p','');
 INSERT INTO "commodities" VALUES('BIO_GAS','p','');
 INSERT INTO "commodities" VALUES('BIO_SLB','p','');
@@ -1005,7 +1026,7 @@ CREATE TABLE "MinActivityGroup" (
 	"group_name"	text,
 	"min_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 -- Residential sector
 INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_BIO_GRP',253.83,'PJ');
@@ -1059,7 +1080,7 @@ CREATE TABLE "MaxActivityGroup" (
 	"group_name"	text,
 	"max_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 -- Residential sector
 INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_BIO_GRP',280.55,'PJ');
@@ -1105,7 +1126,7 @@ CREATE TABLE "MinCapacityGroup" (
 	"group_name"	text,
 	"min_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 
 CREATE TABLE "MaxCapacityGroup" (
@@ -1114,7 +1135,7 @@ CREATE TABLE "MaxCapacityGroup" (
 	"group_name"	text,
 	"max_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 
 CREATE TABLE "MinInputGroup" (
@@ -2635,6 +2656,13 @@ INSERT INTO "Efficiency" VALUES ('IT','ELC_H2','RES_CHP_H2_PEMFC_N',2025,'ELC_DS
 INSERT INTO "Efficiency" VALUES ('IT','ELC_H2','RES_CHP_H2_PEMFC_N',2025,'RES_HET',0.94,'PJ/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_H2','RES_CHP_H2_PEMFC_N',2030,'ELC_DST',0.96,'PJ/PJ');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_H2','RES_CHP_H2_PEMFC_N',2030,'RES_HET',0.96,'PJ/PJ');
+-- Materials
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_CHR',2007,'CHR',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_COP',2007,'COP',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_LAN',2007,'LAN',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_NIC',2007,'NIC',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_YTT',2007,'YTT',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_ZIR',2007,'ZIR',1.00,'');
 
 CREATE TABLE "DiscountRate" (
 	"regions"	text,
@@ -4095,6 +4123,47 @@ INSERT INTO "CapacityCredit" VALUES ('IT',2007,'RES_CHP_NGA_MICRO_N',2007,0.20,'
 INSERT INTO "CapacityCredit" VALUES ('IT',2007,'RES_CHP_NGA_CC_N',2007,0.20,'');
 INSERT INTO "CapacityCredit" VALUES ('IT',2022,'RES_CHP_NGA_STR_N',2022,0.20,'');
 
+CREATE TABLE "MaxMaterialReserve" (
+	"regions"	text,
+	"tech"	text,
+	"maxres"	real,
+	"maxres_units"	text,
+	"maxres_notes"	text,
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	PRIMARY KEY("regions","tech")
+);
+
+CREATE TABLE "MaterialIntensity" (
+	"regions"	text,
+	"comm_name" text,
+	"tech"	text,
+	"vintage"	integer,
+	"mat_int"	real,
+	"mat_int_units"	text,
+	"mat_int_notes"	text,
+	PRIMARY KEY("regions","tech","comm_name","vintage"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
+);
+-- Residential
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_CI_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_CI_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_CI_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_MICRO_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_MICRO_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_MICRO_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_CC_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_CC_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_CC_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_STR_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_STR_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_STR_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_SOFC_N',2020,6.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','RES_CHP_NGA_SOFC_N',2020,1.00E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','RES_CHP_NGA_SOFC_N',2020,1.28E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','RES_CHP_NGA_SOFC_N',2020,1.79E+00,'t/GW','10.1016/j.mtener.2025.101805');
+
 CREATE TABLE "Output_V_Capacity" (
 	"regions"	text,
 	"scenario"	text,
@@ -4223,4 +4292,17 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
 	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
+);
+CREATE TABLE "Output_VMat_Cons" (
+	"regions"	text,
+	"scenario"	text,
+	"sector"	text,
+	"material_comm"	text,
+	"tech"	text,
+	"vintage"	integer,
+	"vmat_cons"	real,
+	PRIMARY KEY("regions","scenario","material_comm","tech","vintage"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
+	FOREIGN KEY("material_comm") REFERENCES "commodities"("comm_name")
 );

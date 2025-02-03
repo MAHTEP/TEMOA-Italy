@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 CREATE TABLE "regions" (
 	"regions"	TEXT,
 	"region_note"	TEXT,
@@ -100,6 +102,7 @@ INSERT INTO "sector_labels" VALUES ('STG');
 INSERT INTO "sector_labels" VALUES ('UPS');
 INSERT INTO "sector_labels" VALUES ('H2');
 INSERT INTO "sector_labels" VALUES ('CCUS');
+INSERT INTO "sector_labels" VALUES ('MAT');
 
 CREATE TABLE "technology_labels" (
 	"tech_labels"	text,
@@ -974,6 +977,8 @@ INSERT INTO "technologies" VALUES ('HET_GEO_SHA_N','p','ELC','Geothermal shallow
 INSERT INTO "technologies" VALUES ('STG_ELC_HYD_PUM_E','ps','STG','Storage - Pumping hydroelectric plant - Existing','TIMES-Italy');
 INSERT INTO "technologies" VALUES ('STG_ELC_CEN_BTT','ps','STG','Storage - Centralized Electricity - Lithium-Ion Battery','ATB 2022');
 INSERT INTO "technologies" VALUES ('STG_ELC_DST_BTT','ps','STG','Storage - Distributed Electricity - Lithium-Ion Battery','ATB 2022');
+INSERT INTO "technologies" VALUES ('STG_ELC_CEN_VRFB','ps','STG','Storage - Centralized Electricity - Vanadium-Redox-Flow Battery','10.1016/j.mtener.2025.101805');
+INSERT INTO "technologies" VALUES ('STG_ELC_DST_VRFB','ps','STG','Storage - Distributed Electricity - Vanadium-Redox-Flow Battery','10.1016/j.mtener.2025.101805');
 INSERT INTO "technologies" VALUES ('STG_H2_TNK','ps','STG','Storage - Hydrogen - Tank','JRC-EU-TIMES');
 -- Upstream sector
 -- Import/export prices
@@ -1146,6 +1151,42 @@ INSERT INTO "technologies" VALUES ('SF_MEOH_DAC','p','CCUS','Methanol production
 INSERT INTO "technologies" VALUES ('CCUS_SNK_DGF_ON','p','CCUS','CO2 physical storage in depleted gas field, onshore','');
 INSERT INTO "technologies" VALUES ('CCUS_SNK_DGF_OFF','p','CCUS','CO2 physical storage in depleted gas field, offhore','');
 --INSERT INTO "technologies" VALUES ('CCUS_SNK_BCKSTP','p','CCUS','CO2 storage, backstop','');
+-- Materials
+INSERT INTO "technologies" VALUES ('MAT_SUP_ALU','p','MAT','Material Supply - Aluminum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_BOR','p','MAT','Material Supply - Boron','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_CER','p','MAT','Material Supply - Cerium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_CHR','p','MAT','Material Supply - Chromium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_COB','p','MAT','Material Supply - Cobalt','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_COP','p','MAT','Material Supply - Copper','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_DYS','p','MAT','Material Supply - Dysprosium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_EUP','p','MAT','Material Supply - Europium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_FLU','p','MAT','Material Supply - Fluospar','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_GAD','p','MAT','Material Supply - Gadolinium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_GAL','p','MAT','Material Supply - Gallium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_GER','p','MAT','Material Supply - Germanium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_GRA','p','MAT','Material Supply - Graphite','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_IND','p','MAT','Material Supply - Indium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_IRI','p','MAT','Material Supply - Iridium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_LAN','p','MAT','Material Supply - Lanthanum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_LIT','p','MAT','Material Supply - Lithium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_MAG','p','MAT','Material Supply - Magnesium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_MAN','p','MAT','Material Supply - Manganese','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_MOL','p','MAT','Material Supply - Molybdenum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_NEO','p','MAT','Material Supply - Neodymium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_NIC','p','MAT','Material Supply - Nickel','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_NIO','p','MAT','Material Supply - Niobium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_PAL','p','MAT','Material Supply - Palladium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_PHO','p','MAT','Material Supply - Phosphorus','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_PLA','p','MAT','Material Supply - Platinum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_PRA','p','MAT','Material Supply - Praseodymium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_SIL','p','MAT','Material Supply - Silicon','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_SIV','p','MAT','Material Supply - Silver','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_TAN','p','MAT','Material Supply - Tantalum','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_TER','p','MAT','Material Supply - Terbium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_TIT','p','MAT','Material Supply - Titanium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_VAN','p','MAT','Material Supply - Vanadium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_YTT','p','MAT','Material Supply - Yttrium','');
+INSERT INTO "technologies" VALUES ('MAT_SUP_ZIR','p','MAT','Material Supply - Zirconium','');
 
 CREATE TABLE "tech_ramping" (
 	"tech"	text,
@@ -1195,6 +1236,8 @@ INSERT INTO "tech_reserve" VALUES ('ELC_CHP_NGA_TAP_N','');
 -- Storage
 INSERT INTO "tech_reserve" VALUES ('STG_ELC_CEN_BTT','');
 INSERT INTO "tech_reserve" VALUES ('STG_ELC_DST_BTT','');
+INSERT INTO "tech_reserve" VALUES ('STG_ELC_CEN_VRFB','');
+INSERT INTO "tech_reserve" VALUES ('STG_ELC_DST_VRFB','');
 
 CREATE TABLE "tech_exchange" (
 	"tech"	text,
@@ -1842,6 +1885,7 @@ CREATE TABLE "commodity_labels" (
 INSERT INTO "commodity_labels" VALUES ('p','Physical commodity');
 INSERT INTO "commodity_labels" VALUES ('e','Emissions commodity');
 INSERT INTO "commodity_labels" VALUES ('d','Service demand commodity');
+INSERT INTO "commodity_labels" VALUES ('m','Material commodity');
 
 CREATE TABLE "commodities" (
 	"comm_name"	text,
@@ -2181,6 +2225,42 @@ INSERT INTO "commodities" VALUES('H2_SF','p','Hydrogen for synfuels production')
 -- CCUS
 INSERT INTO "commodities" VALUES('SNK_CO2','p','Captured CO2 for storage/utilization - Physical');
 INSERT INTO "commodities" VALUES('SNK_CO2_EM','e','Captured CO2 for storage/utilization - Emission');
+-- Materials
+INSERT INTO "commodities" VALUES('ALU','m','Aluminum');
+INSERT INTO "commodities" VALUES('BOR','m','Boron');
+INSERT INTO "commodities" VALUES('CER','m','Cerium');
+INSERT INTO "commodities" VALUES('CHR','m','Chromium');
+INSERT INTO "commodities" VALUES('COB','m','Cobalt');
+INSERT INTO "commodities" VALUES('COP','m','Copper');
+INSERT INTO "commodities" VALUES('DYS','m','Dysprosium');
+INSERT INTO "commodities" VALUES('EUP','m','Europium');
+INSERT INTO "commodities" VALUES('FLU','m','Fluospar');
+INSERT INTO "commodities" VALUES('GAD','m','Gadolinium');
+INSERT INTO "commodities" VALUES('GAL','m','Gallium');
+INSERT INTO "commodities" VALUES('GER','m','Germanium');
+INSERT INTO "commodities" VALUES('GRA','m','Graphite');
+INSERT INTO "commodities" VALUES('IND','m','Indium');
+INSERT INTO "commodities" VALUES('IRI','m','Iridium');
+INSERT INTO "commodities" VALUES('LAN','m','Lanthanum');
+INSERT INTO "commodities" VALUES('LIT','m','Lithium');
+INSERT INTO "commodities" VALUES('MAG','m','Magnesium');
+INSERT INTO "commodities" VALUES('MAN','m','Manganese');
+INSERT INTO "commodities" VALUES('MOL','m','Molybdenum');
+INSERT INTO "commodities" VALUES('NEO','m','Neodymium');
+INSERT INTO "commodities" VALUES('NIC','m','Nickel');
+INSERT INTO "commodities" VALUES('NIO','m','Niobium');
+INSERT INTO "commodities" VALUES('PAL','m','Palladium');
+INSERT INTO "commodities" VALUES('PHO','m','Phosphorus');
+INSERT INTO "commodities" VALUES('PLA','m','Platinum');
+INSERT INTO "commodities" VALUES('PRA','m','Praseodymium');
+INSERT INTO "commodities" VALUES('SIL','m','Silicon');
+INSERT INTO "commodities" VALUES('SIV','m','Silver');
+INSERT INTO "commodities" VALUES('TAN','m','Tantalum');
+INSERT INTO "commodities" VALUES('TER','m','Terbium');
+INSERT INTO "commodities" VALUES('TIT','m','Titanium');
+INSERT INTO "commodities" VALUES('VAN','m','Vanadium');
+INSERT INTO "commodities" VALUES('YTT','m','Yttrium');
+INSERT INTO "commodities" VALUES('ZIR','m','Zirconium');
 
 CREATE TABLE "TechOutputSplit" (
 	"regions"	TEXT,
@@ -3251,6 +3331,8 @@ CREATE TABLE "StorageDuration" (
 INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_CEN_BTT',6,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_DST_BTT',6,'ATB 2022');
+INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_CEN_VRFB',6,'10.1016/j.mtener.2025.101805');
+INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_DST_VRFB',6,'10.1016/j.mtener.2025.101805');
 INSERT INTO "StorageDuration" VALUES ('IT','STG_H2_TNK',6,'Assumption');
 
 CREATE TABLE "PlanningReserveMargin" (
@@ -4194,7 +4276,7 @@ CREATE TABLE "MinActivityGroup" (
 	"group_name"	text,
 	"min_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 -- Commercial sector
 INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'COM_FT_ELC_GRP',292.79,'PJ');
@@ -4388,7 +4470,7 @@ CREATE TABLE "MaxActivityGroup" (
 	"group_name"	text,
 	"max_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 -- Commercial sector
 INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'COM_FT_BIO_GRP',0.86,'PJ');
@@ -4609,7 +4691,7 @@ CREATE TABLE "MinCapacityGroup" (
 	"group_name"	text,
 	"min_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 
 CREATE TABLE "MaxCapacityGroup" (
@@ -4618,7 +4700,7 @@ CREATE TABLE "MaxCapacityGroup" (
 	"group_name"	text,
 	"max_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("periods","group_name")
+	PRIMARY KEY("regions","periods","group_name")
 );
 -- Electricity sector
 INSERT INTO "MaxCapacityGroup" VALUES ('IT',2007,'ELC_BLQ_GRP',0.120,'GW');
@@ -8133,6 +8215,8 @@ INSERT INTO "LifetimeTech" VALUES ('IT','HET_GEO_SHA_N',60,'TIMES-Italy');
 -- Storage
 INSERT INTO "LifetimeTech" VALUES ('IT','STG_ELC_CEN_BTT',15,'ATB 2022');
 INSERT INTO "LifetimeTech" VALUES ('IT','STG_ELC_DST_BTT',15,'ATB 2022');
+INSERT INTO "LifetimeTech" VALUES ('IT','STG_ELC_CEN_VRFB',12,'10.1016/j.mtener.2025.101805');
+INSERT INTO "LifetimeTech" VALUES ('IT','STG_ELC_DST_VRFB',12,'10.1016/j.mtener.2025.101805');
 INSERT INTO "LifetimeTech" VALUES ('IT','STG_H2_TNK',22,'JRC-EU-TIMES');
 -- Upstream sector
 -- Re-grouping OPEC and NON-OPEC commodities
@@ -8622,6 +8706,9 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
+--INSERT INTO "EmissionLimit" VALUES ('IT',2030,'TOT_CO2',194208,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2040,'TOT_CO2',111475,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2050,'TOT_CO2',28742,'kt','');
 
 CREATE TABLE "EmissionActivity" (
 	"regions"	text,
@@ -11440,6 +11527,8 @@ INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','STG_ELC_HYD_PUM_E',2006,'ELC_CE
 INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','STG_ELC_HYD_PUM_E',2050,'ELC_CEN',0.80,'ATB 2022');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','STG_ELC_CEN_BTT',2020,'ELC_CEN',0.85,'ATB 2022');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','STG_ELC_DST_BTT',2020,'ELC_DST',0.85,'ATB 2022');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','STG_ELC_CEN_VRFB',2020,'ELC_CEN',0.65,'10.1016/j.mtener.2025.101805');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','STG_ELC_DST_VRFB',2020,'ELC_DST',0.65,'10.1016/j.mtener.2025.101805');
 INSERT INTO "Efficiency" VALUES ('IT','H2','STG_H2_TNK',2014,'H2',1.00,'JRC_EU_TIMES');
 -- Upstream sector
 -- Import/export prices
@@ -11973,6 +12062,42 @@ INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','SF_MEOH_DAC',2025,'SYN_MET',0.3
 INSERT INTO "Efficiency" VALUES ('IT','SNK_CO2','CCUS_SNK_DGF_ON',2020,'DMY_OUT',1.00,'');
 INSERT INTO "Efficiency" VALUES ('IT','SNK_CO2','CCUS_SNK_DGF_OFF',2020,'DMY_OUT',1.00,'');
 --INSERT INTO "Efficiency" VALUES ('IT','ethos','CCUS_SNK_BCKSTP',2007,'DMY_OUT',1.00,'');
+-- Materials
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_ALU',2007,'ALU',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_BOR',2007,'BOR',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_CER',2007,'CER',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_CHR',2007,'CHR',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_COB',2007,'COB',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_COP',2007,'COP',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_DYS',2007,'DYS',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_EUP',2007,'EUP',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_FLU',2007,'FLU',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_GAD',2007,'GAD',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_GAL',2007,'GAL',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_GER',2007,'GER',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_GRA',2007,'GRA',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_IND',2007,'IND',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_IRI',2007,'IRI',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_LAN',2007,'LAN',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_LIT',2007,'LIT',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_MAG',2007,'MAG',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_MAN',2007,'MAN',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_MOL',2007,'MOL',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_NEO',2007,'NEO',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_NIC',2007,'NIC',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_NIO',2007,'NIO',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_PAL',2007,'PAL',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_PHO',2007,'PHO',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_PLA',2007,'PLA',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_PRA',2007,'PRA',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_SIL',2007,'SIL',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_SIV',2007,'SIV',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_TAN',2007,'TAN',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_TER',2007,'TER',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_TIT',2007,'TIT',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_VAN',2007,'VAN',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_YTT',2007,'YTT',1.00,'');
+INSERT INTO "Efficiency" VALUES ('IT','ethos','MAT_SUP_ZIR',2007,'ZIR',1.00,'');
 
 CREATE TABLE "LinkedTechs" (
 	"primary_region"	text,
@@ -12185,6 +12310,8 @@ INSERT INTO "DiscountRate" VALUES ('IT','ELC_CHP_NGA_TAP_N',2007,0.027,'');
 -- Storage
 INSERT INTO "DiscountRate" VALUES ('IT','STG_ELC_CEN_BTT',2020,0.080,'Assumption');
 INSERT INTO "DiscountRate" VALUES ('IT','STG_ELC_DST_BTT',2020,0.080,'Assumption');
+INSERT INTO "DiscountRate" VALUES ('IT','STG_ELC_CEN_VRFB',2020,0.080,'Assumption');
+INSERT INTO "DiscountRate" VALUES ('IT','STG_ELC_DST_VRFB',2020,0.080,'Assumption');
 INSERT INTO "DiscountRate" VALUES ('IT','STG_H2_TNK',2014,0.080,'');
 -- Hydrogen
 INSERT INTO "DiscountRate" VALUES ('IT','H2_SR_NGA',2014,0.080,'');
@@ -15446,6 +15573,12 @@ INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_CEN_BTT',2050,908,'M$/GW','ATB 20
 INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_BTT',2020,2869,'M$/GW','ATB 2022');
 INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_BTT',2030,1337,'M$/GW','ATB 2022');
 INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_BTT',2050,1002,'M$/GW','ATB 2022');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_CEN_VRFB',2020,2386,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_CEN_VRFB',2030,1906,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_CEN_VRFB',2050,1429,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_VRFB',2020,2549,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_VRFB',2030,2037,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostInvest" VALUES ('IT','STG_ELC_DST_VRFB',2050,1528,'M$/GW','10.1016/j.mtener.2025.101805');
 INSERT INTO "CostInvest" VALUES ('IT','STG_H2_TNK',2014,6*13.0/0.0036/31.536,'M€/GW','JRC-EU-TIMES');
 INSERT INTO "CostInvest" VALUES ('IT','STG_H2_TNK',2025,6*10.3/0.0036/31.536,'M€/GW','JRC-EU-TIMES');
 -- Upstream sector
@@ -16074,6 +16207,12 @@ INSERT INTO "CostFixed" VALUES ('IT',2050,'STG_ELC_CEN_BTT',2050,23,'M$/GW','ATB
 INSERT INTO "CostFixed" VALUES ('IT',2020,'STG_ELC_DST_BTT',2020,72,'M$/GW','ATB 2022');
 INSERT INTO "CostFixed" VALUES ('IT',2030,'STG_ELC_DST_BTT',2030,33,'M$/GW','ATB 2022');
 INSERT INTO "CostFixed" VALUES ('IT',2050,'STG_ELC_DST_BTT',2050,25,'M$/GW','ATB 2022');
+INSERT INTO "CostFixed" VALUES ('IT',2020,'STG_ELC_CEN_VRFB',2020,6.8,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostFixed" VALUES ('IT',2030,'STG_ELC_CEN_VRFB',2030,5.5,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostFixed" VALUES ('IT',2050,'STG_ELC_CEN_VRFB',2050,4.3,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostFixed" VALUES ('IT',2020,'STG_ELC_DST_VRFB',2020,7.2,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostFixed" VALUES ('IT',2030,'STG_ELC_DST_VRFB',2030,5.9,'M$/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "CostFixed" VALUES ('IT',2050,'STG_ELC_DST_VRFB',2050,4.5,'M$/GW','10.1016/j.mtener.2025.101805');
 INSERT INTO "CostFixed" VALUES ('IT',2014,'STG_H2_TNK',2014,6*0.60/0.0036/31.536,'M€/GW','JRC-EU-TIMES');
 INSERT INTO "CostFixed" VALUES ('IT',2025,'STG_H2_TNK',2025,6*0.47/0.0036/31.536,'M€/GW','JRC-EU-TIMES');
 -- Upstream sector
@@ -16638,6 +16777,8 @@ INSERT INTO "CurrencyTech" VALUES ('ELC_CHP_NGA_TAP_N','EUR09');
 INSERT INTO "CurrencyTech" VALUES ('STG_ELC_HYD_PUM_E','USD20');
 INSERT INTO "CurrencyTech" VALUES ('STG_ELC_CEN_BTT','USD20');
 INSERT INTO "CurrencyTech" VALUES ('STG_ELC_DST_BTT','USD20');
+INSERT INTO "CurrencyTech" VALUES ('STG_ELC_CEN_VRFB','USD20');
+INSERT INTO "CurrencyTech" VALUES ('STG_ELC_DST_VRFB','USD20');
 INSERT INTO "CurrencyTech" VALUES ('STG_H2_TNK','EUR12');
 -- Upstream sector
 INSERT INTO "CurrencyTech" VALUES ('UPS_IMP_BIO_DST','EUR18');
@@ -16934,6 +17075,8 @@ INSERT INTO "CapacityToActivity" VALUES ('IT','UPS_EXP_ELC_CEN',31.536,'PJ/GW');
 INSERT INTO "CapacityToActivity" VALUES ('IT','STG_ELC_HYD_PUM_E',31.536,'PJ/GW');
 INSERT INTO "CapacityToActivity" VALUES ('IT','STG_ELC_CEN_BTT',31.536,'PJ/GW');
 INSERT INTO "CapacityToActivity" VALUES ('IT','STG_ELC_DST_BTT',31.536,'PJ/GW');
+INSERT INTO "CapacityToActivity" VALUES ('IT','STG_ELC_CEN_VRFB',31.536,'PJ/GW');
+INSERT INTO "CapacityToActivity" VALUES ('IT','STG_ELC_DST_VRFB',31.536,'PJ/GW');
 INSERT INTO "CapacityToActivity" VALUES ('IT','STG_H2_TNK',31.536,'PJ/GW');
 -- CCUS
 INSERT INTO "CapacityToActivity" VALUES ('IT','CCUS_ELC_COA',31.536,'PJ/GW');
@@ -17871,6 +18014,8 @@ INSERT INTO "CapacityCredit" VALUES ('IT',2007,'ELC_CHP_NGA_TAP_N',2007,0.70,'TI
 -- Storage
 INSERT INTO "CapacityCredit" VALUES ('IT',2020,'STG_ELC_CEN_BTT',2020,0.70,'Assumption');
 INSERT INTO "CapacityCredit" VALUES ('IT',2020,'STG_ELC_DST_BTT',2020,0.70,'Assumption');
+INSERT INTO "CapacityCredit" VALUES ('IT',2020,'STG_ELC_CEN_VRFB',2020,0.70,'10.1016/j.mtener.2025.101805');
+INSERT INTO "CapacityCredit" VALUES ('IT',2020,'STG_ELC_DST_VRFB',2020,0.70,'10.1016/j.mtener.2025.101805');
 
 CREATE TABLE "MaxResource" (
 	"regions"	text,
@@ -17903,6 +18048,484 @@ INSERT INTO "MaxResource" VALUES ('IT','UPS_MIN_DSC_NGA_STEP3',137.09,'PJ','');
 -- CCUS
 INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_ON',3E+07,'kt','');
 INSERT INTO "MaxResource" VALUES ('IT','CCUS_SNK_DGF_OFF',1E+04,'kt','');
+
+CREATE TABLE "MaxMaterialReserve" (
+	"regions"	text,
+	"tech"	text,
+	"maxres"	real,
+	"maxres_units"	text,
+	"maxres_notes"	text,
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	PRIMARY KEY("regions","tech")
+);
+
+CREATE TABLE "MaterialIntensity" (
+	"regions"	text,
+	"comm_name" text,
+	"tech"	text,
+	"vintage"	integer,
+	"mat_int"	real,
+	"mat_int_units"	text,
+	"mat_int_notes"	text,
+	PRIMARY KEY("regions","tech","comm_name","vintage"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
+);
+-- Transport
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_BIO_E',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_BIO_E',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_DST_E',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_DST_E',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_GSL_E',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_GSL_E',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_LPG_E',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_LPG_E',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_NGA_E',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_NGA_E',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_DST_N',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_DST_N',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_GSL_N',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_GSL_N',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_LPG_N',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_LPG_N',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_NGA_N',2007,1894.45,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_NGA_N',2007,951.47,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CER','TRA_ROA_CAR_ELC_N',2007,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','TRA_ROA_CAR_ELC_N',2007,841.88,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','TRA_ROA_CAR_ELC_N',2007,1129.87,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_ELC_N',2007,4519.49,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','TRA_ROA_CAR_ELC_N',2007,13.68,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','EUP','TRA_ROA_CAR_ELC_N',2007,0.02,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAD','TRA_ROA_CAR_ELC_N',2007,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','TRA_ROA_CAR_ELC_N',2007,0.08,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GER','TRA_ROA_CAR_ELC_N',2007,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','TRA_ROA_CAR_ELC_N',2007,5632.37,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','TRA_ROA_CAR_ELC_N',2007,0.02,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','TRA_ROA_CAR_ELC_N',2007,0.59,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LIT','TRA_ROA_CAR_ELC_N',2007,756.08,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAG','TRA_ROA_CAR_ELC_N',2007,16.99,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_ELC_N',2007,2081.34,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','TRA_ROA_CAR_ELC_N',2007,155.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','TRA_ROA_CAR_ELC_N',2007,46.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','TRA_ROA_CAR_ELC_N',2007,3389.61,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIO','TRA_ROA_CAR_ELC_N',2007,36.19,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PAL','TRA_ROA_CAR_ELC_N',2007,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','TRA_ROA_CAR_ELC_N',2007,6.54,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','TRA_ROA_CAR_ELC_N',2007,1.95,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TAN','TRA_ROA_CAR_ELC_N',2007,0.68,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','TRA_ROA_CAR_ELC_N',2007,2.21,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','TRA_ROA_CAR_ELC_N',2007,67.11,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','TRA_ROA_CAR_ELC_N',2007,0.03,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CER','TRA_ROA_CAR_FULHYB_N',2020,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','TRA_ROA_CAR_FULHYB_N',2020,908.65,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','TRA_ROA_CAR_FULHYB_N',2020,46.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_FULHYB_N',2020,1972.6,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','TRA_ROA_CAR_FULHYB_N',2020,7.19,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','EUP','TRA_ROA_CAR_FULHYB_N',2020,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAD','TRA_ROA_CAR_FULHYB_N',2020,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','TRA_ROA_CAR_FULHYB_N',2020,0.07,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GER','TRA_ROA_CAR_FULHYB_N',2020,0.004,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','TRA_ROA_CAR_FULHYB_N',2020,112.65,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','TRA_ROA_CAR_FULHYB_N',2020,0.02,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','TRA_ROA_CAR_FULHYB_N',2020,0.59,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LIT','TRA_ROA_CAR_FULHYB_N',2020,46.49,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAG','TRA_ROA_CAR_FULHYB_N',2020,16.99,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_FULHYB_N',2020,988.0,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','TRA_ROA_CAR_FULHYB_N',2020,155.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','TRA_ROA_CAR_FULHYB_N',2020,68.3,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','TRA_ROA_CAR_FULHYB_N',2020,260.97,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIO','TRA_ROA_CAR_FULHYB_N',2020,36.19,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PAL','TRA_ROA_CAR_FULHYB_N',2020,0.01,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','TRA_ROA_CAR_FULHYB_N',2020,6.54,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','TRA_ROA_CAR_FULHYB_N',2020,2.38,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TAN','TRA_ROA_CAR_FULHYB_N',2020,0.76,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','TRA_ROA_CAR_FULHYB_N',2020,0.74,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','TRA_ROA_CAR_FULHYB_N',2020,72.38,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','TRA_ROA_CAR_FULHYB_N',2020,0.02,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CER','TRA_ROA_CAR_FCELL_N',2025,62.87,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','TRA_ROA_CAR_FCELL_N',2025,47.57,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','TRA_ROA_CAR_FCELL_N',2025,57.51,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_FCELL_N',2025,2524.8,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','TRA_ROA_CAR_FCELL_N',2025,2.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAD','TRA_ROA_CAR_FCELL_N',2025,0.42,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LIT','TRA_ROA_CAR_FCELL_N',2025,16.31,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAG','TRA_ROA_CAR_FCELL_N',2025,16.99,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_FCELL_N',2025,880.03,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','TRA_ROA_CAR_FCELL_N',2025,48.93,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','TRA_ROA_CAR_FCELL_N',2025,3399.72,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PLA','TRA_ROA_CAR_FCELL_N',2025,1.19,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','TRA_ROA_CAR_FCELL_N',2025,2.12,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','TRA_ROA_CAR_FCELL_N',2025,0.02,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','TRA_ROA_CAR_FCELL_N',2025,4353.83,'t/Bvkm','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','TRA_ROA_CAR_FCELL_N',2025,203.89,'t/Bvkm','10.1016/j.mtener.2025.101805');
+-- Electricity sector
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_DERGAS_CC_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_DERGAS_CC_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_DERGAS_CC_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_CC_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_CC_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_CC_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_OIL_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_OIL_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_OIL_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_STM_REP_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_STM_REP_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_STM_REP_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_TURB_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_TURB_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_TURB_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_MIN_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_MIN_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_MIN_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_DST_TURB_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_DST_TURB_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_DST_TURB_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_OIL_STM_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_OIL_STM_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_OIL_STM_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_GASDER_CC_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_GASDER_CC_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_GASDER_CC_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_HHC_CC_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_HHC_CC_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_HHC_CC_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_CC_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_CC_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_CC_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_TURB_CEN_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_TURB_CEN_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_TURB_CEN_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_TURB_DST_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_TURB_DST_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_TURB_DST_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_STM_COND_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_STM_COND_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_STM_COND_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_OIL_STM_COND_CEN_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_OIL_STM_COND_CEN_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_OIL_STM_COND_CEN_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_OIL_STM_COND_DST_E',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_OIL_STM_COND_DST_E',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_OIL_STM_COND_DST_E',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_CC_P',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_CC_P',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_CC_P',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_CC_P',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_CC_P',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_CC_P',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_TURB_P',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_TURB_P',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_TURB_P',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_CT_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_CT_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_CT_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_NGA_CC_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_NGA_CC_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_NGA_CC_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_OIL_STM_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_OIL_STM_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_OIL_STM_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_TURB_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_TURB_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_TURB_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_CC_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_CC_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_CC_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_CP_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_CP_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_CP_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_NGA_TAP_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_NGA_TAP_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_NGA_TAP_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_COA_COND_E',2007,3.08E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','ELC_COA_COND_E',2007,2.02E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_COA_COND_E',2007,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_COA_COND_E',2007,6.63E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_COA_COND_E',2007,7.21E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_COA_OIL_E',2007,3.08E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','ELC_COA_OIL_E',2007,2.02E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_COA_OIL_E',2007,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_COA_OIL_E',2007,6.63E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_COA_OIL_E',2007,7.21E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_CHP_COA_IGCC_E',2007,3.08E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','ELC_CHP_COA_IGCC_E',2007,2.02E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_COA_IGCC_E',2007,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_CHP_COA_IGCC_E',2007,6.63E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_CHP_COA_IGCC_E',2007,7.21E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_COA_STM_P',2007,3.08E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','ELC_COA_STM_P',2007,2.02E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_COA_STM_P',2007,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_COA_STM_P',2007,6.63E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_COA_STM_P',2007,7.21E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_COA_STM_N',2007,3.08E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','ELC_COA_STM_N',2007,2.02E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_COA_STM_N',2007,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_COA_STM_N',2007,6.63E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_COA_STM_N',2007,7.21E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BGS_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BGS_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BIO_CEN_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BIO_CEN_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BIO_DST_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BIO_DST_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_BMU_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_CHP_BMU_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_BGS_COG_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_CHP_BGS_COG_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_BIO_CEN_E',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_CHP_BIO_CEN_E',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BLQ_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BLQ_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BIO_5C_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BIO_5C_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BIO_12C_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BIO_12C_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BGS_AGR_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BGS_AGR_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_BGS_LAN_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_BGS_LAN_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_CHP_BMU_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','ELC_CHP_BMU_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_HYD_FLO_E',2007,1.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_HYD_FLO_E',2007,2.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_HYD_FLO_E',2007,3.00E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_HYD_FLO_L10MW_E',2007,1.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_HYD_FLO_L10MW_E',2007,2.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_HYD_FLO_L10MW_E',2007,3.00E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_HYD_RES_E',2007,1.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_HYD_RES_E',2007,2.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_HYD_RES_E',2007,3.00E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_HYD_MICRO_N',2007,1.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_HYD_MICRO_N',2007,2.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_HYD_MICRO_N',2007,3.00E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_HYD_MINI_N',2008,1.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_HYD_MINI_N',2008,2.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_HYD_MINI_N',2008,3.00E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_GEO_E',2007,6.20E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_GEO_E',2007,1.20E+05,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_GEO_HENT_N',2007,6.20E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_GEO_HENT_N',2007,1.20E+05,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_GEO_LENT_N',2007,6.20E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_GEO_LENT_N',2007,1.20E+05,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_WIN_E',2007,1.25E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','BOR','ELC_WIN_E',2007,9.40E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_WIN_E',2007,4.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_WIN_E',2007,1.80E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','ELC_WIN_E',2007,4.74E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_WIN_E',2007,7.84E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_WIN_E',2007,1.03E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','ELC_WIN_E',2007,4.04E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_WIN_E',2007,3.99E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','ELC_WIN_E',2007,5.84E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','ELC_WIN_E',2007,1.14E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_WIN_P',2007,1.25E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','BOR','ELC_WIN_P',2007,9.40E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_WIN_P',2007,4.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_WIN_P',2007,1.80E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','ELC_WIN_P',2007,4.74E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_WIN_P',2007,7.84E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_WIN_P',2007,1.03E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','ELC_WIN_P',2007,4.04E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_WIN_P',2007,3.99E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','ELC_WIN_P',2007,5.84E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','ELC_WIN_P',2007,1.14E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_WIN_N',2007,1.25E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','BOR','ELC_WIN_N',2007,9.40E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_WIN_N',2007,4.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_WIN_N',2007,1.80E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','ELC_WIN_N',2007,4.74E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_WIN_N',2007,7.84E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_WIN_N',2007,1.03E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','ELC_WIN_N',2007,4.04E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_WIN_N',2007,3.99E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','ELC_WIN_N',2007,5.84E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','ELC_WIN_N',2007,1.14E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_WIN_OFF_N',2007,6.65E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','BOR','ELC_WIN_OFF_N',2007,5.25E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_WIN_OFF_N',2007,5.33E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_WIN_OFF_N',2007,2.69E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','ELC_WIN_OFF_N',2007,1.54E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_WIN_OFF_N',2007,7.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_WIN_OFF_N',2007,1.11E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','ELC_WIN_OFF_N',2007,1.61E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_WIN_OFF_N',2007,2.70E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','ELC_WIN_OFF_N',2007,3.04E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','ELC_WIN_OFF_N',2007,6.10E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_WIN_OFF_DEEP_N',2030,6.65E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','BOR','ELC_WIN_OFF_DEEP_N',2030,5.25E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','ELC_WIN_OFF_DEEP_N',2030,5.33E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_WIN_OFF_DEEP_N',2030,2.69E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','DYS','ELC_WIN_OFF_DEEP_N',2030,1.54E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','ELC_WIN_OFF_DEEP_N',2030,7.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','ELC_WIN_OFF_DEEP_N',2030,1.11E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NEO','ELC_WIN_OFF_DEEP_N',2030,1.61E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','ELC_WIN_OFF_DEEP_N',2030,2.70E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PRA','ELC_WIN_OFF_DEEP_N',2030,3.04E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TER','ELC_WIN_OFF_DEEP_N',2030,6.10E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_SOL_E',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_SOL_E',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_SOL_E',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_SOL_E',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_SOL_E',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_SOL_E',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_GRO_ITC_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_GRO_ITC_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_GRO_ITC_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_GRO_ITC_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_GRO_ITC_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_GRO_ITC_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_GRO_ITF_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_GRO_ITF_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_GRO_ITF_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_GRO_ITF_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_GRO_ITF_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_GRO_ITF_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_GRO_ITG_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_GRO_ITG_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_GRO_ITG_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_GRO_ITG_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_GRO_ITG_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_GRO_ITG_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_GRO_ITH_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_GRO_ITH_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_GRO_ITH_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_GRO_ITH_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_GRO_ITH_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_GRO_ITH_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_GRO_ITI_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_GRO_ITI_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_GRO_ITI_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_GRO_ITI_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_GRO_ITI_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_GRO_ITI_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_ROOF_ITC_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_ROOF_ITC_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_ROOF_ITC_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_ROOF_ITC_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_ROOF_ITC_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_ROOF_ITC_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_ROOF_ITF_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_ROOF_ITF_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_ROOF_ITF_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_ROOF_ITF_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_ROOF_ITF_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_ROOF_ITF_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_ROOF_ITG_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_ROOF_ITG_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_ROOF_ITG_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_ROOF_ITG_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_ROOF_ITG_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_ROOF_ITG_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_ROOF_ITH_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_ROOF_ITH_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_ROOF_ITH_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_ROOF_ITH_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_ROOF_ITH_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_ROOF_ITH_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','ELC_PV_ROOF_ITI_N',2007,7.50E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','ELC_PV_ROOF_ITI_N',2007,4.60E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GAL','ELC_PV_ROOF_ITI_N',2007,4.00E-02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IND','ELC_PV_ROOF_ITI_N',2007,1.50E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIL','ELC_PV_ROOF_ITI_N',2007,3.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','SIV','ELC_PV_ROOF_ITI_N',2007,1.90E+00,'t/GW','10.1016/j.mtener.2025.101805');
+-- Commercial
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','COM_CHP_NGA_CI_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','COM_CHP_NGA_CI_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','COM_CHP_NGA_CI_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','COM_CHP_NGA_MICRO_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','COM_CHP_NGA_MICRO_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','COM_CHP_NGA_MICRO_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','COM_CHP_NGA_CC_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','COM_CHP_NGA_CC_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','COM_CHP_NGA_CC_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','COM_CHP_SLB_CI_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','COM_CHP_SLB_CI_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','COM_CHP_NGA_SOFC_N',2020,6.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','COM_CHP_NGA_SOFC_N',2020,1.00E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','COM_CHP_NGA_SOFC_N',2020,1.28E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','COM_CHP_NGA_SOFC_N',2020,1.79E+00,'t/GW','10.1016/j.mtener.2025.101805');
+-- Industrial
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','IND_CHP_NGA_CI_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','IND_CHP_NGA_CI_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','IND_CHP_NGA_CI_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','IND_CHP_NGA_TG_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','IND_CHP_NGA_TG_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','IND_CHP_NGA_TG_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','IND_CHP_NGA_TV_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','IND_CHP_NGA_TV_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','IND_CHP_NGA_TV_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','IND_CHP_BLQ_CI_N',2007,2.27E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','TIT','IND_CHP_BLQ_CI_N',2007,4.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+-- Residential
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_CI_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_CI_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_CI_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_MICRO_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_MICRO_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_MICRO_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_CC_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_CC_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_CC_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','RES_CHP_NGA_STR_N',2007,4.83E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','RES_CHP_NGA_STR_N',2007,1.10E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_STR_N',2007,1.58E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','RES_CHP_NGA_SOFC_N',2020,6.80E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','RES_CHP_NGA_SOFC_N',2020,1.00E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','RES_CHP_NGA_SOFC_N',2020,1.28E-01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','RES_CHP_NGA_SOFC_N',2020,1.79E+00,'t/GW','10.1016/j.mtener.2025.101805');
+-- Storage
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','STG_ELC_CEN_BTT',2020,1.35E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','STG_ELC_CEN_BTT',2020,6.22E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','STG_ELC_CEN_BTT',2020,5.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','FLU','STG_ELC_CEN_BTT',2020,2.31E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','STG_ELC_CEN_BTT',2020,7.31E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LIT','STG_ELC_CEN_BTT',2020,8.68E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','STG_ELC_CEN_BTT',2020,7.03E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','STG_ELC_CEN_BTT',2020,2.00E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PHO','STG_ELC_CEN_BTT',2020,4.14E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ALU','STG_ELC_DST_BTT',2020,1.35E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','STG_ELC_DST_BTT',2020,6.22E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','STG_ELC_DST_BTT',2020,5.05E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','FLU','STG_ELC_DST_BTT',2020,2.31E+01,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','STG_ELC_DST_BTT',2020,7.31E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LIT','STG_ELC_DST_BTT',2020,8.68E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','STG_ELC_DST_BTT',2020,7.03E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','STG_ELC_DST_BTT',2020,2.00E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PHO','STG_ELC_DST_BTT',2020,4.14E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','STG_ELC_CEN_VRFB',2020,2.23E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','STG_ELC_CEN_VRFB',2020,1.98E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','STG_ELC_CEN_VRFB',2020,2.03E+04,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','STG_ELC_DST_VRFB',2020,2.23E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','GRA','STG_ELC_DST_VRFB',2020,1.98E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','STG_ELC_DST_VRFB',2020,2.03E+04,'t/GW','10.1016/j.mtener.2025.101805');
+-- Hydrogen
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','H2_EL_ALK',2020,3.94,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','H2_EL_ALK',2020,0.49,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','IRI','H2_EL_PEM',2020,0.000353,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PAL','H2_EL_PEM',2020,0.00097,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','PLA','H2_EL_PEM',2020,0.00097,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','H2_EL_SOEC',2020,0.6,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','LAN','H2_EL_SOEC',2020,0.16,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','YTT','H2_EL_SOEC',2020,0.09,'t/PJ','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','ZIR','H2_EL_SOEC',2020,0.01,'t/PJ','10.1016/j.mtener.2025.101805');
+-- CCUS
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','CCUS_ELC_COA',2020,3.26E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','CCUS_ELC_COA',2020,7.50E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','CCUS_ELC_COA',2020,6.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','CCUS_ELC_COA',2020,3.76E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','CCUS_ELC_COA',2020,7.50E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','CCUS_ELC_COA',2020,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIO','CCUS_ELC_COA',2020,1.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','CCUS_ELC_COA',2020,1.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','CHR','CCUS_ELC_NGA',2020,3.26E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COB','CCUS_ELC_NGA',2020,7.50E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','COP','CCUS_ELC_NGA',2020,6.92E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','CCUS_ELC_NGA',2020,3.76E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','MOL','CCUS_ELC_NGA',2020,7.50E+00,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIC','CCUS_ELC_NGA',2020,1.15E+03,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','NIO','CCUS_ELC_NGA',2020,1.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('IT','VAN','CCUS_ELC_NGA',2020,1.00E+02,'t/GW','10.1016/j.mtener.2025.101805');
 
 CREATE TABLE "Output_V_Capacity" (
 	"regions"	text,
@@ -18032,4 +18655,17 @@ CREATE TABLE "Output_CapacityByPeriodAndTech" (
 	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
 	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
+);
+CREATE TABLE "Output_VMat_Cons" (
+	"regions"	text,
+	"scenario"	text,
+	"sector"	text,
+	"material_comm"	text,
+	"tech"	text,
+	"vintage"	integer,
+	"vmat_cons"	real,
+	PRIMARY KEY("regions","scenario","material_comm","tech","vintage"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
+	FOREIGN KEY("material_comm") REFERENCES "commodities"("comm_name")
 );
