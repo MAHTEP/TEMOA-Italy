@@ -3708,8 +3708,6 @@ INSERT INTO "tech_groups" VALUES ('ELC_NUC_SMR_N','');
 INSERT INTO "tech_groups" VALUES ('HET_GEO_E','');
 INSERT INTO "tech_groups" VALUES ('HET_GEO_N','');
 INSERT INTO "tech_groups" VALUES ('HET_GEO_SHA_N','');
--- Storage
-INSERT INTO "tech_groups" VALUES ('STG_ELC_HYD_PUM_E','');
 -- Upstream sector
 INSERT INTO "tech_groups" VALUES ('UPS_SEC_REF_FLX','');
 -- Hydrogen and CCUS
@@ -4187,7 +4185,6 @@ INSERT INTO "TechGroupWeight" VALUES ('ELC_HYD_MICRO_N','ELC_HYD_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_HYD_MINI_N','ELC_HYD_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_HYD_MICRO_N','ELC_HYD_N_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_HYD_MINI_N','ELC_HYD_N_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('STG_ELC_HYD_PUM_E','ELC_HYD_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_GEO_E','ELC_GEO_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_GEO_HENT_N','ELC_GEO_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('ELC_GEO_LENT_N','ELC_GEO_GRP',1.0,'');
@@ -4446,12 +4443,12 @@ INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'ELC_BMU_GRP',8.82/0.50,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2050,'ELC_BMU_GRP',0.00/0.50,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'ELC_BIO_GRP',60.00,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2050,'ELC_BIO_GRP',72.00,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'ELC_HYD_GRP',158.72,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'ELC_HYD_GRP',159.61,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'ELC_HYD_GRP',164.06,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'ELC_HYD_GRP',133.30,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'ELC_HYD_GRP',159.82,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'ELC_HYD_GRP',160.36,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'ELC_HYD_GRP',0.50*158.72,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'ELC_HYD_GRP',0.50*159.61,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'ELC_HYD_GRP',0.50*164.06,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'ELC_HYD_GRP',0.50*133.30,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'ELC_HYD_GRP',0.50*159.82,'PJ');
+INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'ELC_HYD_GRP',0.50*160.36,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'ELC_SOL_GRP',15.25,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'ELC_SOL_GRP',69.17,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'ELC_SOL_GRP',77.38,'PJ');
@@ -6011,6 +6008,11 @@ INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_INT_INS_SN_N',35.37,'PJ','')
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_BASE_INS_SN_N',25.73,'PJ','');
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_WIN_INS_SN_N',12.86,'PJ','');
 -- Electricity sector
+-- Existing technologies
+INSERT INTO "MaxCapacity" VALUES ('IT',2007,'ELC_HYD_FLO_E',2.69,'GW','Assumption - Equal to ExistingCapacity');
+INSERT INTO "MaxCapacity" VALUES ('IT',2007,'ELC_HYD_FLO_L10MW_E',2.05,'GW','Assumption - Equal to ExistingCapacity');
+INSERT INTO "MaxCapacity" VALUES ('IT',2007,'ELC_HYD_RES_E',9.55,'GW','Assumption - Equal to ExistingCapacity');
+INSERT INTO "MaxCapacity" VALUES ('IT',2007,'STG_ELC_HYD_PUM_E',7.09,'GW','Assumption - Equal to ExistingCapacity');
 -- Planned technologies
 INSERT INTO "MaxCapacity" VALUES ('IT',2010,'ELC_COA_STM_P',0.80,'GW','');
 INSERT INTO "MaxCapacity" VALUES ('IT',2014,'ELC_COA_STM_P',2.00,'GW','');
