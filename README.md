@@ -1,64 +1,67 @@
-# TEMOA-Italy
-## Model features
-
+# **TEMOA-Italy**
 TEMOA-Italy is a model instance for the optimization of the Italian energy system developed within an [extended version](https://github.com/MAHTEP/TEMOA) of the [TEMOA](https://temoacloud.com/) (Tools for Energy Modeling Optimization and Analysis) modeling framework.
 
-The model is maintained by the [MAHTEP Group](http://www.mahtep.polito.it) at [Department of Energy](https://www.denerg.polito.it/en/) of [Politecnico di Torino](https://www.polito.it/en). For any inquiries concerning TEMOA-Italy, please contact [Matteo Nicoli](mailto:matteo.nicoli@polito.it).
+The model is maintained by the [MAHTEP Group](http://www.mahtep.polito.it/) at [Department of Energy](https://www.denerg.polito.it/en/) of [Politecnico di Torino](https://www.polito.it/en). For any inquiries concerning TEMOA-Italy, please contact [Matteo Nicoli](mailto:matteo.nicoli@polito.it).
 
-The TEMOA-Italy database was generated starting from the TIMES-Italy model, developed by ENEA in the [TIMES](https://iea-etsap.org/index.php/etsap-tools/model-generators/times) modeling framework. Compared to the original TIMES-Italy 2010 version [1], the current TEMOA-Italy is updated, integrated, and recalibrated to historical data up to 2020.
+The model adopts a time horizon extending up to 2050, with energy system evolution analyzed in five-year increments. It is built upon historical energy statistics from the International Energy Agency (IEA) for the base year 2006 and calibrated up to 2022 using Eurostat Energy Balances. The model can optimize a reduced set of time periods when solving particularly complex problems to manage computational requirements [1].
 
-A detailed description of the methodology adopted for TEMOA-Italy construction is available at [2] and [3], while a schematic representation of the reference energy system (RES) is shown in Figure 1.
+## **Model Structure and Scope**
+The overall structure of TEMOA-Italy is depicted in Figure 1.
 
-![](docs/ReferenceEnergySystem.svg)
+![](docs/Figure1.svg)
 
-*Figure 1. Representation of the TEMOA-Italy energy system [4].*
+Figure 1. Representation of the TEMOA-Italy energy system.
 
-As Figure 1 highlights, the TEMOA-Italy RES is composed of several energy sectors. The supply side includes the upstream sector (producing and transforming fossil fuels, biofuels and renewable potentials and modeling import/export), the power sector (devoted to the production of electricity and heat, see Figure 2), the hydrogen module (including hydrogen production, distribution, and storage technologies, see Figure 3) and the Carbon Capture Utilization and Storage (CCUS) module (modeling CO2 capture, utilization – through synfuels production – and storage, see Figure 4).
+It shows the linear energy flows across different sectors, from upstream production to final consumption. The model employs a Reference Energy System (RES) framework, describing the interactions among energy carriers, technologies, and end-uses in a transparent and flexible manner.
 
-![](docs/PowerSector.svg)
+The energy system is divided into supply-side and demand-side components. The upstream supply sector comprises primary energy production, transformation processes, and international trade. Fossil fuel extraction is limited by proved, probable, and possible reserves, while renewable potentials are constrained by resource availability. Imports and exports are represented through trade processes associated with cost assumptions.
 
-*Figure 2. The TEMOA-Italy power sector [5].*
+The demand side is split into three primary sectors: buildings, industry, and transport. Each of these sectors includes multiple subsectors to capture the diversity of energy consumption patterns:
 
-Energy imports/exports are modelled in TEMOA-Italy with a single technology per each imported/exported commodity, representing the average import/export price according to World Bank historical data [6] and the World Energy Outlook 2022 future projections [7]. Constraints for imported and exported commodities are from Eurostat [8] for the historical period 2006-2020 and progressively relaxed for future years. The demand projection for future years is presented in [9]. The set of hurdle rates is from [10].
+- Buildings: End-uses include space heating, space cooling, water heating, lighting, and appliances [2].
+- Industry: Energy-intensive subsectors such as chemicals, iron and steel, non-ferrous metals, non-metallic minerals, and pulp and paper are explicitly represented.
+- Transport: Passenger and freight transport demands are modeled across multiple modes, including road, rail, aviation, and navigation, as illustrated in Figure 3 [3].
 
-TEMOA-Italy also includes technologies for hydrogen production (grey, blue, green, and yellow hydrogen, as reported in [11]), final consumption (transport, industry and blending with natural gas) or transformation processes involving hydrogen. Indeed, the CCUS modules also includes synfuels production options (syndiesel, synkerosene, synmethanol, and synmethane) and technologies for CO2 capture and storage (as discussed in [4] and [12]). Hydrogen and synfuels represents, along with biofuels, low-carbon fuels that can be consumed mixed with traditional fossil fuels: in this regard, a dynamic emission accounting was developed as described in [4] and [12].
+## **Supply-Side Modeling**
+The upstream sector, shown schematically in Figure 3, includes fossil and renewable energy production, fuel transformation, and cross-border energy trade. Fossil fuel extraction covers coal, oil, and natural gas, with constraints reflecting available reserves. Biofuel production includes solid biomass, bioethanol, biodiesel, and biogas, with options for biomethane upgrading [4]. Secondary production processes like natural gas liquefaction and gasification are also incorporated. Renewable energy generation potentials, including solar, wind, hydro, biomass, and geothermal, are based on external assessments.
 
-![](docs/Hydrogen.svg)
+Electricity imports and exports are modeled as virtual processes with cost-driven constraints, while domestic electricity generation is detailed in Figure 2.
 
-*Figure 3. The TEMOA-Italy hydrogen module [4].*
+![](docs/Figure2.svg)
 
-![](docs/CCUS.svg)
+Figure 2. Representation of the TEMOA-Italy power sector.
 
-*Figure 4. The TEMOA-Italy CCUS module [4].*
+The power sector includes various generation technologies, combined heat and power (CHP) plants, and heat-only plants. Capacity factors, capacity credits for variable renewable sources, and combined heat-to-power ratios for CHP plants are specified to represent operational characteristics accurately [5].
+## **Demand-Side Dynamics**
+Energy service demands evolve over time based on sector-specific drivers and elasticities, projected through a demand function incorporating historical trends and future assumptions [6]. For instance, the transport sector (depicted in Figure 3) encompasses road, rail, aviation, and navigation modes, each disaggregated by passenger and freight services. The model aligns with Eurostat classification, distinguishing energy used for transport operations from non-energy uses like lubricants.
 
-The demand side covers the buildings sector (which includes residential, commercial and agriculture end-uses), several road and non-road transport demands (based on [13] and [14]), and the energy intensive industrial subsectors (based on [14] and [15]).
+![](docs/Figure3.svg)
 
-## References
+Figure 3. Representation of the TEMOA-Italy transport sector.
 
-1. ENEA, “The TIMES-Italy Energy Model Structure and Data 2010 Version,” Rome, 2011. Accessed: Sep. 02, 2022. [Online]. Available: https://biblioteca.bologna.enea.it/RT/2011/2011_9_ENEA.pdf
-2. M. Nicoli, F. Gracceva, D. Lerede, and L. Savoldi, “Can We Rely on Open-Source Energy System Optimization Models? The TEMOA-Italy Case Study,” Energies (Basel), vol. 15, no. 18, p. 6505, Sep. 2022, doi: 10.3390/en15186505.
-3. M. Nicoli, A TIMES-like open-source model for the Italian energy system. Turin, 2021. Accessed: Jul. 05, 2022. [Online]. Available: https://webthesis.biblio.polito.it/18850/
-4. G. Colucci, D. Lerede, M. Nicoli, and L. Savoldi, “A dynamic accounting method for CO2 emissions to assess the penetration of low-carbon fuels: application to the TEMOA-Italy energy system optimization model,” Appl Energy, vol. 352, no. 121951, Dec. 2023, doi: 10.1016/j.apenergy.2023.121951.
-5. D. Mosso, G. Colucci, D. Lerede, M. Nicoli, M. S. Piscitelli, and L. Savoldi, “How much do carbon emission reduction strategies comply with a sustainable development of the power sector?,” Energy Reports, vol. 11, pp. 3064–3087, Jun. 2024, doi: 10.1016/J.EGYR.2024.02.056.
-6. World Bank, “Commodity Markets.” Accessed: Jul. 19, 2023. [Online]. Available: https://www.worldbank.org/en/research/commodity-markets
-7. International Energy Agency (IEA), “World Energy Outlook 2022,” 2022. Accessed: Dec. 21, 2022. [Online]. Available: www.iea.org/t&c/
-8. Eurostat, “Energy balances - Energy - Eurostat.” Accessed: Aug. 19, 2022. [Online]. Available: https://ec.europa.eu/eurostat/web/energy/data/energy-balances
-9. A. Oliva, F. Gracceva, D. Lerede, M. Nicoli, and L. Savoldi, “Projection of Post-Pandemic Italian Industrial Production through Vector AutoRegressive Models,” Energies 2021, Vol. 14, Page 5458, vol. 14, no. 17, p. 5458, Sep. 2021, doi: 10.3390/EN14175458.
-10. S. Laera, G. Colucci, V. Di Cosmo, D. Lerede, M. Nicoli, and L. Savoldi, “Technology-specific hurdle rates for Energy System Optimization Models,” in Energy Proceedings, 2024. doi: 10.46855/energy-proceedings-10911.
-11. A. Balbo, G. Colucci, M. Nicoli, and L. Savoldi, “Exploring the Role of Hydrogen to Achieve the Italian Decarbonization Targets Using an Open-Source Energy System Optimization Model,” in International Journal of Energy and Power Engineering, E. and T. World Academy of Science, Ed., Mar. 2023, pp. 89–100. Accessed: Apr. 24, 2023. [Online]. Available: https://publications.waset.org/10013040/exploring-the-role-of-hydrogen-to-achieve-the-italian-decarbonization-targets-using-an-open-source-energy-system-optimization-model
-12. G. Colucci, D. Lerede, M. Nicoli, and L. Savoldi, “Dynamic Accounting for End-Use CO2 Emissions From Low-Carbon Fuels in Energy System Optimization Models,” Energy Proceedings, 2022, doi: 10.46855/energy-proceedings-10294.
-13. D. Lerede, C. Bustreo, F. Gracceva, Y. Lechón, and L. Savoldi, “Analysis of the Effects of Electrification of the Road Transport Sector on the Possible Penetration of Nuclear Fusion in the Long-Term European Energy Mix,” Energies (Basel), vol. 13, no. 14, p. 3634, Jul. 2020, doi: 10.3390/EN13143634.
-14. Y. Lechon et al., “A global energy model with fusion,” Fusion Engineering and Design, vol. 75, pp. 1141–1144, 2005, doi: 10.1016/j.fusengdes.2005.06.078.
-15. D. Lerede, M. Saccone, C. Bustreo, F. Gracceva, and L. Savoldi, “Could clean industrial progresses and the rise of electricity demand foster the penetration of nuclear fusion in the European energy mix?,” Fusion Engineering and Design, vol. 172, p. 112880, Nov. 2021, doi: 10.1016/J.FUSENGDES.2021.112880.
+## **Model Applications and Recent Developments**
+TEMOA-Italy has been employed to analyze various aspects of the Italian energy transition, including industrial sector projections [6], the role of discount rates in investment decisions [3], and energy storage dynamics [5]. The model has also supported studies on the compatibility of energy policies with sustainable development goals [7], investigation of sustainability metrics [8] and the impact of critical raw material availability on energy system security [9], [10].
 
-## Contribution
+## **References**
+1. M. Nicoli, F. Gracceva, D. Lerede, and L. Savoldi, “Can We Rely on Open-Source Energy System Optimization Models? The TEMOA-Italy Case Study,” *Energies (Basel)*, vol. 15, no. 18, p. 6505, Sep. 2022, doi: 10.3390/en15186505.
+2. M. Nicoli, “A TIMES-like open-source model for the Italian energy system,” Politecnico di Torino, Turin, 2021. Accessed: Jul. 05, 2022. [Online]. Available: https://webthesis.biblio.polito.it/18850/
+3. M. Nicoli, G. Colucci, V. Di Cosmo, D. Lerede, and L. Savoldi, “Evaluating the impact of hurdle rates on the Italian energy transition through TEMOA,” *Appl Energy*, vol. 377PC, no. 124633, 2024, doi: 10.1016/j.apenergy.2024.124633.
+4. G. Colucci, D. Lerede, M. Nicoli, and L. Savoldi, “A dynamic accounting method for CO2 emissions to assess the penetration of low-carbon fuels: application to the TEMOA-Italy energy system optimization model,” *Appl Energy*, vol. 352, no. 121951, Dec. 2023, doi: 10.1016/j.apenergy.2023.121951.
+5. M. Nicoli, V. A. D. Faria, A. R. de Queiroz, and L. Savoldi, “Modeling energy storage in long-term capacity expansion energy planning: an analysis of the Italian system,” *J Energy Storage*, vol. 101PA, no. 113814, 2024, doi: 10.1016/j.est.2024.113814.
+6. A. Oliva, F. Gracceva, D. Lerede, M. Nicoli, and L. Savoldi, “Projection of Post-Pandemic Italian Industrial Production through Vector AutoRegressive Models,” *Energies 2021, Vol. 14, Page 5458*, vol. 14, no. 17, p. 5458, Sep. 2021, doi: 10.3390/EN14175458.
+7. M. Nicoli *et al.*, “Enabling Coherence Between Energy Policies and SDGs Through Open Energy Models: The TEMOA-Italy Example,” in *Aligning the Energy Transition with the Sustainable Development Goals: Key Insights from Energy System Modelling*, M. Labriet, K. Espegren, G. Giannakidis, and B. O’Gallachoir, Eds., Springer, 2024, pp. 97–118. doi: 10.1007/978-3-031-58897-6\_5.
+8. D. Mosso, G. Colucci, D. Lerede, M. Nicoli, M. S. Piscitelli, and L. Savoldi, “How much do carbon emission reduction strategies comply with a sustainable development of the power sector?,” *Energy Reports*, vol. 11, pp. 3064–3087, Jun. 2024, doi: 10.1016/J.EGYR.2024.02.056.
+9. A. Vai, G. Colucci, M. Nicoli, and L. Savoldi, “A Comprehensive Metric to Assess the Security of Future Energy Systems Through Energy System Optimization Models,” *Energy Proceedings*, vol. 47, 2024, doi: 10.46855/energy-proceedings-11292.
+10. A. Vai, G. Colucci, M. Nicoli, and L. Savoldi, “May the availability of critical raw materials affect the security of energy systems? An analysis for risk-aware energy planning with TEMOA-Italy,” *Mater Today Energy*, vol. 48, no. 101805, 2025, doi: 10.1016/j.mtener.2025.101805.
+
+## **Contribution**
 
 The developing team wishes to receive help form the users in the definition and test of new test cases, in the benchmark against other established software, in the inclusion of other functionalities.
 To contribute please refer to [contribution](CONTRIBUTION.md).
 
-## Code of Conduct
+## **Code of Conduct**
 
 The developing team agreed to embrace the [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) **Code of Conduct**.
  
-## License
+## **License**
 TEMOA-Italy is licensed under [![AGPL](https://www.gnu.org/graphics/agplv3-with-text-100x42.png)](LICENSE) or any other version of it.
