@@ -6,7 +6,7 @@ This guide provides comprehensive instructions for using the Database Creator, P
 
 ## Prerequisites
 
-Ensure you have the **temoa-py3 virtual environment** installed and activated in the console to guarantee compatibility with all dependencies.
+Ensure you have the **temoa virtual environment** installed and activated in the console to guarantee compatibility with all dependencies.
 
 # Database Creator
 
