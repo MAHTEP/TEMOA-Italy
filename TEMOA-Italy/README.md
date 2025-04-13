@@ -116,6 +116,8 @@ The script preprocesses and saves the following model input tables:
 - `CapacityFactor`
 - `CapacityFactorProcess`
 - `CapacityCredit`
+- `EnergyCommodityConcentrationIndex`
+- `TechnologyMaterialSupplyRisk`
 - `MaterialIntensity`
 
 ## Processing Steps

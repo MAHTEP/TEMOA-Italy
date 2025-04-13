@@ -370,7 +370,26 @@ INSERT INTO "technologies" VALUES ('MAT_SUP_LAN','p','MAT','Material Supply - La
 INSERT INTO "technologies" VALUES ('MAT_SUP_NIC','p','MAT','Material Supply - Nickel','');
 INSERT INTO "technologies" VALUES ('MAT_SUP_YTT','p','MAT','Material Supply - Yttrium','');
 INSERT INTO "technologies" VALUES ('MAT_SUP_ZIR','p','MAT','Material Supply - Zirconium','');
-
+CREATE TABLE "tech_mga" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_imports" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_exports" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_domestic" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
 CREATE TABLE "tech_reserve" (
 	"tech"	text,
 	"notes"	text,
@@ -568,7 +587,39 @@ INSERT INTO "commodities" VALUES('SOL','p','');
 INSERT INTO "commodities" VALUES('SYN_DST','p','');
 INSERT INTO "commodities" VALUES('SYN_KER','p','');
 INSERT INTO "commodities" VALUES('SYN_NGA','p','');
-
+CREATE TABLE "commodities_e_moo" (
+	"comm_name"	text,
+	"notes"		text,
+	PRIMARY KEY("comm_name"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name")
+);
+CREATE TABLE "MultiObjectiveSlacked" (
+	"objective_name"		text,
+	"objective_slack"		real,
+	"notes"					text
+);
+CREATE TABLE "EnergyCommodityConcentrationIndex" (
+    "regions"                   text,
+    "comm_name"                 text,
+    "periods"                   integer,
+    "concentration_index"       real,
+    "concentration_index_units" text,
+    "concentration_index_notes" text,
+	PRIMARY KEY("regions","comm_name","periods"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods")
+);
+CREATE TABLE "TechnologyMaterialSupplyRisk" (
+	"regions"	        text,
+	"tech"	            text,
+	"vintage"	        integer,
+	"tech_msr"	        real,
+	"tech_msr_units"	text,
+	"tech_msr_notes"	text,
+	PRIMARY KEY("regions","tech","vintage"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
+);
 CREATE TABLE "TechOutputSplit" (
 	"regions"	TEXT,
 	"periods"	integer,
@@ -1445,7 +1496,14 @@ INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_ROOF_INS_SN_N',73.96,'PJ',''
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_INT_INS_SN_N',35.37,'PJ','');
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_BASE_INS_SN_N',25.73,'PJ','');
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'RES_SH_WIN_INS_SN_N',12.86,'PJ','');
-
+CREATE TABLE "DiscreteCapacity" (
+	"tech"			text,
+	"dsccap"		real,
+	"dsccap_units"	text,
+	"dsccap_notes"	text,
+	PRIMARY KEY("tech"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
+);
 CREATE TABLE "MaxActivity" (
 	"regions"	text,
 	"periods"	integer,
@@ -4306,3 +4364,46 @@ CREATE TABLE "Output_VMat_Cons" (
 	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
 	FOREIGN KEY("material_comm") REFERENCES "commodities"("comm_name")
 );
+CREATE TABLE "Output_MaterialSupplyRisk" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"materialSR"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_EnergySupplyRisk" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"energySR"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_TotalCosts" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"total_costs"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_TotalEmissions" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"total_emissions"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_VSlack" (
+	"scenario"	text,
+	"moo_f"		text,
+	"slack"		real,
+	PRIMARY KEY("scenario","moo_f")
+);
+COMMIT;

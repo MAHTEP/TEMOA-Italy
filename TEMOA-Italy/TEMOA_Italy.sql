@@ -1193,10 +1193,31 @@ CREATE TABLE "tech_ramping" (
 	PRIMARY KEY("tech"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
-CREATE TABLE "tech_reserve" (
+CREATE TABLE "tech_mga" (
 	"tech"	text,
 	"notes"	text,
 	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_imports" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_exports" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_domestic" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech")
+);
+CREATE TABLE "tech_reserve" (
+	"tech"	text,
+	"notes"	text,
+	PRIMARY KEY("tech"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- Electricity sector
 INSERT INTO "tech_reserve" VALUES ('ELC_NGA_CT_N','');
@@ -2261,7 +2282,39 @@ INSERT INTO "commodities" VALUES('TIT','m','Titanium');
 INSERT INTO "commodities" VALUES('VAN','m','Vanadium');
 INSERT INTO "commodities" VALUES('YTT','m','Yttrium');
 INSERT INTO "commodities" VALUES('ZIR','m','Zirconium');
-
+CREATE TABLE "commodities_e_moo" (
+	"comm_name"	text,
+	"notes"		text,
+	PRIMARY KEY("comm_name"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name")
+);
+CREATE TABLE "MultiObjectiveSlacked" (
+	"objective_name"		text,
+	"objective_slack"		real,
+	"notes"					text
+);
+CREATE TABLE "EnergyCommodityConcentrationIndex" (
+    "regions"                   text,
+    "comm_name"                 text,
+    "periods"                   integer,
+    "concentration_index"       real,
+    "concentration_index_units" text,
+    "concentration_index_notes" text,
+	PRIMARY KEY("regions","comm_name","periods"),
+	FOREIGN KEY("comm_name") REFERENCES "commodities"("comm_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods")
+);
+CREATE TABLE "TechnologyMaterialSupplyRisk" (
+	"regions"	        text,
+	"tech"	            text,
+	"vintage"	        integer,
+	"tech_msr"	        real,
+	"tech_msr_units"	text,
+	"tech_msr_notes"	text,
+	PRIMARY KEY("regions","tech","vintage"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
+);
 CREATE TABLE "TechOutputSplit" (
 	"regions"	TEXT,
 	"periods"	integer,
@@ -3303,15 +3356,15 @@ INSERT INTO "TechInputSplit" VALUES ('IT',2050,'H2_SF','SF_NGA_METH',0.0213,'JRC
 INSERT INTO "TechInputSplit" VALUES ('IT',2050,'SNK_CO2','SF_NGA_METH',0.9787,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'H2_SF','SF_DST_HYDR',0.0170,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'SNK_CO2','SF_DST_HYDR',0.9830,'JRC-EU-TIMES');
-INSERT INTO "TechInputSplit" VALUES ('IT',2025,'H2_SF','SF_DST_COELC',0.0305,'JRC-EU-TIMES');
+INSERT INTO "TechInputSplit" VALUES ('IT',2025,'SNK_CO2','SF_DST_COELC',0.0305,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'ELC_CEN','SF_DST_COELC',0.9695,'JRC-EU-TIMES');
-INSERT INTO "TechInputSplit" VALUES ('IT',2030,'H2_SF','SF_DST_COELC',0.0241,'JRC-EU-TIMES');
+INSERT INTO "TechInputSplit" VALUES ('IT',2030,'SNK_CO2','SF_DST_COELC',0.0241,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2030,'ELC_CEN','SF_DST_COELC',0.9759,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'H2_SF','SF_KER_HYDR',0.0176,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'SNK_CO2','SF_KER_HYDR',0.9824,'JRC-EU-TIMES');
-INSERT INTO "TechInputSplit" VALUES ('IT',2025,'H2_SF','SF_KER_COELC',0.0316,'JRC-EU-TIMES');
+INSERT INTO "TechInputSplit" VALUES ('IT',2025,'SNK_CO2','SF_KER_COELC',0.0316,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'ELC_CEN','SF_KER_COELC',0.9684,'JRC-EU-TIMES');
-INSERT INTO "TechInputSplit" VALUES ('IT',2030,'H2_SF','SF_KER_COELC',0.0250,'JRC-EU-TIMES');
+INSERT INTO "TechInputSplit" VALUES ('IT',2030,'SNK_CO2','SF_KER_COELC',0.0250,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2030,'ELC_CEN','SF_KER_COELC',0.9750,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'H2_SF','SF_MEOH_HYDR',0.0173,'JRC-EU-TIMES');
 INSERT INTO "TechInputSplit" VALUES ('IT',2025,'SNK_CO2','SF_MEOH_HYDR',0.9827,'JRC-EU-TIMES');
@@ -6098,7 +6151,14 @@ INSERT INTO "MaxCapacity" VALUES ('IT',2007,'UPS_EXP_ELC_CEN',4.10,'GW','TERNA')
 INSERT INTO "MaxCapacity" VALUES ('IT',2016,'UPS_EXP_ELC_CEN',4.10,'GW','TERNA');
 INSERT INTO "MaxCapacity" VALUES ('IT',2022,'UPS_EXP_ELC_CEN',5.69,'GW','TERNA');
 INSERT INTO "MaxCapacity" VALUES ('IT',2050,'UPS_EXP_ELC_CEN',8.53,'GW','TERNA');
-
+CREATE TABLE "DiscreteCapacity" (
+	"tech"			text,
+	"dsccap"		real,
+	"dsccap_units"	text,
+	"dsccap_notes"	text,
+	PRIMARY KEY("tech"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
+);
 CREATE TABLE "MaxActivity" (
 	"regions"	text,
 	"periods"	integer,
@@ -8708,9 +8768,9 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
---INSERT INTO "EmissionLimit" VALUES ('IT',2030,'TOT_CO2',194208,'kt','');
---INSERT INTO "EmissionLimit" VALUES ('IT',2040,'TOT_CO2',111475,'kt','');
---INSERT INTO "EmissionLimit" VALUES ('IT',2050,'TOT_CO2',28742,'kt','');
+INSERT INTO "EmissionLimit" VALUES ('IT',2030,'TOT_CO2',194208,'kt','');
+INSERT INTO "EmissionLimit" VALUES ('IT',2040,'TOT_CO2',111475,'kt','');
+INSERT INTO "EmissionLimit" VALUES ('IT',2050,'TOT_CO2',28742,'kt','');
 
 CREATE TABLE "EmissionActivity" (
 	"regions"	text,
@@ -18671,3 +18731,46 @@ CREATE TABLE "Output_VMat_Cons" (
 	FOREIGN KEY("sector") REFERENCES "sector_labels"("sector"),
 	FOREIGN KEY("material_comm") REFERENCES "commodities"("comm_name")
 );
+CREATE TABLE "Output_MaterialSupplyRisk" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"materialSR"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_EnergySupplyRisk" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"energySR"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_TotalCosts" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"total_costs"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_TotalEmissions" (
+    "regions"   text,
+	"scenario"	text,
+	"t_periods" integer,
+	"total_emissions"	real,
+	PRIMARY KEY("regions","scenario","t_periods"),
+	FOREIGN KEY("t_periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
+);
+CREATE TABLE "Output_VSlack" (
+	"scenario"	text,
+	"moo_f"		text,
+	"slack"		real,
+	PRIMARY KEY("scenario","moo_f")
+);
+COMMIT;
