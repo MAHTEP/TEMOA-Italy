@@ -1087,7 +1087,7 @@ for i_tech in range(0, len(CostFixed.tech)):
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeTech.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
+                if LifetimeProcess.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
@@ -1232,7 +1232,7 @@ for i_tech in range(0, len(CostVariable.tech)):
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeTech.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
+                if LifetimeProcess.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
