@@ -433,53 +433,53 @@ CREATE TABLE "commodities" (
 	FOREIGN KEY("flag") REFERENCES "commodity_labels"("comm_labels")
 );
 -- Hydrogen
-INSERT INTO "commodities" VALUES('H2','p','Hydrogen');
-INSERT INTO "commodities" VALUES('H2_EL','p','Hydrogen from electrolysis');
-INSERT INTO "commodities" VALUES('H2_EL_SOEC','p','Hydrogen from SOEC');
-INSERT INTO "commodities" VALUES('H2_BL','p','Hydrogen for blending');
-INSERT INTO "commodities" VALUES('H2_SF','p','Hydrogen for synfuels production');
+INSERT INTO "commodities" VALUES ('H2','p','Hydrogen');
+INSERT INTO "commodities" VALUES ('H2_EL','p','Hydrogen from electrolysis');
+INSERT INTO "commodities" VALUES ('H2_EL_SOEC','p','Hydrogen from SOEC');
+INSERT INTO "commodities" VALUES ('H2_BL','p','Hydrogen for blending');
+INSERT INTO "commodities" VALUES ('H2_SF','p','Hydrogen for synfuels production');
 -- CCUS
-INSERT INTO "commodities" VALUES('SNK_CO2','p','Captured CO2 for storage/utilization - Physical');
-INSERT INTO "commodities" VALUES('SNK_CO2_EM','e','Captured CO2 for storage/utilization - Emission');
+INSERT INTO "commodities" VALUES ('SNK_CO2','p','Captured CO2 for storage/utilization - Physical');
+INSERT INTO "commodities" VALUES ('SNK_CO2_EM','e','Captured CO2 for storage/utilization - Emission');
 -- Other sectors and dummies (not required in the whole database)
-INSERT INTO "commodities" VALUES('DMY_OUT','d','');
-INSERT INTO "commodities" VALUES('BIO_SLB','p','');
-INSERT INTO "commodities" VALUES('COA_HCO','p','');
-INSERT INTO "commodities" VALUES('ELC_CEN','p','');
-INSERT INTO "commodities" VALUES('ELC_CO2','e','');
-INSERT INTO "commodities" VALUES('ELC_COA','p','');
-INSERT INTO "commodities" VALUES('ELC_DST','p','');
-INSERT INTO "commodities" VALUES('ELC_NGA','p','');
-INSERT INTO "commodities" VALUES('GAS_ETH','p','');
-INSERT INTO "commodities" VALUES('GAS_NGA','p','');
-INSERT INTO "commodities" VALUES('HET','p','');
-INSERT INTO "commodities" VALUES('OIL_HFO','p','');
-INSERT INTO "commodities" VALUES('SNK_ELC_CO2','p','');
-INSERT INTO "commodities" VALUES('SNK_IND_CO2','p','');
-INSERT INTO "commodities" VALUES('SNK_UPS_CO2','p','');
-INSERT INTO "commodities" VALUES('SYN_DST','p','');
-INSERT INTO "commodities" VALUES('SYN_KER','p','');
-INSERT INTO "commodities" VALUES('SYN_MET','p','');
-INSERT INTO "commodities" VALUES('SYN_NGA','p','');
-INSERT INTO "commodities" VALUES('TOT_CO2','e','');
-INSERT INTO "commodities" VALUES('TRA_CO2','e','');
-INSERT INTO "commodities" VALUES('UPS_CO2','e','');
-INSERT INTO "commodities" VALUES('ethos','p','');
+INSERT INTO "commodities" VALUES ('DMY_OUT','d','');
+INSERT INTO "commodities" VALUES ('BIO_SLB','p','');
+INSERT INTO "commodities" VALUES ('COA_HCO','p','');
+INSERT INTO "commodities" VALUES ('ELC_CEN','p','');
+INSERT INTO "commodities" VALUES ('ELC_CO2','e','');
+INSERT INTO "commodities" VALUES ('ELC_COA','p','');
+INSERT INTO "commodities" VALUES ('ELC_DST','p','');
+INSERT INTO "commodities" VALUES ('ELC_NGA','p','');
+INSERT INTO "commodities" VALUES ('GAS_ETH','p','');
+INSERT INTO "commodities" VALUES ('GAS_NGA','p','');
+INSERT INTO "commodities" VALUES ('HET','p','');
+INSERT INTO "commodities" VALUES ('OIL_HFO','p','');
+INSERT INTO "commodities" VALUES ('SNK_ELC_CO2','p','');
+INSERT INTO "commodities" VALUES ('SNK_IND_CO2','p','');
+INSERT INTO "commodities" VALUES ('SNK_UPS_CO2','p','');
+INSERT INTO "commodities" VALUES ('SYN_DST','p','');
+INSERT INTO "commodities" VALUES ('SYN_KER','p','');
+INSERT INTO "commodities" VALUES ('SYN_MET','p','');
+INSERT INTO "commodities" VALUES ('SYN_NGA','p','');
+INSERT INTO "commodities" VALUES ('TOT_CO2','e','');
+INSERT INTO "commodities" VALUES ('TRA_CO2','e','');
+INSERT INTO "commodities" VALUES ('UPS_CO2','e','');
+INSERT INTO "commodities" VALUES ('ethos','p','');
 -- Materials
-INSERT INTO "commodities" VALUES('CHR','m','Chromium');
-INSERT INTO "commodities" VALUES('COB','m','Cobalt');
-INSERT INTO "commodities" VALUES('COP','m','Copper');
-INSERT INTO "commodities" VALUES('IRI','m','Iridium');
-INSERT INTO "commodities" VALUES('LAN','m','Lanthanum');
-INSERT INTO "commodities" VALUES('MAN','m','Manganese');
-INSERT INTO "commodities" VALUES('MOL','m','Molybdenum');
-INSERT INTO "commodities" VALUES('NIC','m','Nickel');
-INSERT INTO "commodities" VALUES('NIO','m','Niobium');
-INSERT INTO "commodities" VALUES('PAL','m','Palladium');
-INSERT INTO "commodities" VALUES('PLA','m','Platinum');
-INSERT INTO "commodities" VALUES('YTT','m','Yttrium');
-INSERT INTO "commodities" VALUES('VAN','m','Vanadium');
-INSERT INTO "commodities" VALUES('ZIR','m','Zirconium');
+INSERT INTO "commodities" VALUES ('CHR','m','Chromium');
+INSERT INTO "commodities" VALUES ('COB','m','Cobalt');
+INSERT INTO "commodities" VALUES ('COP','m','Copper');
+INSERT INTO "commodities" VALUES ('IRI','m','Iridium');
+INSERT INTO "commodities" VALUES ('LAN','m','Lanthanum');
+INSERT INTO "commodities" VALUES ('MAN','m','Manganese');
+INSERT INTO "commodities" VALUES ('MOL','m','Molybdenum');
+INSERT INTO "commodities" VALUES ('NIC','m','Nickel');
+INSERT INTO "commodities" VALUES ('NIO','m','Niobium');
+INSERT INTO "commodities" VALUES ('PAL','m','Palladium');
+INSERT INTO "commodities" VALUES ('PLA','m','Platinum');
+INSERT INTO "commodities" VALUES ('YTT','m','Yttrium');
+INSERT INTO "commodities" VALUES ('VAN','m','Vanadium');
+INSERT INTO "commodities" VALUES ('ZIR','m','Zirconium');
 CREATE TABLE "commodities_e_moo" (
 	"comm_name"	text,
 	"notes"		text,
@@ -863,12 +863,12 @@ INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','COA_HCO','CCUS_H2_GS_C
 INSERT INTO "EmissionActivity" VALUES ('IT','UPS_CO2','BIO_SLB','CCUS_H2_GS_BIO',2020,'H2',-112.00/0.51*0.80,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','BIO_SLB','CCUS_H2_GS_BIO',2020,'H2',112.00/0.51*0.80,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_COA','CCUS_ELC_COA',2020,'ELC_CEN',-101.16/0.32*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_COA','CCUS_ELC_COA',2030,'ELC_CEN',-101.16/0.35*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_COA','CCUS_ELC_COA',2035,'ELC_CEN',-101.16/0.35*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_COA','CCUS_ELC_COA',2020,'ELC_CEN',101.16/0.32*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_COA','CCUS_ELC_COA',2030,'ELC_CEN',101.16/0.35*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_COA','CCUS_ELC_COA',2035,'ELC_CEN',101.16/0.35*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',-56.10/0.48*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',-56.10/0.48*0.90,'kt/PJ','');
-INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',56.10/0.55*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','ELC_CO2','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',-56.10/0.55*0.90,'kt/PJ','');
+INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2020,'ELC_CEN',56.10/0.48*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','SNK_CO2_EM','ELC_NGA','CCUS_ELC_NGA',2035,'ELC_CEN',56.10/0.55*0.90,'kt/PJ','');
 INSERT INTO "EmissionActivity" VALUES ('IT','TOT_CO2','ELC_DST','CCUS_DAC',2020,'SNK_CO2',-1.0,'kt/kt','');
 INSERT INTO "EmissionActivity" VALUES ('IT','TOT_CO2','HET','CCUS_DAC',2020,'SNK_CO2',-1.0,'kt/kt','');
@@ -1049,11 +1049,11 @@ CREATE TABLE "LinkedTechs" (
 	PRIMARY KEY("primary_region","primary_tech", "emis_comm")
 );
 -- CCUS
-INSERT INTO "LinkedTechs" VALUES('IT','CCUS_H2_SR_NGA','SNK_CO2_EM','CCUS_H2_SR_NGA_LINKED','');
-INSERT INTO "LinkedTechs" VALUES('IT','CCUS_H2_GS_COA','SNK_CO2_EM','CCUS_H2_GS_COA_LINKED','');
-INSERT INTO "LinkedTechs" VALUES('IT','CCUS_H2_GS_BIO','SNK_CO2_EM','CCUS_H2_GS_BIO_LINKED','');
-INSERT INTO "LinkedTechs" VALUES('IT','CCUS_ELC_COA','SNK_CO2_EM','CCUS_ELC_COA_LINKED','');
-INSERT INTO "LinkedTechs" VALUES('IT','CCUS_ELC_NGA','SNK_CO2_EM','CCUS_ELC_NGA_LINKED','');
+INSERT INTO "LinkedTechs" VALUES ('IT','CCUS_H2_SR_NGA','SNK_CO2_EM','CCUS_H2_SR_NGA_LINKED','');
+INSERT INTO "LinkedTechs" VALUES ('IT','CCUS_H2_GS_COA','SNK_CO2_EM','CCUS_H2_GS_COA_LINKED','');
+INSERT INTO "LinkedTechs" VALUES ('IT','CCUS_H2_GS_BIO','SNK_CO2_EM','CCUS_H2_GS_BIO_LINKED','');
+INSERT INTO "LinkedTechs" VALUES ('IT','CCUS_ELC_COA','SNK_CO2_EM','CCUS_ELC_COA_LINKED','');
+INSERT INTO "LinkedTechs" VALUES ('IT','CCUS_ELC_NGA','SNK_CO2_EM','CCUS_ELC_NGA_LINKED','');
 
 CREATE TABLE "DiscountRate" (
 	"regions"	text,
@@ -1106,38 +1106,38 @@ CREATE TABLE "Driver" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods")
 );
 -- Other sectors and dummies (not required in the whole database)
-INSERT INTO "Driver" VALUES('IT',2006,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2006,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2007,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2007,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2008,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2008,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2010,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2010,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2012,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2012,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2014,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2014,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2016,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2016,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2018,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2018,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2020,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2020,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2022,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2022,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2025,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2025,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2030,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2030,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2035,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2035,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2040,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2040,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2045,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2045,'GDP',1,'');
-INSERT INTO "Driver" VALUES('IT',2050,'POP',1,'');
-INSERT INTO "Driver" VALUES('IT',2050,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2006,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2006,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2007,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2007,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2008,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2008,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2010,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2010,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2012,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2012,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2014,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2014,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2016,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2016,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2018,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2018,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2020,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2020,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2022,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2022,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2025,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2025,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2030,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2030,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2035,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2035,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2040,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2040,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2045,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2045,'GDP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2050,'POP',1,'');
+INSERT INTO "Driver" VALUES ('IT',2050,'GDP',1,'');
 
 CREATE TABLE "Allocation" (
     "regions"       text,
@@ -1192,7 +1192,7 @@ CREATE TABLE "Demand" (
 	FOREIGN KEY("demand_comm") REFERENCES "commodities"("comm_name")
 );
 -- Other sectors and dummies (not required in the whole database)
-INSERT INTO "Demand" VALUES('IT',2006,'DMY_OUT',1E6,'PJ','');
+INSERT INTO "Demand" VALUES ('IT',2006,'DMY_OUT',1E6,'PJ','');
 
 CREATE TABLE "CostVariable" (
 	"regions"	text NOT NULL,
