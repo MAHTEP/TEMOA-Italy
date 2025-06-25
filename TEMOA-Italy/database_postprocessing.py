@@ -1,6 +1,7 @@
 import pandas as pd
 import sqlite3
 import multiprocessing
+from tqdm import tqdm
 
 # Input parameters to control the use of multiprocessing and set the algorithm outputs
 
@@ -2076,7 +2077,7 @@ if __name__ ==  '__main__':
     inputs = list(zip(file_list, scenario_list))
     
     with multiprocessing.Pool(processes=processes) as pool:
-        results = pool.map(function, inputs)
+        results = list(tqdm(pool.imap(function, inputs), total=len(inputs)))
 
     Output_CapacityByPeriodAndTech_list = [res[0] for res in results]
     Output_V_Capacity_list = [res[1] for res in results]
