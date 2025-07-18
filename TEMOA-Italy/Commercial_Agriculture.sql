@@ -2415,6 +2415,18 @@ INSERT INTO "CostVariable" VALUES ('IT',2030,'COM_CHP_NGA_SOFC_N',2030,4.86,'M�
 INSERT INTO "CostVariable" VALUES ('IT',2025,'COM_CHP_H2_PEMFC_N',2025,13.89,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2030,'COM_CHP_H2_PEMFC_N',2030,6.94,'M€/PJ','');
 
+CREATE TABLE "CostEmission" (
+    "regions"  text NOT NULL,
+    "periods"  integer NOT NULL,
+    "emis_comm" text NOT NULL,
+    "cost_emission"    real,
+    "cost_emission_units"  text,
+    "cost_emission_notes"  text,
+    FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+    FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name"),
+    PRIMARY KEY("regions","periods","emis_comm")
+);
+
 CREATE TABLE "CostInvest" (
 	"regions"	text,
 	"tech"	text,

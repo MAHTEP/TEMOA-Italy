@@ -1241,6 +1241,18 @@ INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_SNK_DGF_ON',2020,3.67E-03,'M�
 INSERT INTO "CostVariable" VALUES ('IT',2020,'CCUS_SNK_DGF_OFF',2020,6.27E-03,'M€/kt','JRC-EU-TIMES');
 INSERT INTO "CostVariable" VALUES ('IT',2007,'CCUS_SNK_BCKSTP',2007,10.00,'M€/kt','');
 
+CREATE TABLE "CostEmission" (
+    "regions"  text NOT NULL,
+    "periods"  integer NOT NULL,
+    "emis_comm" text NOT NULL,
+    "cost_emission"    real,
+    "cost_emission_units"  text,
+    "cost_emission_notes"  text,
+    FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+    FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name"),
+    PRIMARY KEY("regions","periods","emis_comm")
+);
+
 CREATE TABLE "CostInvest" (
 	"regions"	text,
 	"tech"	text,

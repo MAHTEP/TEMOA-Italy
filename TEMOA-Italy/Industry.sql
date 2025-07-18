@@ -4647,6 +4647,18 @@ INSERT INTO "CostVariable" VALUES ('IT',2022,'IND_CHP_BLQ_CI_N',2022,3.22E+00,'M
 INSERT INTO "CostVariable" VALUES ('IT',2030,'IND_CHP_BLQ_CI_N',2030,2.78E+00,'M€/PJ','');
 INSERT INTO "CostVariable" VALUES ('IT',2050,'IND_CHP_BLQ_CI_N',2050,2.50E+00,'M€/PJ','');
 
+CREATE TABLE "CostEmission" (
+    "regions"  text NOT NULL,
+    "periods"  integer NOT NULL,
+    "emis_comm" text NOT NULL,
+    "cost_emission"    real,
+    "cost_emission_units"  text,
+    "cost_emission_notes"  text,
+    FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+    FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name"),
+    PRIMARY KEY("regions","periods","emis_comm")
+);
+
 CREATE TABLE "CostInvest" (
 	"regions"	text,
 	"tech"	text,

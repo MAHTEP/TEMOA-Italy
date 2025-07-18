@@ -22,6 +22,7 @@ print_outcome = {'EmissionActivity':                    False,
                  'CostInvest':                          False,
                  'CostFixed':                           False,
                  'CostVariable':                        False,
+                 'CostEmission':                        False,
                  'DiscountRate':                        False,
                  'MinCapacity':                         False,
                  'MinActivity':                         False,
@@ -53,6 +54,7 @@ save_tosql = {'EmissionActivity':                    True,
               'CostInvest':                          True,
               'CostFixed':                           True,
               'CostVariable':                        True,
+              'CostEmission':                        True,
               'DiscountRate':                        True,
               'MinCapacity':                         True,
               'MinActivity':                         True,
@@ -1232,7 +1234,7 @@ for i_tech in range(0, len(CostVariable.tech)):
                 lifetime = LifetimeTech.life[i_life]
         if lifetime == lifetime_default:
             for i_life in range(0, len(LifetimeProcess.life_process)):
-                if LifetimeProcess.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
+                if LifetimeTech.regions[i_life] + LifetimeProcess.tech[i_life] == index_i:
                     year_lifetime.append(LifetimeProcess.vintage[i_life])
                     lifetime_process.append(LifetimeProcess.life_process[i_life])
 
@@ -1343,6 +1345,92 @@ end_time = time.time()
 print_i = print_i + 1
 if print_status:
     print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CostVariable interpolated.',
+                                                                    np.format_float_positional(abs(end_time - start_time), 2), 's'))
+
+# CostEmission
+
+start_time = time.time()
+
+CostEmission = pd.read_sql("SELECT * FROM CostEmission", conn)  # Loading the CostEmission table from the .SQLite database
+
+regions = list()
+periods = list()
+emis_comm = list()
+cost_emission = list()
+cost_emission_units = list()
+cost_emission_notes = list()
+
+# Extracting the list of all indexes combinations for CostEmission
+indexes = list()
+for i in range(0, len(CostEmission)):
+    indexes.append(CostEmission.regions[i] + CostEmission.emis_comm[i])
+CostEmission['indexes'] = indexes
+indexes = list(dict.fromkeys(indexes))  # Removing duplicates
+
+# Interpolating/extrapolating
+for index_i in indexes:
+    CostEmission_i = CostEmission[(CostEmission['indexes'] == index_i)]
+    CostEmission_i = CostEmission_i.sort_values(by=['periods'], ignore_index=True)
+    for i in range(0, len(CostEmission_i.periods)):
+        if i < len(CostEmission_i.periods) - 1:  # Interpolation
+            # Extracting time periods involved in the interpolation
+            time_periods_i = [x for x in time_periods if CostEmission_i.periods[i] <= x < CostEmission_i.periods[i+1]]
+            for j in range(0, len(time_periods_i)):
+                if j == 0:  # Only used for the first time period available (to avoid / 0 in the linear interpolation equation)
+                    regions.append(CostEmission_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    emis_comm.append(CostEmission_i.emis_comm[i])
+                    cost_emission.append(float(CostEmission_i.cost_emission[i]))
+                    cost_emission_units.append(CostEmission_i.cost_emission_units[i])
+                    cost_emission_notes.append(CostEmission_i.cost_emission_notes[i])
+                else:  # Linear interpolation for intermediate time periods
+                    regions.append(CostEmission_i.regions[i])
+                    periods.append(time_periods_i[j])
+                    emis_comm.append(CostEmission_i.emis_comm[i])
+                    cost_emission.append(float(CostEmission_i.cost_emission[i] +
+                                          (CostEmission_i.cost_emission[i + 1] - CostEmission_i.cost_emission[i]) *
+                                          (time_periods_i[j] - CostEmission_i.periods[i]) /
+                                          (CostEmission_i.periods[i + 1] - CostEmission_i.periods[i])))
+                    cost_emission_units.append(CostEmission_i.cost_emission_units[i])
+                    cost_emission_notes.append(CostEmission_i.cost_emission_notes[i])
+        else:  # Extrapolation
+            # Extracting time periods involved in the extrapolation
+            time_periods_i = [x for x in time_periods if x >= CostEmission_i.periods[i]]
+            for j in range(0, len(time_periods_i)):
+                regions.append(CostEmission_i.regions[i])
+                periods.append(time_periods_i[j])
+                emis_comm.append(CostEmission_i.emis_comm[i])
+                cost_emission.append(float(CostEmission_i.cost_emission[i]))
+                cost_emission_units.append(CostEmission_i.cost_emission_units[i])
+                cost_emission_notes.append(CostEmission_i.cost_emission_notes[i])
+
+# Converting lists into a DataFrame
+CostEmission = pd.DataFrame(
+    {
+        "regions": pd.Series(regions, dtype='str'),
+        "periods": pd.Series(periods, dtype='int'),
+        "emis_comm": pd.Series(emis_comm, dtype='str'),
+        "cost_emission": pd.Series(cost_emission, dtype='float'),
+        "cost_emission_units": pd.Series(cost_emission_units, dtype='str'),
+        "cost_emission_notes": pd.Series(cost_emission_notes, dtype='str')
+    }
+)
+
+if save_tosql['CostEmission']:
+    CostEmission.to_sql('CostEmission', conn, index=False, if_exists='replace')
+
+if print_outcome['CostEmission']:
+    pd.set_option('display.max_rows', len(CostEmission))
+    pd.set_option('display.max_columns', 10)
+    print("\nCostEmission DataFrame\n\n", CostEmission)
+    pd.reset_option('display.max_rows')
+    pd.reset_option('display.max_columns')
+
+end_time = time.time()
+
+print_i = print_i + 1
+if print_status:
+    print("{:>1} {:>2} {:>1} {:>2} {:>1} {:>50} {:>6} {:>1}".format('[', print_i, '/', len(print_outcome), ']', 'CostEmission interpolated.',
                                                                     np.format_float_positional(abs(end_time - start_time), 2), 's'))
 
 # DiscountRate

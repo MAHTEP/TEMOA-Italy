@@ -2253,6 +2253,18 @@ INSERT INTO "CostVariable" VALUES ('IT',2012,'TRA_ROA_MTR_ELC_N',2012,494.02,'M�
 INSERT INTO "CostVariable" VALUES ('IT',2020,'TRA_ROA_MTR_ELC_N',2020,494.02,'M€/Bvkm','Recharging - Cost of Power');
 INSERT INTO "CostVariable" VALUES ('IT',2050,'TRA_ROA_MTR_ELC_N',2050,425.41,'M€/Bvkm','Recharging - Cost of Power');
 
+CREATE TABLE "CostEmission" (
+    "regions"  text NOT NULL,
+    "periods"  integer NOT NULL,
+    "emis_comm" text NOT NULL,
+    "cost_emission"    real,
+    "cost_emission_units"  text,
+    "cost_emission_notes"  text,
+    FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+    FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name"),
+    PRIMARY KEY("regions","periods","emis_comm")
+);
+
 CREATE TABLE "CostInvest" (
 	"regions"	text,
 	"tech"	text,
