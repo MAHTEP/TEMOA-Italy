@@ -92,7 +92,7 @@ def function(args):
 
     periods = periods_list
     
-    if not periods:  # Extraction of all the periods belonging to time_optimize if no time periods have been specifies
+    if not periods:  # Extraction of all the periods belonging to time_optimize if no time periods have been specified
         conn = sqlite3.connect(file)
         time_periods_future = pd.read_sql("select * from time_periods where flag='f'", conn)
         conn.close()
@@ -105,7 +105,7 @@ def function(args):
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("Warning: No Output_CapacityByPeriodAndTech found.")
+            print("WARNING: No Output_CapacityByPeriodAndTech found.")
             result_set["Output_CapacityByPeriodAndTech"] = False
 
         else:
@@ -255,7 +255,7 @@ def function(args):
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("Warning: No Output_V_Capacity found.")
+            print("WARNING: No Output_V_Capacity found.")
             result_set["Output_V_Capacity"] = False
 
         else:
@@ -404,7 +404,7 @@ def function(args):
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("Warning: No Output_CostInvest found.")
+            print("WARNING: No Output_CostInvest found.")
             result_set["Output_CostInvest"] = False
 
         else:
@@ -556,7 +556,7 @@ def function(args):
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("Warning: No Output_CostFixed found.")
+            print("WARNING: No Output_CostFixed found.")
             result_set["Output_CostFixed"] = False
 
         else:
@@ -709,7 +709,7 @@ def function(args):
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("Warning: No Output_CostVariable found.")
+            print("WARNING: No Output_CostVariable found.")
             result_set["Output_CostVariable"] = False
 
         else:
@@ -862,7 +862,7 @@ def function(args):
         tech = tech_list
         input_comm = input_comm_list
         if not tech and not input_comm:
-            print("Warning: No Output_VFlow_In found.")
+            print("WARNING: No Output_VFlow_In found.")
             result_set["Output_VFlow_In"] = False
         
         else:
@@ -984,7 +984,7 @@ def function(args):
                 columns_labels = pd.Series(['file', 'scenario', 'regions', 'input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regins': '', 'input_comm': ''}
+                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regions': '', 'input_comm': ''}
                 Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
 
                 Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
@@ -1154,7 +1154,7 @@ def function(args):
         tech = tech_list
         output_comm = output_comm_list
         if not tech and not output_comm:
-            print("Warning: No Output_VFlow_Out found.")
+            print("WARNING: No Output_VFlow_Out found.")
             result_set["Output_VFlow_Out"] = False
         
         else:
@@ -1444,7 +1444,7 @@ def function(args):
         tech = tech_list
         material_comm = material_comm_list
         if not tech and not material_comm:
-            print("Warning: No Output_VMat_Cons found.")
+            print("WARNING: No Output_VMat_Cons found.")
             result_set["Output_VMat_Cons"] = False
         
         else:
@@ -1734,7 +1734,7 @@ def function(args):
         tech = tech_list
         emissions_comm = emissions_comm_list
         if not tech and not emissions_comm:
-            print("Warning: No Output_Emissions found.")
+            print("WARNING: No Output_Emissions found.")
             result_set["Output_Emissions"] = False
         
         else:
@@ -1961,7 +1961,7 @@ def function(args):
                     if not check_zeros:
                         Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             elif not disaggregation["regions"] and not disaggregation["emissions_tech"] and disaggregation["emissions_comm"]:
 
@@ -2020,19 +2020,15 @@ def function(args):
     # Check dummies
 
     if tech_dummies:
-        regions = regions_list
         tech = tech_dummies
-
-        conn = sqlite3.connect(file)
-        time_periods_future = pd.read_sql("select * from time_periods where flag='f'", conn)
-        conn.close()
-        time_periods_optimize = time_periods_future.drop(len(time_periods_future) - 1)
-        periods = time_periods_optimize.t_periods
 
         conn = sqlite3.connect(file)
         Check_Dummies = pd.read_sql("select * from Output_VFlow_Out where (" +
                                     " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
+
+        regions = list(Check_Dummies.regions)
+        regions = list(dict.fromkeys(regions))  # To remove duplicates
 
         output_comm = list(Check_Dummies.output_comm)
         output_comm = list(dict.fromkeys(output_comm))  # To remove duplicates
@@ -2067,7 +2063,6 @@ def function(args):
                         Check_Dummies_DF = Check_Dummies_DF.append(Check_Dummies_dict, ignore_index=True)
 
         Check_Dummies_DF = Check_Dummies_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'output_comm'], ignore_index=True)
-
         Check_Dummies_DF = Check_Dummies_DF.loc[:, (Check_Dummies_DF != 0).any(axis=0)]  # To remove columns with only zeros
         Check_Dummies_MERGE = pd.concat([Check_Dummies_MERGE, Check_Dummies_DF])
 
@@ -2122,9 +2117,9 @@ if __name__ ==  '__main__':
             print("\nOutput_VMat_Cons\n\n", Output_VMat_Cons.to_string(index=False, float_format='%.2f'))
         if result_set["Output_Emissions"]:
             print("\nOutput_Emissions\n\n", Output_Emissions.to_string(index=False, float_format='%.2f'))
-
+    
     if len(Check_Dummies) != 0:
-        print("\nWarning: Dummy imports detected.\n\n", Check_Dummies.to_string(index=False, float_format='%.2f'))
+        print("\nWARNING: Dummy imports detected.\n\n", Check_Dummies.to_string(index=False, float_format='%.2f'))
 
     # Export to Excel
 
