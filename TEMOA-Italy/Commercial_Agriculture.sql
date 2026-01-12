@@ -433,7 +433,8 @@ INSERT INTO "commodities" VALUES ('YTT','m','Yttrium');
 INSERT INTO "commodities" VALUES ('ZIR','m','Zirconium');
 -- Input commodities
 INSERT INTO "commodities" VALUES ('ethos','p','');
-INSERT INTO "commodities" VALUES ('BIO_DST','p','');
+INSERT INTO "commodities" VALUES ('BIO_DST1','p','');
+INSERT INTO "commodities" VALUES ('BIO_LIQ','p','');
 INSERT INTO "commodities" VALUES ('BIO_METH','p','');
 INSERT INTO "commodities" VALUES ('BIO_SLB','p','');
 INSERT INTO "commodities" VALUES ('ELC_CEN','p','');
@@ -1058,8 +1059,8 @@ INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'SYN_DST','COM_FT_DST_GRP',0.00,''
 INSERT INTO "MaxInputGroup" VALUES ('IT',2025,'SYN_DST','COM_FT_DST_GRP',0.00,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2030,'SYN_DST','COM_FT_DST_GRP',0.05,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'SYN_DST','COM_FT_DST_GRP',1.00,'');
-INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'BIO_DST','COM_FT_DST_GRP',0.00,'');
-INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'BIO_DST','COM_FT_DST_GRP',0.00,'');
+INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'BIO_DST1','COM_FT_DST_GRP',0.00,'');
+INSERT INTO "MaxInputGroup" VALUES ('IT',2050,'BIO_DST1','COM_FT_DST_GRP',0.00,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2007,'SYN_NGA','COM_FT_NGA_GRP',0.00,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2025,'SYN_NGA','COM_FT_NGA_GRP',0.00,'');
 INSERT INTO "MaxInputGroup" VALUES ('IT',2030,'SYN_NGA','COM_FT_NGA_GRP',0.05,'');
@@ -1628,7 +1629,7 @@ INSERT INTO "EmissionActivity" VALUES ('IT','AGR_CO2','H2_BL','AGR_FT_NGA',2020,
 -- Commercial sector
 INSERT INTO "EmissionActivity" VALUES ('IT','COM_CO2','BIO_METH','COM_FT_NGA_N',2007,'COM_NGA',-56.10,'[kt/PJ]','');
 INSERT INTO "EmissionActivity" VALUES ('IT','COM_CO2','H2_BL','COM_FT_NGA_N',2020,'COM_NGA',-56.10,'[kt/PJ]','');
-INSERT INTO "EmissionActivity" VALUES ('IT','COM_CO2','BIO_DST','COM_FT_DST_N',2007,'COM_DST',-74.07,'[kt/PJ]','');
+INSERT INTO "EmissionActivity" VALUES ('IT','COM_CO2','BIO_DST1','COM_FT_DST_N',2007,'COM_DST',-74.07,'[kt/PJ]','');
 
 CREATE TABLE "CommodityEmissionFactor" (
 	"input_comm"    text,
@@ -1704,6 +1705,7 @@ INSERT INTO "Efficiency" VALUES ('IT','OIL_GSL','AGR_FT_GSL',2006,'AGR_GSL',1.0,
 INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','AGR_FT_GSL',2006,'AGR_GSL',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','AGR_FT_LPG',2006,'AGR_LPG',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','BIO_SLB','AGR_FT_BIO',2006,'AGR_BIO',1.0,'');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_LIQ','AGR_FT_BIO',2006,'AGR_BIO',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','GEO','AGR_FT_GEO',2006,'AGR_GEO',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','SOL','AGR_FT_SOL',2006,'AGR_SOL',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','AGR_FT_ELC',2006,'AGR_ELC',0.93,'');
@@ -1771,7 +1773,7 @@ INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','COM_FT_DST_N',2007,'COM_DST',1.
 INSERT INTO "Efficiency" VALUES ('IT','OIL_GSL','COM_FT_DST_N',2007,'COM_DST',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','OIL_NSP','COM_FT_DST_N',2007,'COM_DST',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','SYN_DST','COM_FT_DST_N',2007,'COM_DST',1.0,'');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_DST','COM_FT_DST_N',2007,'COM_DST',1.0,'');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_DST1','COM_FT_DST_N',2007,'COM_DST',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','COM_FT_LPG_N',2007,'COM_LPG',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','BIO_SLB','COM_FT_BIO_N',2007,'COM_BIO',1.0,'');
 INSERT INTO "Efficiency" VALUES ('IT','SOL','COM_FT_SOL_N',2007,'COM_SOL',1.0,'');
