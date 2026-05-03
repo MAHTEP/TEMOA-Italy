@@ -296,6 +296,14 @@ CREATE TABLE "tech_reserve" (
 	"notes"	text,
 	PRIMARY KEY("tech")
 );
+-- Commercial sector
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_NGA_CI_N','');
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_NGA_MICRO_N','');
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_NGA_CC_N','');
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_SLB_CI_N','');
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_NGA_SOFC_N','');
+INSERT INTO "tech_reserve" VALUES ('COM_CHP_H2_PEMFC_N','');
+
 CREATE TABLE "tech_exchange" (
 	"tech"	text,
 	"notes"	TEXT,
