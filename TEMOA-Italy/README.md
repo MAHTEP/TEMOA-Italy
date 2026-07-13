@@ -8,11 +8,11 @@ This guide provides comprehensive instructions for using the Database Creator, P
 
 Ensure you have the **temoa virtual environment** installed and activated in the console to guarantee compatibility with all dependencies.
 
-# Database Creator
+# Database Generator
 
 ## Overview
 
-The `database_creator.py` script automates the process of creating, preprocessing, and optionally simplifying an SQLite database for the TEMOA-Italy project. The script executes in four primary steps controlled by Boolean flags:
+The `database_generator.py` script automates the process of generating, preprocessing, and optionally simplifying an SQLite database for the TEMOA-Italy project. The script executes in four primary steps controlled by Boolean flags:
 
 1. **Deleting:** Removes an existing database if present.
 2. **Reading:** Creates a new database by executing SQL scripts.
@@ -71,7 +71,7 @@ The `database_creator.py` script automates the process of creating, preprocessin
 Run the creator script using:
 
 ```bash
-python database_creator.py
+python database_generator.py
 ```
 
 # Database Preprocessing
@@ -80,7 +80,7 @@ python database_creator.py
 
 1. Place your SQLite database files in the working directory.
 2. Adjust the input parameters in the preprocessing script:
-   - `lifetime_default`: Default lifetime value for technologies.
+   - `lifetime_default`: Default lifetime value for technologies (40 years).
    - `print_status`: Set to `True` to enable console output.
    - `print_outcome`: Enables/disables console output for specific datasets.
    - `save_tosql`: Controls whether processed data is saved to the database.
@@ -99,6 +99,7 @@ The script preprocesses and saves the following model input tables:
 - `CostInvest`
 - `CostFixed`
 - `CostVariable`
+- `CostEmission`
 - `DiscountRate`
 - `MinCapacity`
 - `MinActivity`
@@ -133,7 +134,7 @@ The script preprocesses and saves the following model input tables:
 
 ## Usage
 
-Run the preprocessing script using:
+The preprocessing script is executed by the generator script, or it can be run using:
 
 ```bash
 python database_preprocessing.py
