@@ -8,6 +8,23 @@ This guide provides comprehensive instructions for using the Database Generator,
 
 Ensure you have the **temoa virtual environment** installed and activated in the console to guarantee compatibility with all dependencies.
 
+## Repository Content
+
+The GitHub repository includes several SQL codes, together with their associated SQLite databases and results. Each model is generated, preprocessed, and postprocessed with the same algorithms described in this guide, simply by pointing the scripts to the corresponding `.sql` and `.sqlite` file names.
+
+### Full model
+
+- **TEMOA_Italy** is the full multi-sectorial model, representing all the sectors of the Italian energy system. It adopts a single spatial region and a time horizon from 2006 to 2050.
+
+### Sectoral models
+
+- **Commercial_Agriculture, Hydrogen_Sequestration, Industry, Residential, Transport** sectoral codes include the same data as the corresponding sectors of TEMOA_Italy. They are intended to be used for **testing model changes** and do not produce significative results, since they do not represent, for instance, prices and constraints related to the input commodities of such sectors. They also adopt a single spatial region and a time horizon from 2006 to 2050.
+- **Power** includes the same data as the TEMOA-Italy power sector, integrated with a simplified modeling of the prices of the input commodities. It can therefore be used as a **stand-alone model** of the Italian power sector only, implemented on a single spatial region and a time horizon from 2006 to 2050.
+
+### Multi-regional models
+
+- **Power_20R** and **Power_Hydrogen_20R** are multi-regional implementations of the power sector and of the power and hydrogen sectors, respectively. They adopt **20 spatial regions**, corresponding to the 20 Italian administrative regions, and a time horizon from 2022 to 2050.
+
 # Database Generator
 
 ## Overview
@@ -21,10 +38,11 @@ The `database_generator.py` script automates the process of generating, preproce
 
 ## Key Components
 
-- **SQLite Database File:** `TEMOA_Italy.sqlite`
-- **SQL Script(s):** `TEMOA_Italy.sql`
+- **SQLite Database File:** e.g. `TEMOA_Italy.sqlite`
+- **SQL Script(s):** e.g. `TEMOA_Italy.sql`
+
+*Note* The same components apply to the other models available in the repository (e.g. `Power.sql`/`Power.sqlite`, `Power_20R.sql`/`Power_20R.sqlite`), it is sufficient to update the database and SQL script names in the script.
 - **Preprocessing Script:** `database_preprocessing.py`
-- **Simplification Script (Optional):** `database_simplifier.sql`
 
 ## Step-by-Step Breakdown
 
@@ -50,8 +68,7 @@ The `database_generator.py` script automates the process of generating, preproce
 ### 4. Simplifying the Database (Optional)
 - **Controlled by:** `Simplifying = False` *(set to `True` to enable)*
 - **Functionality:**
-  - Executes the `database_simplifier.sql` script.
-  - Removes unnecessary data, such as outdated milestone years.
+  - Simplifies the model time horizon by reducing the number of future time periods and keeping active only those listed in the `kept_years` list.
 
 ### 5. Final Optimization
 - **Command:** `VACUUM`
@@ -64,7 +81,7 @@ The `database_generator.py` script automates the process of generating, preproce
 - **Skip Deletion:** Set `Deleting = False` to retain the existing database.
 - **Bypass SQL Execution:** Set `Reading = False` if no schema updates are needed.
 - **Disable Preprocessing:** Set `Preprocessing = False` if preprocessing is unnecessary.
-- **Enable Simplification:** Set `Simplifying = True` to reduce the database size.
+- **Enable Simplification:** Set `Simplifying = True` to reduce the number of future time periods (optional).
 
 ## Usage
 
