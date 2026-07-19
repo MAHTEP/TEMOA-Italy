@@ -130,29 +130,19 @@ CREATE TABLE "technologies" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "technologies" VALUES ('TRA_FT_AMM_IND_N','p','TRA','Fuel technology - Ammonia from industry - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_AVG_E','p','TRA','Fuel technology - Aviation Gasoline - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_AVG_N','p','TRA','Fuel technology - Aviation Gasoline - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_DST_E','p','TRA','Fuel technology - Diesel - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_DST_N','p','TRA','Fuel technology - Diesel - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_ELC_E','p','TRA','Fuel technology - Electricity - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_GSL_E','p','TRA','Fuel technology - Gasoline - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_GSL_N','p','TRA','Fuel technology - Gasoline - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_HFO_E','p','TRA','Fuel technology - Heavy fuel oil - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_HFO_N','p','TRA','Fuel technology - Heavy fuel Oil - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_JTK_E','p','TRA','Fuel technology - Jet kerosene - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_JTK_N','p','TRA','Fuel technology - Jet kerosene - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_LNG_N','p','TRA','Fuel technology - LNG - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_LPG_E','p','TRA','Fuel technology - LPG - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_LPG_N','p','TRA','Fuel technology - LPG - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_MET_N','p','TRA','Fuel technology - Methanol - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_MET_IND_N','p','TRA','Fuel technology - Methanol from industry - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_NGA_E','p','TRA','Fuel technology - Natural gas - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_NGA_N','p','TRA','Fuel technology - Natural gas - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_BIODST_E','p','TRA','Fuel technology - Biodiesel - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_BIODST_N','p','TRA','Fuel technology - Biodiesel - New','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_H2G_N','p','TRA','Fuel technology - Hydrogen (Gas)','','');
-INSERT INTO "technologies" VALUES ('TRA_FT_H2L_N','p','TRA','Fuel technology - Hydrogen (Liquid)','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_AMM','p','TRA','Fuel technology - Ammonia from industry','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_AVG','p','TRA','Fuel technology - Aviation Gasoline','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_DST','p','TRA','Fuel technology - Diesel','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_ELC','p','TRA','Fuel technology - Electricity','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_GSL','p','TRA','Fuel technology - Gasoline','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_HFO','p','TRA','Fuel technology - Heavy fuel Oil','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_JTK','p','TRA','Fuel technology - Jet kerosene','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_LNG','p','TRA','Fuel technology - LNG','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_LPG','p','TRA','Fuel technology - LPG','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_MET','p','TRA','Fuel technology - Methanol','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_NGA','p','TRA','Fuel technology - Natural gas','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_H2G','p','TRA','Fuel technology - Hydrogen (Gas)','','');
+INSERT INTO "technologies" VALUES ('TRA_FT_H2L','p','TRA','Fuel technology - Hydrogen (Liquid)','','');
 -- Base year technologies
 INSERT INTO "technologies" VALUES ('TRA_AVI_DOM_E','p','TRA','Domestic Aircraft - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_AVI_INT_E','p','TRA','International Aircraft - Existing','','');
@@ -162,17 +152,13 @@ INSERT INTO "technologies" VALUES ('TRA_NEU_E','p','TRA','Non-energy uses - Exis
 INSERT INTO "technologies" VALUES ('TRA_OTH_ELC_E','p','TRA','Other electric - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_RAIL_FRG_E','p','TRA','Freight Trains - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_RAIL_PAS_E','p','TRA','Passenger Trains - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_ROA_BUS_BIO_E','p','TRA','Buses - Biofuel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_BUS_DST_E','p','TRA','Buses - Diesel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_BUS_NGA_E','p','TRA','Buses - Natural gas - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_ROA_CAR_BIO_E','p','TRA','Cars - Biofuel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_CAR_DST_E','p','TRA','Cars - Diesel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_CAR_GSL_E','p','TRA','Cars - Gasoline - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_CAR_LPG_E','p','TRA','Cars - LPG - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_CAR_NGA_E','p','TRA','Cars - Natural gas - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_ROA_HTR_BIO_E','p','TRA','Medium trucks - Biofuel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_HTR_DST_E','p','TRA','Heavy trucks - Diesel - Existing','','');
-INSERT INTO "technologies" VALUES ('TRA_ROA_LCV_BIO_E','p','TRA','Light commercial vehicles - Biofuel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_LCV_DST_E','p','TRA','Light commercial vehicle - Diesel - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_LCV_GSL_E','p','TRA','Light commercial vehicle - Gasoline - Existing','','');
 INSERT INTO "technologies" VALUES ('TRA_ROA_MCY_GSL_E','p','TRA','Motorcycles - Gasoline - Existing','','');
@@ -328,26 +314,16 @@ CREATE TABLE "tech_annual" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "tech_annual" VALUES ('TRA_FT_AMM_IND_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_AVG_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_AVG_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_DST_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_DST_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_GSL_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_GSL_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_HFO_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_HFO_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_JTK_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_JTK_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_LNG_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_LPG_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_LPG_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_MET_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_MET_IND_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_NGA_N','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_BIODST_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_FT_BIODST_N','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_AMM','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_AVG','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_DST','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_GSL','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_HFO','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_JTK','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_LNG','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_LPG','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_MET','');
+INSERT INTO "tech_annual" VALUES ('TRA_FT_NGA','');
 -- Base year technologies
 INSERT INTO "tech_annual" VALUES ('TRA_AVI_DOM_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_AVI_INT_E','');
@@ -357,17 +333,13 @@ INSERT INTO "tech_annual" VALUES ('TRA_NEU_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_OTH_ELC_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_RAIL_FRG_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_RAIL_PAS_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_ROA_BUS_BIO_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_BUS_DST_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_BUS_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_ROA_CAR_BIO_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_CAR_DST_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_CAR_GSL_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_CAR_LPG_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_CAR_NGA_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_ROA_HTR_BIO_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_HTR_DST_E','');
-INSERT INTO "tech_annual" VALUES ('TRA_ROA_LCV_BIO_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_LCV_DST_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_LCV_GSL_E','');
 INSERT INTO "tech_annual" VALUES ('TRA_ROA_MCY_GSL_E','');
@@ -474,7 +446,6 @@ INSERT INTO "commodities" VALUES ('TRA_NAV_DOM','d','Domestic navigation','Bvkm'
 INSERT INTO "commodities" VALUES ('TRA_NAV_INT','d','International navigation','Bvkm');
 INSERT INTO "commodities" VALUES ('TRA_AMM','p','Ammonia','PJ');
 INSERT INTO "commodities" VALUES ('TRA_AVG','p','Aviation gasoline','PJ');
-INSERT INTO "commodities" VALUES ('TRA_BIO_DST','p','Biodiesel','PJ');
 INSERT INTO "commodities" VALUES ('TRA_DST','p','Diesel','PJ');
 INSERT INTO "commodities" VALUES ('TRA_ELC','p','Electricity','PJ');
 INSERT INTO "commodities" VALUES ('TRA_GSL','p','Gasoline','PJ');
@@ -607,8 +578,8 @@ CREATE TABLE "TechInputSplit" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_CEN','TRA_FT_ELC_E',0.70,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_CEN','TRA_FT_ELC_E',0.30,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_CEN','TRA_FT_ELC',0.70,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_CEN','TRA_FT_ELC',0.30,'ge');
 -- Base year technologies
 INSERT INTO "TechInputSplit" VALUES ('IT',2007,'TRA_JTK','TRA_AVI_DOM_E',0.98,'ge');
 INSERT INTO "TechInputSplit" VALUES ('IT',2007,'TRA_AVG','TRA_AVI_DOM_E',0.02,'ge');
@@ -662,26 +633,13 @@ CREATE TABLE "tech_groups" (
 	PRIMARY KEY(tech)
 );
 -- Transport sector
-INSERT INTO "tech_groups" VALUES ('TRA_FT_LPG_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_LPG_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_NGA_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_NGA_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_GSL_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_GSL_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_AVG_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_AVG_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_JTK_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_JTK_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_DST_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_DST_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_BIODST_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_ELC_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_HFO_E','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_HFO_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_LNG_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_H2G_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_FT_H2L_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_BIO_E','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_AVG','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_NGA','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_GSL','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_JTK','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_DST','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_H2G','');
+INSERT INTO "tech_groups" VALUES ('TRA_FT_H2L','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_DST_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_GSL_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_LPG_E','');
@@ -691,7 +649,6 @@ INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_GSL_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_LPG_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_NGA_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_CAR_FULHYB_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_ROA_LCV_BIO_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_LCV_DST_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_LCV_GSL_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_LCV_DST_N','');
@@ -707,7 +664,6 @@ INSERT INTO "tech_groups" VALUES ('TRA_ROA_MTR_FCELL_N','');
 --INSERT INTO "tech_groups" VALUES ('TRA_ROA_MTR_PLGHYB_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_MTR_LPG_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_MTR_NGA_N','');
-INSERT INTO "tech_groups" VALUES ('TRA_ROA_HTR_BIO_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_HTR_DST_E','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_HTR_DST_N','');
 INSERT INTO "tech_groups" VALUES ('TRA_ROA_HTR_ELC_N','');
@@ -722,14 +678,11 @@ CREATE TABLE "groups" (
 	PRIMARY KEY("group_name")
 );
 -- Transport sector
-INSERT INTO "groups" VALUES ('TRA_FT_LPG_GRP','');
+INSERT INTO "groups" VALUES ('TRA_FT_AVG_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_NGA_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_GSL_GRP','');
-INSERT INTO "groups" VALUES ('TRA_FT_AVG_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_JTK_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_DST_GRP','');
-INSERT INTO "groups" VALUES ('TRA_FT_ELC_GRP','');
-INSERT INTO "groups" VALUES ('TRA_FT_HFO_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_H2G_GRP','');
 INSERT INTO "groups" VALUES ('TRA_FT_H2L_GRP','');
 INSERT INTO "groups" VALUES ('TRA_ROA_CAR_E_GRP','');
@@ -745,25 +698,13 @@ CREATE TABLE "TechGroupWeight" (
 	PRIMARY KEY("tech","group_name")
 );
 -- Transport sector
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_AVG_E','TRA_FT_AVG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_AVG_N','TRA_FT_AVG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_BIODST_E','TRA_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_DST_E','TRA_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_DST_N','TRA_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_ELC_E','TRA_FT_ELC_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_GSL_E','TRA_FT_GSL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_GSL_N','TRA_FT_GSL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_HFO_E','TRA_FT_HFO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_HFO_N','TRA_FT_HFO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_JTK_E','TRA_FT_JTK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_JTK_N','TRA_FT_JTK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_LPG_E','TRA_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_LPG_N','TRA_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_NGA_E','TRA_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_NGA_N','TRA_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_H2G_N','TRA_FT_H2G_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_H2L_N','TRA_FT_H2L_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_BIO_E','TRA_ROA_CAR_E_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_AVG','TRA_FT_AVG_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_DST','TRA_FT_DST_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_GSL','TRA_FT_GSL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_JTK','TRA_FT_JTK_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_NGA','TRA_FT_NGA_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_H2G','TRA_FT_H2G_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('TRA_FT_H2L','TRA_FT_H2L_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_DST_E','TRA_ROA_CAR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_DST_N','TRA_ROA_CAR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_FULHYB_N','TRA_ROA_CAR_E_GRP',1.0,'');
@@ -773,7 +714,6 @@ INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_LPG_E','TRA_ROA_CAR_E_GRP',1.
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_LPG_N','TRA_ROA_CAR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_NGA_E','TRA_ROA_CAR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_CAR_NGA_N','TRA_ROA_CAR_E_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_LCV_BIO_E','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_LCV_DST_E','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_LCV_GSL_E','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_LCV_DST_N','TRA_ROA_TR_E_GRP',1.0,'');
@@ -787,7 +727,6 @@ INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_DST_N','TRA_ROA_TR_E_GRP',1.0
 --INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_PLGHYB_N','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_LPG_N','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_NGA_N','TRA_ROA_TR_E_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_BIO_E','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_DST_E','TRA_ROA_TR_E_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_DST_N','TRA_ROA_TR_E_GRP',1.0,'');
 --INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_PLGHYB_N','TRA_ROA_TR_E_GRP',1.0,'');
@@ -800,7 +739,6 @@ INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_FCELL_N','TRA_ROA_MTR_GRP',1.
 --INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_PLGHYB_N','TRA_ROA_MTR_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_LPG_N','TRA_ROA_MTR_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_MTR_NGA_N','TRA_ROA_MTR_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_BIO_E','TRA_ROA_HTR_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_DST_E','TRA_ROA_HTR_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_DST_N','TRA_ROA_HTR_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('TRA_ROA_HTR_ELC_N','TRA_ROA_HTR_GRP',1.0,'');
@@ -817,43 +755,6 @@ CREATE TABLE "MinActivityGroup" (
 	"notes"	text,
 	PRIMARY KEY("periods","group_name")
 );
--- Transport sector
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_DST_GRP',967.10,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_DST_GRP',916.06,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_DST_GRP',942.79,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_DST_GRP',909.25,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_DST_GRP',929.38,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_DST_GRP',774.36,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_ELC_GRP',36.47,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_ELC_GRP',36.82,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_ELC_GRP',36.46,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_ELC_GRP',38.55,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_ELC_GRP',39.47,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_ELC_GRP',34.59,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_GSL_GRP',417.24,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_GSL_GRP',345.01,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_GSL_GRP',332.54,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_GSL_GRP',301.25,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_GSL_GRP',306.56,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_GSL_GRP',242.57,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_HFO_GRP',113.90,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_HFO_GRP',97.53,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_HFO_GRP',82.02,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_HFO_GRP',94.14,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_HFO_GRP',99.57,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_HFO_GRP',87.62,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_LPG_GRP',52.10,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_LPG_GRP',63.08,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_LPG_GRP',70.31,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_LPG_GRP',71.35,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_LPG_GRP',71.38,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_LPG_GRP',57.22,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'TRA_FT_NGA_GRP',28.49,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'TRA_FT_NGA_GRP',38.12,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'TRA_FT_NGA_GRP',42.95,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'TRA_FT_NGA_GRP',43.15,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'TRA_FT_NGA_GRP',44.56,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'TRA_FT_NGA_GRP',38.47,'PJ');
 
 CREATE TABLE "MaxActivityGroup" (
 	"regions"	text,
@@ -863,43 +764,6 @@ CREATE TABLE "MaxActivityGroup" (
 	"notes"	text,
 	PRIMARY KEY("periods","group_name")
 );
--- Transport sector
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_DST_GRP',1099.40,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_DST_GRP',1012.48,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_DST_GRP',1042.03,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_DST_GRP',1004.96,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_DST_GRP',1027.21,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_DST_GRP',945.53,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_ELC_GRP',42.23,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_ELC_GRP',41.09,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_ELC_GRP',41.83,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_ELC_GRP',43.42,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_ELC_GRP',44.46,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_ELC_GRP',41.51,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_GSL_GRP',461.16,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_GSL_GRP',381.33,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_GSL_GRP',367.55,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_GSL_GRP',332.96,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_GSL_GRP',338.83,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_GSL_GRP',283.42,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_HFO_GRP',155.86,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_HFO_GRP',133.46,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_HFO_GRP',112.24,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_HFO_GRP',128.83,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_HFO_GRP',136.26,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_HFO_GRP',119.91,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_LPG_GRP',57.59,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_LPG_GRP',69.72,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_LPG_GRP',77.71,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_LPG_GRP',78.86,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_LPG_GRP',78.90,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_LPG_GRP',66.26,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'TRA_FT_NGA_GRP',31.49,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'TRA_FT_NGA_GRP',42.13,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'TRA_FT_NGA_GRP',47.47,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'TRA_FT_NGA_GRP',47.69,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'TRA_FT_NGA_GRP',49.25,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'TRA_FT_NGA_GRP',44.54,'PJ');
 
 CREATE TABLE "MinCapacityGroup" (
 	"regions"	text,
@@ -1081,6 +945,49 @@ CREATE TABLE "MinActivity" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods")
 );
+-- Transport sector
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_DST',967.10,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_DST',916.06,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_DST',942.79,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_DST',909.25,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_DST',929.38,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_DST',774.36,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_DST',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_ELC',36.47,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_ELC',36.82,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_ELC',36.46,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_ELC',38.55,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_ELC',39.47,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_ELC',34.59,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_ELC',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_GSL',417.24,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_GSL',345.01,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_GSL',332.54,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_GSL',301.25,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_GSL',306.56,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_GSL',242.57,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_GSL',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_HFO',113.90,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_HFO',97.53,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_HFO',82.02,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_HFO',94.14,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_HFO',99.57,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_HFO',87.62,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_HFO',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_LPG',52.10,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_LPG',63.08,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_LPG',70.31,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_LPG',71.35,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_LPG',71.38,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_LPG',57.22,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_LPG',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'TRA_FT_NGA',28.49,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'TRA_FT_NGA',38.12,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'TRA_FT_NGA',42.95,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'TRA_FT_NGA',43.15,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'TRA_FT_NGA',44.56,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'TRA_FT_NGA',38.47,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'TRA_FT_NGA',0.00,'PJ','');
 
 CREATE TABLE "MaxCapacity" (
 	"regions"	text,
@@ -1114,78 +1021,69 @@ CREATE TABLE "MaxActivity" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_AVG_E',6.73E-01,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_DST_E',1.01E+03,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_GSL_E',5.32E+02,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_HFO_E',1.13E+02,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_JTK_E',1.59E+02,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_LPG_E',4.34E+01,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_NGA_E',1.66E+01,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_BIODST_E',6.44E+00,'PJ','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_AVG_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_DST_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_GSL_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_HFO_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_JTK_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_LPG_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_NGA_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_BIODST_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_ELC_E',50.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_ELC_E',800.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_NGA_N',6.36,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_NGA_N',89.15,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_NGA_N',445.77,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_LNG_N',0.00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_LNG_N',0.00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_LNG_N',200.00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_LPG_N',6.68,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_LPG_N',93.53,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_LPG_N',467.64,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_GSL_N',0.00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_GSL_N',572.44,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_GSL_N',858.65,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_AVG_N',0.16,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_AVG_N',7.25,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_JTK_N',24.42,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_JTK_N',341.92,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_JTK_N',683.84,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_DST_N',77.94,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_DST_N',1091.21,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_DST_N',1636.81,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_HFO_N',17.33,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_HFO_N',242.59,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_HFO_N',485.18,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_FT_BIODST_N',4.95,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_BIODST_N',69.34,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_DST',1099.40,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_DST',1012.48,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_DST',1042.03,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_DST',1004.96,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_DST',1030.21,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_DST',945.53,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_DST',2*945.53,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_ELC',42.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_ELC',41.09,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_ELC',41.83,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_ELC',43.42,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_ELC',44.46,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_ELC',41.51,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_ELC',1000.00,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_GSL',461.16,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_GSL',381.33,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_GSL',367.55,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_GSL',332.96,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_GSL',338.83,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_GSL',283.42,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_GSL',2*283.42,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_HFO',155.86,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_HFO',133.46,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_HFO',112.24,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_HFO',128.83,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_HFO',139.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_HFO',119.91,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_HFO',2*119.91,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_LPG',57.59,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_LPG',69.72,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_LPG',77.71,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_LPG',78.86,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_LPG',78.90,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_LPG',66.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_LPG',5*66.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'TRA_FT_NGA',31.49,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'TRA_FT_NGA',42.13,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'TRA_FT_NGA',47.47,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'TRA_FT_NGA',47.69,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'TRA_FT_NGA',49.25,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_FT_NGA',44.54,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'TRA_FT_NGA',5*44.54,'PJ','');
 -- Base year technologies
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_GSL_E',1.31E+02,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_DST_E',1.00E+02,'Bvkm','92.86% of base year');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_DST_E',1.00E+02+8.07E-01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_LPG_E',1.04E+01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_NGA_E',3.96E+00,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_CAR_BIO_E',8.07E-01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_CAR_GSL_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_CAR_DST_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_CAR_LPG_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_CAR_NGA_E',0.0,'Bvkm','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_CAR_BIO_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_MOP_GSL_E',2.58E+01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_MCY_GSL_E',4.28E+01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_MOP_GSL_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_MCY_GSL_E',0.0,'Bvkm','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_BUS_BIO_E',2.07E-03,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_BUS_DST_E',3.28E+00,'Bvkm','92.86% of base year');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_BUS_DST_E',3.28E+00+2.07E-03,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_BUS_NGA_E',3.50E-02,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_BUS_BIO_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_BUS_DST_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_BUS_NGA_E',0.0,'Bvkm','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_HTR_BIO_E',9.71E-04,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_HTR_DST_E',8.31E+00,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_HTR_BIO_E',0.0,'Bvkm','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_HTR_DST_E',8.31E+00+9.71E-04,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_HTR_DST_E',0.0,'Bvkm','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_LCV_BIO_E',9.05E-01,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_LCV_DST_E',6.82E+01,'Bvkm','92.86% of base year');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_LCV_DST_E',6.82E+01+9.05E-01,'Bvkm','92.86% of base year');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_LCV_GSL_E',3.60E+00,'Bvkm','92.86% of base year');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_LCV_BIO_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_LCV_DST_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2020,'TRA_ROA_LCV_GSL_E',0.0,'Bvkm','');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'TRA_ROA_MTR_DST_E',8.74E+00,'Bvkm','92.86% of base year');
@@ -1214,42 +1112,15 @@ CREATE TABLE "LifetimeTech" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- Transport sector
--- Fuel technologies
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_AMM_IND_N',25,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_AVG_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_DST_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_GSL_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_HFO_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_JTK_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_LPG_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_NGA_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_BIODST_E',14,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_AVG_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_DST_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_HFO_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_JTK_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_LNG_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_LPG_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_MET_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_MET_IND_N',25,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_NGA_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_BIODST_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_GSL_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_H2G_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_FT_H2L_N',20,'');
 -- Base year technologies
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_OTH_ELC_E',15,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_BUS_BIO_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_BUS_DST_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_BUS_NGA_E',12,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_CAR_BIO_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_CAR_DST_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_CAR_GSL_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_CAR_LPG_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_CAR_NGA_E',12,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_HTR_BIO_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_HTR_DST_E',12,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_LCV_BIO_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_LCV_DST_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_LCV_GSL_E',12,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','TRA_ROA_MCY_GSL_E',12,'');
@@ -1375,30 +1246,25 @@ CREATE TABLE "ExistingCapacity" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_AVG_E',2006,0.73,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_DST_E',2006,1091.21,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_GSL_E',2006,572.44,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_HFO_E',2006,121.29,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_JTK_E',2006,170.96,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_LPG_E',2006,46.76,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_NGA_E',2006,17.83,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_BIODST_E',2006,6.93,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_ELC_E',2006,40.00,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_AVG',2006,0.73,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_DST',2006,1091.21+6.93,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_GSL',2006,572.44,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_HFO',2006,121.29,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_JTK',2006,170.96,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_LPG',2006,46.76,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_NGA',2006,17.83,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_FT_ELC',2006,40.00,'PJ','');
 -- Base year technologies
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_GSL_E',2006,1.415E+02,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_DST_E',2006,1.079E+02,'Bvkm','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_DST_E',2006,1.079E+02+8.696E-01,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_LPG_E',2006,1.120E+01,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_NGA_E',2006,4.267E+00,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_CAR_BIO_E',2006,8.696E-01,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_MOP_GSL_E',2006,2.782E+01,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_MCY_GSL_E',2006,4.614E+01,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_BUS_BIO_E',2006,2.23E-03,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_BUS_DST_E',2006,3.53E+00,'Bvkm','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_BUS_DST_E',2006,3.53E+00+2.23E-03,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_BUS_NGA_E',2006,6.55E-02,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_HTR_BIO_E',2006,1.05E-03,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_HTR_DST_E',2006,8.95E+00,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_LCV_BIO_E',2006,9.75E-01,'Bvkm','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_LCV_DST_E',2006,7.35E+01,'Bvkm','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_HTR_DST_E',2006,8.95E+00+1.05E-03,'Bvkm','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_LCV_DST_E',2006,7.35E+01+9.75E-01,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_LCV_GSL_E',2006,3.88E+00,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_ROA_MTR_DST_E',2006,9.42E+00,'Bvkm','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','TRA_OTH_ELC_E',2006,21.055,'PJ','');
@@ -1439,15 +1305,15 @@ CREATE TABLE "EmissionActivity" (
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
 -- Transport sector
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_METH','TRA_FT_NGA_N',2007,'TRA_NGA',-56.10,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','H2_BL','TRA_FT_NGA_N',2020,'TRA_NGA',-56.10,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_ETH','TRA_FT_GSL_N',2007,'TRA_GSL',-69.30,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_ETBE','TRA_FT_GSL_N',2007,'TRA_GSL',(-70.22)*1.055,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_DST1','TRA_FT_DST_N',2007,'TRA_DST',-74.07,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_DST2','TRA_FT_DST_N',2020,'TRA_DST',-74.07,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_HVO','TRA_FT_DST_N',2016,'TRA_DST',-74.07,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_KER','TRA_FT_JTK_N',2020,'TRA_JTK',-71.50,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_HEFA','TRA_FT_JTK_N',2016,'TRA_JTK',-71.50,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_METH','TRA_FT_NGA',2007,'TRA_NGA',-56.10,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','H2_BL','TRA_FT_NGA',2020,'TRA_NGA',-56.10,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_ETH','TRA_FT_GSL',2007,'TRA_GSL',-69.30,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_ETBE','TRA_FT_GSL',2007,'TRA_GSL',(-70.22)*1.055,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_DST1','TRA_FT_DST',2007,'TRA_DST',-74.07,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_DST2','TRA_FT_DST',2020,'TRA_DST',-74.07,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_HVO','TRA_FT_DST',2016,'TRA_DST',-74.07,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_KER','TRA_FT_JTK',2020,'TRA_JTK',-71.50,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','TRA_CO2','BIO_HEFA','TRA_FT_JTK',2016,'TRA_JTK',-71.50,'kt/(PJ)','');
 
 CREATE TABLE "CommodityEmissionFactor" (
 	"input_comm"    text,
@@ -1513,48 +1379,39 @@ CREATE TABLE "Efficiency" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "Efficiency" VALUES ('IT','IND_CH_AMM','TRA_FT_AMM_IND_N',2025,'TRA_AMM',18.60,'PJ/(Mt)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_AVG','TRA_FT_AVG_E',2006,'TRA_AVG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_AVG','TRA_FT_AVG_N',2007,'TRA_AVG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_AVG_N',2007,'TRA_AVG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','TRA_FT_DST_E',2006,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','TRA_FT_DST_N',2007,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_DST','TRA_FT_DST_N',2007,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_DST1','TRA_FT_DST_N',2007,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_DST2','TRA_FT_DST_N',2020,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_HVO','TRA_FT_DST_N',2016,'TRA_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_ELC_E',2006,'TRA_ELC',0.93,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','TRA_FT_ELC_E',2006,'TRA_ELC',0.93,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_GSL','TRA_FT_GSL_E',2006,'TRA_GSL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_GSL','TRA_FT_GSL_N',2007,'TRA_GSL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_GSL_N',2007,'TRA_GSL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_ETH','TRA_FT_GSL_N',2007,'TRA_GSL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_ETBE','TRA_FT_GSL_N',2007,'TRA_GSL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','TRA_FT_HFO_E',2006,'TRA_HFO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','TRA_FT_HFO_N',2007,'TRA_HFO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_JTK','TRA_FT_JTK_E',2006,'TRA_JTK',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_KER','TRA_FT_JTK_N',2020,'TRA_JTK',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_HEFA','TRA_FT_JTK_N',2016,'TRA_JTK',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_JTK','TRA_FT_JTK_N',2007,'TRA_JTK',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_KER','TRA_FT_JTK_N',2007,'TRA_JTK',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GAS_LNG','TRA_FT_LNG_N',2007,'TRA_LNG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','TRA_FT_LPG_E',2006,'TRA_LPG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','TRA_FT_LPG_N',2007,'TRA_LPG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_MET_N',2025,'TRA_MET',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','IND_CH_MTH','TRA_FT_MET_IND_N',2025,'TRA_MET',19.90,'PJ/(Mt)','');
-INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','TRA_FT_NGA_E',2006,'TRA_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','TRA_FT_NGA_N',2007,'TRA_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_NGA','TRA_FT_NGA_N',2007,'TRA_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_METH','TRA_FT_NGA_N',2007,'TRA_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2_BL','TRA_FT_NGA_N',2020,'TRA_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_DST1','TRA_FT_BIODST_E',2006,'TRA_BIO_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_DST1','TRA_FT_BIODST_N',2007,'TRA_BIO_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2','TRA_FT_H2G_N',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2_EL','TRA_FT_H2G_N',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_H2G_N',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2','TRA_FT_H2L_N',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2_EL','TRA_FT_H2L_N',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_H2L_N',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','IND_CH_AMM','TRA_FT_AMM',2025,'TRA_AMM',18.60,'PJ/(Mt)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_AVG','TRA_FT_AVG',2006,'TRA_AVG',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_AVG',2006,'TRA_AVG',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','TRA_FT_DST',2006,'TRA_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_DST','TRA_FT_DST',2006,'TRA_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_DST1','TRA_FT_DST',2006,'TRA_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_DST2','TRA_FT_DST',2020,'TRA_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_HVO','TRA_FT_DST',2016,'TRA_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_ELC',2006,'TRA_ELC',0.93,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','TRA_FT_ELC',2006,'TRA_ELC',0.93,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_GSL','TRA_FT_GSL',2006,'TRA_GSL',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_GSL',2006,'TRA_GSL',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_ETH','TRA_FT_GSL',2006,'TRA_GSL',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_ETBE','TRA_FT_GSL',2006,'TRA_GSL',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','TRA_FT_HFO',2006,'TRA_HFO',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_JTK','TRA_FT_JTK',2006,'TRA_JTK',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_KER','TRA_FT_JTK',2020,'TRA_JTK',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_HEFA','TRA_FT_JTK',2016,'TRA_JTK',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_KER','TRA_FT_JTK',2006,'TRA_JTK',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','GAS_LNG','TRA_FT_LNG',2007,'TRA_LNG',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','TRA_FT_LPG',2006,'TRA_LPG',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_MET','TRA_FT_MET',2025,'TRA_MET',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','IND_CH_MTH','TRA_FT_MET',2025,'TRA_MET',19.90,'PJ/(Mt)','');
+INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','TRA_FT_NGA',2006,'TRA_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_NGA','TRA_FT_NGA',2006,'TRA_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_METH','TRA_FT_NGA',2006,'TRA_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2_BL','TRA_FT_NGA',2020,'TRA_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2','TRA_FT_H2G',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL','TRA_FT_H2G',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_H2G',2014,'TRA_H2G',0.87,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2','TRA_FT_H2L',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2_EL','TRA_FT_H2L',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','TRA_FT_H2L',2014,'TRA_H2L',0.77,'PJ/(PJ)','');
 -- Base year technologies
 INSERT INTO "Efficiency" VALUES ('IT','TRA_JTK','TRA_AVI_DOM_E',2006,'TRA_AVI_DOM',7.40E-03,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_AVG','TRA_AVI_DOM_E',2006,'TRA_AVI_DOM',7.40E-03,'Bvkm/(PJ)','');
@@ -1569,17 +1426,13 @@ INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_RAIL_FRG_E',2006,'TRA_RAIL_
 INSERT INTO "Efficiency" VALUES ('IT','TRA_ELC','TRA_RAIL_FRG_E',2006,'TRA_RAIL_FRG',7.53E-03,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_RAIL_PAS_E',2006,'TRA_RAIL_PSG',1.18E-02,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_ELC','TRA_RAIL_PAS_E',2006,'TRA_RAIL_PSG',1.18E-02,'Bvkm/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','TRA_BIO_DST','TRA_ROA_BUS_BIO_E',2006,'TRA_ROA_BUS',0.056,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_ROA_BUS_DST_E',2006,'TRA_ROA_BUS',0.052,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_NGA','TRA_ROA_BUS_NGA_E',2006,'TRA_ROA_BUS',0.038,'Bvkm/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','TRA_BIO_DST','TRA_ROA_CAR_BIO_E',2006,'TRA_ROA_CAR',0.442,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_ROA_CAR_DST_E',2006,'TRA_ROA_CAR',0.362,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_GSL','TRA_ROA_CAR_GSL_E',2006,'TRA_ROA_CAR',0.299,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_LPG','TRA_ROA_CAR_LPG_E',2006,'TRA_ROA_CAR',0.247,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_NGA','TRA_ROA_CAR_NGA_E',2006,'TRA_ROA_CAR',0.274,'Bvkm/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','TRA_BIO_DST','TRA_ROA_HTR_BIO_E',2006,'TRA_ROA_HTR',0.027,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_ROA_HTR_DST_E',2006,'TRA_ROA_HTR',0.045,'Bvkm/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','TRA_BIO_DST','TRA_ROA_LCV_BIO_E',2006,'TRA_ROA_LCV',0.276,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_DST','TRA_ROA_LCV_DST_E',2006,'TRA_ROA_LCV',0.276,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_GSL','TRA_ROA_LCV_GSL_E',2006,'TRA_ROA_LCV',0.241,'Bvkm/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','TRA_GSL','TRA_ROA_MOP_GSL_E',2006,'TRA_ROA_2WH',1.315,'Bvkm/(PJ)','');
@@ -2297,31 +2150,28 @@ CREATE TABLE "CostVariable" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_ELC_E',2006,2.78,'MEUR/(PJ)','Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_AVG_N',2007,0.1,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_AVG_N',2007,0.1+10.09,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_BIODST_N',2007,1.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_BIODST_N',2007,1.0+16.36,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_DST_N',2007,1.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_DST_N',2007,1.0+16.36,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_GSL_N',2007,1.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_GSL_N',2007,1.0+22.28,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_HFO_N',2007,0.5,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_HFO_N',2007,0.5+16.36,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_JTK_N',2007,0.1,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_JTK_N',2007,0.1+10.09,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LNG_N',2007,1.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LNG_N',2007,1.0+0.10,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LPG_N',2007,2.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LPG_N',2007,2.0+5.81,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_NGA_N',2007,3.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_NGA_N',2007,3.0+0.10,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_MET_N',2025,5.0,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_MET_N',2025,5.0+22.28,'MEUR/(PJ)','Distribution + Excise');
-INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_AMM_IND_N',2025,22.28,'MEUR/(PJ)','Excise');
-INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_MET_IND_N',2025,22.28,'MEUR/(PJ)','Excise');
-INSERT INTO "CostVariable" VALUES ('IT',2014,'TRA_FT_H2G_N',2014,0.28,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2014,'TRA_FT_H2L_N',2014,0.83,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_ELC',2006,2.78,'MEUR/(PJ)','Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_AVG',2007,0.1,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_AVG',2006,0.1+10.09,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_DST',2006,1.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_DST',2006,1.0+16.36,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_GSL',2006,1.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_GSL',2006,1.0+22.28,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_HFO',2006,0.5,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_HFO',2006,0.5+16.36,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_JTK',2006,0.1,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_JTK',2006,0.1+10.09,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LNG',2007,1.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2007,'TRA_FT_LNG',2007,1.0+0.10,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_LPG',2006,2.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_LPG',2006,2.0+5.81,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_NGA',2006,3.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'TRA_FT_NGA',2006,3.0+0.10,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_MET',2025,5.0,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_MET',2025,5.0+22.28,'MEUR/(PJ)','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2025,'TRA_FT_AMM',2025,22.28,'MEUR/(PJ)','Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2014,'TRA_FT_H2G',2014,0.28,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2014,'TRA_FT_H2L',2014,0.83,'MEUR/(PJ)','Distribution');
 -- New technologies
 INSERT INTO "CostVariable" VALUES ('IT',2010,'TRA_ROA_2WH_ELC_N',2010,7.03,'MEUR/(Bvkm)','Recharging - Cost of Power');
 INSERT INTO "CostVariable" VALUES ('IT',2020,'TRA_ROA_2WH_ELC_N',2020,7.03,'MEUR/(Bvkm)','Recharging - Cost of Power');
@@ -2366,18 +2216,17 @@ CREATE TABLE "CostInvest" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_AVG_N',2007,5.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_DST_N',2007,10.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_GSL_N',2007,10.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_HFO_N',2007,5.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_JTK_N',2007,5.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_LNG_N',2007,50.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_LPG_N',2007,30.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_MET_N',2025,20.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_NGA_N',2007,100.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_BIODST_N',2007,10.0,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_H2G_N',2014,52.12,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_H2L_N',2014,51.24,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_AVG',2007,5.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_DST',2007,10.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_GSL',2007,10.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_HFO',2007,5.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_JTK',2007,5.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_LNG',2007,50.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_LPG',2007,30.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_MET',2025,20.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_NGA',2007,100.0,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_H2G',2014,52.12,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','TRA_FT_H2L',2014,51.24,'MEUR/(PJ)','');
 -- New technologies
 INSERT INTO "CostInvest" VALUES ('IT','TRA_AVI_INT_JTK_N',2007,115000,'MEUR/(Bvkm)','');
 INSERT INTO "CostInvest" VALUES ('IT','TRA_AVI_INT_H2L_N',2040,160000,'MEUR/(Bvkm)','');
@@ -2504,8 +2353,8 @@ CREATE TABLE "CostFixed" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "CostFixed" VALUES ('IT',2014,'TRA_FT_H2G_N',2014,3.25,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2014,'TRA_FT_H2L_N',2014,2.98,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2014,'TRA_FT_H2G',2014,3.25,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2014,'TRA_FT_H2L',2014,2.98,'MEUR/(PJ/year)','');
 -- New technologies
 INSERT INTO "CostFixed" VALUES ('IT',2007,'TRA_AVI_INT_JTK_N',2007,20.00,'MEUR/(PJ/year)','');
 INSERT INTO "CostFixed" VALUES ('IT',2040,'TRA_AVI_INT_H2L_N',2040,29.40,'MEUR/(PJ/year)','');
@@ -2630,8 +2479,8 @@ CREATE TABLE "CurrencyTech" (
 	PRIMARY KEY("tech","curr")
 );
 -- Transport sector
-INSERT INTO "CurrencyTech" VALUES ('TRA_FT_H2G_N','EUR12');
-INSERT INTO "CurrencyTech" VALUES ('TRA_FT_H2L_N','EUR12');
+INSERT INTO "CurrencyTech" VALUES ('TRA_FT_H2G','EUR12');
+INSERT INTO "CurrencyTech" VALUES ('TRA_FT_H2L','EUR12');
 INSERT INTO "CurrencyTech" VALUES ('TRA_ROA_2WH_DST_N','EUR19');
 INSERT INTO "CurrencyTech" VALUES ('TRA_ROA_2WH_ELC_N','EUR19');
 INSERT INTO "CurrencyTech" VALUES ('TRA_ROA_2WH_GSL_N','EUR19');
@@ -2707,8 +2556,8 @@ CREATE TABLE "CapacityFactor" (
 );
 -- Transport sector
 -- Fuel technologies
-INSERT INTO "CapacityFactor" VALUES ('IT','TRA_FT_H2G_N',2014,0.75,'');
-INSERT INTO "CapacityFactor" VALUES ('IT','TRA_FT_H2L_N',2014,0.75,'');
+INSERT INTO "CapacityFactor" VALUES ('IT','TRA_FT_H2G',2014,0.75,'');
+INSERT INTO "CapacityFactor" VALUES ('IT','TRA_FT_H2L',2014,0.75,'');
 -- New technologies
 INSERT INTO "CapacityFactor" VALUES ('IT','TRA_RAIL_PAS_H2G_N',2030,0.97,'');
 INSERT INTO "CapacityFactor" VALUES ('IT','TRA_RAIL_FRG_H2G_MNL_N',2030,0.97,'');
@@ -2772,8 +2621,6 @@ CREATE TABLE "MaterialIntensity" (
 	FOREIGN KEY("vintage") REFERENCES "time_periods"("t_periods")
 );
 -- Transport
-INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_BIO_E',2007,1894.45,'t/(Bvkm)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_BIO_E',2007,951.47,'t/(Bvkm)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_DST_E',2007,1894.45,'t/(Bvkm)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('IT','MAN','TRA_ROA_CAR_DST_E',2007,951.47,'t/(Bvkm)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('IT','COP','TRA_ROA_CAR_GSL_E',2007,1894.45,'t/(Bvkm)','10.1016/j.mtener.2025.101805');

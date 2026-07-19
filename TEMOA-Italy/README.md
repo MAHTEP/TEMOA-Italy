@@ -1,8 +1,8 @@
-# Database Creator, Preprocessing, and Postprocessing Algorithms - User Guide
+# Database Generator, Preprocessing, and Postprocessing Algorithms - User Guide
 
 ## Introduction
 
-This guide provides comprehensive instructions for using the Database Creator, Preprocessing, and Postprocessing Python algorithms. The **Creator** and **Preprocessing** scripts are necessary to prepare the SQLite database in a TEMOA-compliant format starting from the provided SQL text, while the **Postprocessing** script can be used to postprocess results.
+This guide provides comprehensive instructions for using the Database Generator, Preprocessing, and Postprocessing Python algorithms. The **Generator** and **Preprocessing** scripts are necessary to prepare the SQLite database in a TEMOA-compliant format starting from the provided SQL text, while the **Postprocessing** script can be used to postprocess results.
 
 ## Prerequisites
 
@@ -212,5 +212,5 @@ python database_postprocessing.py
 
 ## Contact
 
-For further assistance, reach out to the script author or maintainer.
+For further assistance, reach out Matteo Nicoli at [matteo.nicoli@polito.it](mailto:matteo.nicoli@polito.it).
 

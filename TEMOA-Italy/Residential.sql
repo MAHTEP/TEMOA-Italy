@@ -130,29 +130,17 @@ CREATE TABLE "technologies" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "technologies" VALUES ('RES_FT_NGA_E','p','RES','Fuel technology - Natural gas mix - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_DST_E','p','RES','Fuel technology - Diesel - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_HFO_E','p','RES','Fuel technology - Heavy fuel oil - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_KER_E','p','RES','Fuel technology - Kerosene - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_COA_E','p','RES','Fuel technology - Coal - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_LPG_E','p','RES','Fuel technology - LPG - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_BIO_E','p','RES','Fuel technology - Biofuels - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_GEO_E','p','RES','Fuel technology - Geothermal - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_SOL_E','p','RES','Fuel technology - Solar - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_HET_E','p','RES','Fuel technology - Heat - Existing','','');
-INSERT INTO "technologies" VALUES ('RES_FT_NGA_N','p','RES','Fuel technology - Natural gas mix - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_DST_N','p','RES','Fuel technology - Diesel - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_HFO_N','p','RES','Fuel technology - Heavy fuel oil - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_KER_N','p','RES','Fuel technology - Kerosene - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_COA_N','p','RES','Fuel technology - Coal - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_LPG_N','p','RES','Fuel technology - Liquefied Petroleum Gas - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_BIO_N','p','RES','Fuel technology - Biofuels - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_SOL_N','p','RES','Fuel technology - Solar energy - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_GEO_1_N','p','RES','Fuel technology - Geothermal energy 1 - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_GEO_2_N','p','RES','Fuel technology - Geothermal energy 2 - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_GEO_3_N','p','RES','Fuel technology - Geothermal energy 3 - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_HET_N','p','RES','Fuel technology - Heat - New ','','');
-INSERT INTO "technologies" VALUES ('RES_FT_ELC_E','p','RES','Fuel technology - Electricity - Existing','','');
+INSERT INTO "technologies" VALUES ('RES_FT_NGA','p','RES','Fuel technology - Natural gas mix','','');
+INSERT INTO "technologies" VALUES ('RES_FT_DST','p','RES','Fuel technology - Diesel','','');
+INSERT INTO "technologies" VALUES ('RES_FT_HFO','p','RES','Fuel technology - Heavy fuel oil','','');
+INSERT INTO "technologies" VALUES ('RES_FT_KER','p','RES','Fuel technology - Kerosene','','');
+INSERT INTO "technologies" VALUES ('RES_FT_COA','p','RES','Fuel technology - Coal','','');
+INSERT INTO "technologies" VALUES ('RES_FT_LPG','p','RES','Fuel technology - LPG','','');
+INSERT INTO "technologies" VALUES ('RES_FT_BIO','p','RES','Fuel technology - Biofuels','','');
+INSERT INTO "technologies" VALUES ('RES_FT_GEO','p','RES','Fuel technology - Geothermal','','');
+INSERT INTO "technologies" VALUES ('RES_FT_SOL','p','RES','Fuel technology - Solar','','');
+INSERT INTO "technologies" VALUES ('RES_FT_HET','p','RES','Fuel technology - Heat','','');
+INSERT INTO "technologies" VALUES ('RES_FT_ELC','p','RES','Fuel technology - Electricity','','');
 -- Base year technologies
 INSERT INTO "technologies" VALUES ('RES_SH_BUR_NGA_SO_E','p','RES','Space heating - Burner - Natural gas - SF-old - Existing','','');
 INSERT INTO "technologies" VALUES ('RES_SH_AHP_NGA_SO_E','p','RES','Space heating - Air-coupled heat pump - Natural gas - SF-old - Existing','','');
@@ -744,28 +732,22 @@ CREATE TABLE "TechInputSplit" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'GAS_NGA','RES_FT_NGA_E',1.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'GAS_NGA','RES_FT_NGA_E',0.98,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'OIL_DST','RES_FT_DST_E',1.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'OIL_DST','RES_FT_DST_E',0.98,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_SLB','RES_FT_BIO_E',0.98,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_GAS','RES_FT_BIO_E',0.02,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_SLB','RES_FT_BIO_E',0.80,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_GAS','RES_FT_BIO_E',0.00,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_CEN','RES_FT_ELC_E',0.70,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_DST','RES_FT_ELC_E',0.00,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2014,'ELC_CEN','RES_FT_ELC_E',0.65,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2014,'ELC_DST','RES_FT_ELC_E',0.05,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_CEN','RES_FT_ELC_E',0.35,'ge');
---INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_DST','RES_FT_ELC_E',0.14,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_SLB','RES_FT_BIO_N',0.98,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_GAS','RES_FT_BIO_N',0.02,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_SLB','RES_FT_BIO_N',0.80,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_GAS','RES_FT_BIO_N',0.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'COA_HCO','RES_FT_COA_E',1.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'COA_HCO','RES_FT_COA_E',0.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2007,'COA_HCO','RES_FT_COA_N',1.00,'ge');
-INSERT INTO "TechInputSplit" VALUES ('IT',2050,'COA_HCO','RES_FT_COA_N',0.00,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'GAS_NGA','RES_FT_NGA',1.00,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'GAS_NGA','RES_FT_NGA',0.98,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'OIL_DST','RES_FT_DST',1.00,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'OIL_DST','RES_FT_DST',0.98,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_SLB','RES_FT_BIO',0.98,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'BIO_GAS','RES_FT_BIO',0.02,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_SLB','RES_FT_BIO',0.80,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'BIO_GAS','RES_FT_BIO',0.00,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_CEN','RES_FT_ELC',0.70,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2007,'ELC_DST','RES_FT_ELC',0.00,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2014,'ELC_CEN','RES_FT_ELC',0.65,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2014,'ELC_DST','RES_FT_ELC',0.05,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_CEN','RES_FT_ELC',0.35,'ge');
+--INSERT INTO "TechInputSplit" VALUES ('IT',2050,'ELC_DST','RES_FT_ELC',0.14,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2007,'COA_HCO','RES_FT_COA',1.00,'ge');
+INSERT INTO "TechInputSplit" VALUES ('IT',2050,'COA_HCO','RES_FT_COA',0.00,'ge');
 -- Existing technologies
 INSERT INTO "TechInputSplit" VALUES ('IT',2007,'RES_RF_RFG','RES_RF_TECH',0.80,'ge');
 -- New technologies
@@ -853,25 +835,11 @@ CREATE TABLE "tech_groups" (
 	PRIMARY KEY("tech")
 );
 -- Residential sector
-INSERT INTO "tech_groups" VALUES ('RES_FT_BIO_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_BIO_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_DST_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_DST_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_ELC_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_GEO_1_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_GEO_2_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_GEO_3_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_GEO_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_HET_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_HET_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_KER_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_KER_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_LPG_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_LPG_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_NGA_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_NGA_N','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_SOL_E','');
-INSERT INTO "tech_groups" VALUES ('RES_FT_SOL_N','');
+INSERT INTO "tech_groups" VALUES ('RES_FT_DST','');
+INSERT INTO "tech_groups" VALUES ('RES_FT_HET','');
+INSERT INTO "tech_groups" VALUES ('RES_FT_GEO','');
+INSERT INTO "tech_groups" VALUES ('RES_FT_KER','');
+INSERT INTO "tech_groups" VALUES ('RES_FT_NGA','');
 INSERT INTO "tech_groups" VALUES ('RES_SH_DST_SO_N','');
 INSERT INTO "tech_groups" VALUES ('RES_SH_DST_COND_SO_N','');
 INSERT INTO "tech_groups" VALUES ('RES_SH_NGA_SO_N','');
@@ -968,14 +936,10 @@ CREATE TABLE "groups" (
 	PRIMARY KEY("group_name")
 );
 -- Residential sector
-INSERT INTO "groups" VALUES ('RES_FT_BIO_GRP','');
 INSERT INTO "groups" VALUES ('RES_FT_DST_GRP','');
-INSERT INTO "groups" VALUES ('RES_FT_ELC_GRP','');
 INSERT INTO "groups" VALUES ('RES_FT_HET_GRP','');
 INSERT INTO "groups" VALUES ('RES_FT_KER_GRP','');
-INSERT INTO "groups" VALUES ('RES_FT_LPG_GRP','');
 INSERT INTO "groups" VALUES ('RES_FT_NGA_GRP','');
-INSERT INTO "groups" VALUES ('RES_FT_SOL_GRP','');
 INSERT INTO "groups" VALUES ('RES_SH_SO_GRP','');
 INSERT INTO "groups" VALUES ('RES_SH_MO_GRP','');
 INSERT INTO "groups" VALUES ('RES_SH_SN_GRP','');
@@ -999,27 +963,16 @@ INSERT INTO "TechGroupWeight" VALUES ('RES_CK_LPG_E','RES_CK_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CK_LPG_N','RES_CK_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CK_NGA_E','RES_CK_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CK_NGA_N','RES_CK_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_BIO_E','RES_FT_BIO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_BIO_N','RES_FT_BIO_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_DST_E','RES_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_DST_N','RES_FT_DST_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_ELC_E','RES_FT_ELC_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_HET_E','RES_FT_HET_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_HET_N','RES_FT_HET_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('RES_FT_DST','RES_FT_DST_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('RES_FT_HET','RES_FT_HET_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_NGA_CI_N','RES_FT_HET_GRP',0.55,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_NGA_MICRO_N','RES_FT_HET_GRP',0.62,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_NGA_CC_N','RES_FT_HET_GRP',0.50,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_NGA_STR_N','RES_FT_HET_GRP',0.20,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_NGA_SOFC_N','RES_FT_HET_GRP',0.50,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_CHP_H2_PEMFC_N','RES_FT_HET_GRP',0.46,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_KER_E','RES_FT_KER_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_KER_N','RES_FT_KER_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_LPG_E','RES_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_LPG_N','RES_FT_LPG_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_NGA_E','RES_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_NGA_N','RES_FT_NGA_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_SOL_E','RES_FT_SOL_GRP',1.0,'');
-INSERT INTO "TechGroupWeight" VALUES ('RES_FT_SOL_N','RES_FT_SOL_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('RES_FT_KER','RES_FT_KER_GRP',1.0,'');
+INSERT INTO "TechGroupWeight" VALUES ('RES_FT_NGA','RES_FT_NGA_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_LG_LHAL_E','RES_LG_HAL_IN_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_LG_LHAL_N','RES_LG_HAL_IN_GRP',1.0,'');
 INSERT INTO "TechGroupWeight" VALUES ('RES_LG_MIN_E','RES_LG_HAL_IN_GRP',1.0,'');
@@ -1105,48 +1058,6 @@ CREATE TABLE "MinActivityGroup" (
 	PRIMARY KEY("regions","periods","group_name")
 );
 -- Residential sector
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_BIO_GRP',253.83,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_BIO_GRP',263.91,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_BIO_GRP',240.02,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_BIO_GRP',257.16,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_BIO_GRP',248.48,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_BIO_GRP',239.16,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_DST_GRP',79.71,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_DST_GRP',61.53,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_DST_GRP',48.62,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_DST_GRP',41.86,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_DST_GRP',38.52,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_DST_GRP',30.57,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_ELC_GRP',237.82,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_ELC_GRP',233.31,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_ELC_GRP',223.06,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_ELC_GRP',221.95,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_ELC_GRP',223.54,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_ELC_GRP',226.44,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_HET_GRP',9.84,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_HET_GRP',32.31,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_HET_GRP',34.34,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_HET_GRP',36.82,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_HET_GRP',39.37,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_HET_GRP',34.59,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_LPG_GRP',53.01,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_LPG_GRP',47.70,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_LPG_GRP',43.07,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_LPG_GRP',45.07,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_LPG_GRP',44.44,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_LPG_GRP',43.78,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_NGA_GRP',709.42,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_NGA_GRP',719.71,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_NGA_GRP',639.11,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_NGA_GRP',683.36,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_NGA_GRP',649.47,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_NGA_GRP',635.35,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_FT_SOL_GRP',3.57,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2012,'RES_FT_SOL_GRP',4.76,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2014,'RES_FT_SOL_GRP',5.44,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2016,'RES_FT_SOL_GRP',6.02,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2018,'RES_FT_SOL_GRP',6.57,'PJ');
-INSERT INTO "MinActivityGroup" VALUES ('IT',2020,'RES_FT_SOL_GRP',7.17,'PJ');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2010,'RES_LG_HAL_IN_GRP',100.00,'Glm');
 INSERT INTO "MinActivityGroup" VALUES ('IT',2050,'RES_LG_HAL_IN_GRP',50.00,'Glm');
 
@@ -1158,44 +1069,6 @@ CREATE TABLE "MaxActivityGroup" (
 	"notes"	text,
 	PRIMARY KEY("regions","periods","group_name")
 );
--- Residential sector
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_BIO_GRP',280.55,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_BIO_GRP',291.69,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_BIO_GRP',265.28,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_BIO_GRP',284.23,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_BIO_GRP',274.64,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_BIO_GRP',264.34,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_DST_GRP',88.10,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_DST_GRP',68.01,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_DST_GRP',53.74,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_DST_GRP',46.26,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_DST_GRP',42.57,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_DST_GRP',33.79,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_ELC_GRP',262.85,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_ELC_GRP',257.87,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_ELC_GRP',246.54,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_ELC_GRP',245.31,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_ELC_GRP',247.07,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_ELC_GRP',250.28,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_HET_GRP',10.87,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_HET_GRP',35.72,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_HET_GRP',37.96,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_HET_GRP',40.70,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_HET_GRP',43.51,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_HET_GRP',38.23,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_NGA_GRP',784.09,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_NGA_GRP',795.47,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_NGA_GRP',706.38,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_NGA_GRP',755.30,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_NGA_GRP',717.83,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_NGA_GRP',702.23,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2010,'RES_FT_SOL_GRP',3.95,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2012,'RES_FT_SOL_GRP',5.26,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2014,'RES_FT_SOL_GRP',6.01,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2016,'RES_FT_SOL_GRP',6.65,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2018,'RES_FT_SOL_GRP',7.26,'PJ');
-INSERT INTO "MaxActivityGroup" VALUES ('IT',2020,'RES_FT_SOL_GRP',7.92,'PJ');
-
 CREATE TABLE "MinCapacityGroup" (
 	"regions"	text,
 	"periods"	integer,
@@ -1352,6 +1225,56 @@ CREATE TABLE "MinActivity" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods")
 );
 -- Residential sector
+-- Fuel technologies
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_BIO',253.83,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_BIO',263.91,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_BIO',240.02,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_BIO',257.16,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_BIO',248.48,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_BIO',239.16,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_BIO',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_DST',79.71,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_DST',61.53,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_DST',48.62,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_DST',41.86,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_DST',38.52,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_DST',30.57,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_DST',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_ELC',237.82,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_ELC',233.31,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_ELC',223.06,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_ELC',221.95,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_ELC',223.54,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_ELC',226.44,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_ELC',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_HET',9.84,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_HET',32.31,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_HET',34.34,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_HET',36.82,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_HET',39.37,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_HET',34.59,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_HET',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_LPG',53.01,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_LPG',47.70,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_LPG',43.07,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_LPG',45.07,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_LPG',44.44,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_LPG',43.78,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_LPG',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_NGA',709.42,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_NGA',719.71,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_NGA',639.11,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_NGA',683.36,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_NGA',649.47,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_NGA',635.35,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_NGA',0.00,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2010,'RES_FT_SOL',3.57,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2012,'RES_FT_SOL',4.76,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2014,'RES_FT_SOL',5.44,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2016,'RES_FT_SOL',6.02,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2018,'RES_FT_SOL',6.57,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2020,'RES_FT_SOL',7.17,'PJ','');
+INSERT INTO "MinActivity" VALUES ('IT',2040,'RES_FT_SOL',0.00,'PJ','');
 -- Base year technologies
 INSERT INTO "MinActivity" VALUES ('IT',2007,'RES_SH_BUR_NGA_SO_E',3.89E+02*3.1949,'Mm2','');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'RES_SH_AHP_NGA_SO_E',5.94E+00*3.1949,'Mm2','');
@@ -1543,50 +1466,51 @@ CREATE TABLE "MaxActivity" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_NGA_E',6.96E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_DST_E',1.28E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_HFO_E',6.25E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_KER_E',7.55E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_COA_E',2.85E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_LPG_E',5.83E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_BIO_E',1.90E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_GEO_E',9.50E-02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_SOL_E',1.43E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_HET_E',1.42E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_NGA_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_DST_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_HFO_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_KER_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_COA_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_LPG_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_BIO_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_GEO_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2025,'RES_FT_SOL_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_HET_E',0.0,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_NGA_N',1.67E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_DST_N',3.00E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_HFO_N',1.50E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_KER_N',1.80E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_COA_N',7.00E-02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_LPG_N',1.40E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_BIO_N',4.30E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_GEO_1_N',0.23E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_GEO_2_N',0.11E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_GEO_3_N',0.11E-01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_HET_N',3.76E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_NGA_N',7.351E+03,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_DST_N',1.351E+03,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_HFO_N',6.59E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_KER_N',7.97E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_COA_N',3.01E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_LPG_N',6.16E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_BIO_N',6.02E+02,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_BIO_N',2.005E+03,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_GEO_1_N',1.00E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_GEO_2_N',0.50E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_GEO_3_N',0.50E+00,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_HET_N',5.26E+01,'PJ','');
-INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_HET_N',5.79E+01,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_BIO',280.55,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_BIO',291.69,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_BIO',265.28,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_BIO',284.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_BIO',274.64,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_BIO',264.34,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_BIO',2*264.34,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_COA',5.00,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_DST',88.10,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_DST',68.01,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_DST',53.74,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_DST',46.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_DST',42.57,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_DST',33.79,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_DST',2*33.79,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_ELC',262.85,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_ELC',257.87,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_ELC',246.54,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_ELC',245.31,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_ELC',247.07,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_ELC',250.28,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_ELC',1000.00,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_HET',10.87,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_HET',35.72,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_HET',37.96,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_HET',40.70,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_HET',43.51,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_HET',38.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_HET',2*38.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_GEO',5.00,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_FT_KER',10.00,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_NGA',784.09,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_NGA',795.47,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_NGA',706.38,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_NGA',755.30,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_NGA',717.83,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_NGA',702.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_NGA',2*702.23,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2010,'RES_FT_SOL',3.95,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2012,'RES_FT_SOL',5.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2014,'RES_FT_SOL',6.01,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2016,'RES_FT_SOL',6.65,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2018,'RES_FT_SOL',7.26,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2020,'RES_FT_SOL',7.92,'PJ','');
+INSERT INTO "MaxActivity" VALUES ('IT',2050,'RES_FT_SOL',1000.00,'PJ','');
 -- Base year technologies
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_SH_BUR_NGA_SO_E',2.23E+03*0.18*3.1949,'Mm2','');
 INSERT INTO "MaxActivity" VALUES ('IT',2007,'RES_SH_AHP_NGA_SO_E',3.41E+01*0.18*3.1949,'Mm2','');
@@ -1728,28 +1652,6 @@ CREATE TABLE "LifetimeTech" (
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- Residential sector
--- Fuel technologies
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_NGA_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_DST_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_HFO_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_KER_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_COA_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_LPG_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_BIO_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_GEO_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_SOL_E',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_NGA_N',50,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_DST_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_HFO_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_KER_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_COA_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_LPG_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_BIO_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_SOL_N',100,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_GEO_1_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_GEO_2_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_GEO_3_N',20,'');
-INSERT INTO "LifetimeTech" VALUES ('IT','RES_FT_HET_N',100,'');
 -- Base year
 INSERT INTO "LifetimeTech" VALUES ('IT','RES_SH_BUR_NGA_SO_E',20,'');
 INSERT INTO "LifetimeTech" VALUES ('IT','RES_SH_AHP_NGA_SO_E',20,'');
@@ -2025,17 +1927,17 @@ CREATE TABLE "ExistingCapacity" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_NGA_E',2006,7.351E+02,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_DST_E',2006,1.351E+02,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_HFO_E',2006,6.592E+00,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_KER_E',2006,7.972E-01,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_COA_E',2006,3.012E-01,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_LPG_E',2006,8.784E+01,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_BIO_E',2006,2.005E+02,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_GEO_E',2006,0.100E+00,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_SOL_E',2006,1.509E+00,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_HET_E',2006,1.503E+01,'PJ','');
-INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_ELC_E',2006,3.000E+02,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_NGA',2006,7.351E+02,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_DST',2006,1.351E+02,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_HFO',2006,6.592E+00,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_KER',2006,7.972E-01,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_COA',2006,3.012E-01,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_LPG',2006,8.784E+01,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_BIO',2006,2.005E+02,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_GEO',2006,0.100E+00,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_SOL',2006,1.509E+00,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_HET',2006,1.503E+01,'PJ','');
+INSERT INTO "ExistingCapacity" VALUES ('IT','RES_FT_ELC',2006,3.000E+02,'PJ','');
 -- Base year technologies
 INSERT INTO "ExistingCapacity" VALUES ('IT','RES_SH_BUR_NGA_SO_E',2006,2.40E+03,'PJ','');
 INSERT INTO "ExistingCapacity" VALUES ('IT','RES_SH_AHP_NGA_SO_E',2006,3.67E+01,'PJ','');
@@ -2133,8 +2035,8 @@ CREATE TABLE "EmissionActivity" (
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
 -- Residential sector
-INSERT INTO "EmissionActivity" VALUES ('IT','RES_CO2','BIO_METH','RES_FT_NGA_N',2007,'RES_NGA',-56.10,'kt/(PJ)','');
-INSERT INTO "EmissionActivity" VALUES ('IT','RES_CO2','H2_BL','RES_FT_NGA_N',2020,'RES_NGA',-56.10,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','RES_CO2','BIO_METH','RES_FT_NGA',2007,'RES_NGA',-56.10,'kt/(PJ)','');
+INSERT INTO "EmissionActivity" VALUES ('IT','RES_CO2','H2_BL','RES_FT_NGA',2020,'RES_NGA',-56.10,'kt/(PJ)','');
 
 CREATE TABLE "CommodityEmissionFactor" (
 	"input_comm"    text,
@@ -2194,43 +2096,27 @@ CREATE TABLE "Efficiency" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','RES_FT_NGA_E',2006,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GAS_COG','RES_FT_NGA_E',2006,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','RES_FT_DST_E',2006,'RES_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_NSP','RES_FT_DST_E',2006,'RES_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','RES_FT_HFO_E',2006,'RES_HFO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_KER','RES_FT_KER_E',2006,'RES_KER',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','COA_HCO','RES_FT_COA_E',2006,'RES_COA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','COA_OVC','RES_FT_COA_E',2006,'RES_COA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','RES_FT_LPG_E',2006,'RES_LPG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_SLB','RES_FT_BIO_E',2006,'RES_BIO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_GAS','RES_FT_BIO_E',2006,'RES_BIO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SOL','RES_FT_SOL_E',2006,'RES_SOL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GEO','RES_FT_GEO_E',2006,'RES_GEO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','RES_FT_ELC_E',2006,'RES_ELC',0.93,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','RES_FT_ELC_E',2006,'RES_ELC',0.93,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','RES_FT_ELC_E',2050,'RES_ELC',0.95,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','RES_FT_ELC_E',2050,'RES_ELC',0.95,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','HET','RES_FT_HET_E',2006,'RES_HET',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','RES_FT_NGA_N',2007,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_NGA','RES_FT_NGA_N',2007,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_METH','RES_FT_NGA_N',2007,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','H2_BL','RES_FT_NGA_N',2020,'RES_NGA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','RES_FT_DST_N',2007,'RES_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_DST','RES_FT_DST_N',2007,'RES_DST',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','RES_FT_HFO_N',2007,'RES_HFO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_KER','RES_FT_KER_N',2007,'RES_KER',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SYN_KER','RES_FT_KER_N',2007,'RES_KER',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','COA_HCO','RES_FT_COA_N',2007,'RES_COA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','COA_OVC','RES_FT_COA_N',2007,'RES_COA',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','RES_FT_LPG_N',2007,'RES_LPG',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_SLB','RES_FT_BIO_N',2007,'RES_BIO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','BIO_GAS','RES_FT_BIO_N',2007,'RES_BIO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','SOL','RES_FT_SOL_N',2007,'RES_SOL',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GEO','RES_FT_GEO_1_N',2007,'RES_GEO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GEO','RES_FT_GEO_2_N',2007,'RES_GEO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','GEO','RES_FT_GEO_3_N',2007,'RES_GEO',1.0,'PJ/(PJ)','');
-INSERT INTO "Efficiency" VALUES ('IT','HET','RES_FT_HET_N',2007,'RES_HET',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','GAS_NGA','RES_FT_NGA',2006,'RES_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','GAS_COG','RES_FT_NGA',2006,'RES_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_NGA','RES_FT_NGA',2006,'RES_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_METH','RES_FT_NGA',2006,'RES_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','H2_BL','RES_FT_NGA',2020,'RES_NGA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_DST','RES_FT_DST',2006,'RES_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_NSP','RES_FT_DST',2006,'RES_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_DST','RES_FT_DST',2006,'RES_DST',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_HFO','RES_FT_HFO',2006,'RES_HFO',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_KER','RES_FT_KER',2006,'RES_KER',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SYN_KER','RES_FT_KER',2006,'RES_KER',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','COA_HCO','RES_FT_COA',2006,'RES_COA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','COA_OVC','RES_FT_COA',2006,'RES_COA',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','OIL_LPG','RES_FT_LPG',2006,'RES_LPG',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_SLB','RES_FT_BIO',2006,'RES_BIO',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','BIO_GAS','RES_FT_BIO',2006,'RES_BIO',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','SOL','RES_FT_SOL',2006,'RES_SOL',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','GEO','RES_FT_GEO',2006,'RES_GEO',1.0,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_CEN','RES_FT_ELC',2006,'RES_ELC',0.93,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','ELC_DST','RES_FT_ELC',2006,'RES_ELC',0.93,'PJ/(PJ)','');
+INSERT INTO "Efficiency" VALUES ('IT','HET','RES_FT_HET',2006,'RES_HET',1.0,'PJ/(PJ)','');
 -- Base year technologies
 INSERT INTO "Efficiency" VALUES ('IT','RES_NGA','RES_SH_BUR_NGA_SO_E',2006,'RES_SH_SO',0.73*3.1945,'Mm2/(PJ)','');
 INSERT INTO "Efficiency" VALUES ('IT','RES_NGA','RES_SH_AHP_NGA_SO_E',2006,'RES_SH_SO',1.10*3.1945,'Mm2/(PJ)','');
@@ -3302,22 +3188,22 @@ CREATE TABLE "CostVariable" (
 );
 -- Residential sector
 -- Fuel technologies
---INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_ELC_E',2006,15.00,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_ELC_E',2006,15.00+6.31,'MEUR/(PJ)','Distribution + Excise');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_BIO_N',2007,1.55,'MEUR/(PJ)','Distribution');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_COA_N',2007,3.52,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_COA_N',2007,3.52+0.36,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_DST_N',2007,3.11,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_DST_N',2007,3.11+10.68,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_HFO_N',2007,3.11,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_HFO_N',2007,3.11+5.14,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_KER_N',2007,3.11,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_KER_N',2007,3.11+10.09,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_LPG_N',2007,3.11,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_LPG_N',2007,3.11+4.12,'MEUR/(PJ)','Distribution + Excise');
---INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_NGA_N',2007,2.07,'MEUR/(PJ)','Distribution');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_NGA_N',2007,2.07+5.23,'MEUR/(PJ)','Distribution + Excise');
-INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_FT_SOL_N',2007,0.10,'MEUR/(PJ)','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_ELC',2006,15.00,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_ELC',2006,15.00+6.31,'MEUR/(PJ)','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_BIO',2006,1.55,'MEUR/(PJ)','Distribution');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_COA',2006,3.52,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_COA',2006,3.52+0.36,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_DST',2006,3.11,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_DST',2006,3.11+10.68,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_HFO',2006,3.11,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_HFO',2006,3.11+5.14,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_KER',2006,3.11,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_KER',2006,3.11+10.09,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_LPG',2006,3.11,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_LPG',2006,3.11+4.12,'MEUR/(PJ)','Distribution + Excise');
+--INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_NGA',2006,2.07,'MEUR/(PJ)','Distribution');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_NGA',2006,2.07+5.23,'MEUR/(PJ)','Distribution + Excise');
+INSERT INTO "CostVariable" VALUES ('IT',2006,'RES_FT_SOL',2006,0.10,'MEUR/(PJ)','Distribution');
 -- Micro-CHP
 INSERT INTO "CostVariable" VALUES ('IT',2007,'RES_CHP_NGA_CI_N',2007,4.17,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('IT',2014,'RES_CHP_NGA_CI_N',2014,3.75,'MEUR/(PJ)','');
@@ -3363,11 +3249,9 @@ CREATE TABLE "CostInvest" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "CostInvest" VALUES ('IT','RES_FT_NGA_N',2007,2.00E+01,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','RES_FT_GEO_1_N',2007,1.00E+00,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','RES_FT_GEO_2_N',2007,1.50E+00,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','RES_FT_GEO_3_N',2007,3.00E+00,'MEUR/(PJ)','');
-INSERT INTO "CostInvest" VALUES ('IT','RES_FT_HET_N',2007,5.07E+00,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','RES_FT_NGA',2007,2.00E+01,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','RES_FT_GEO',2007,1.50E+00,'MEUR/(PJ)','');
+INSERT INTO "CostInvest" VALUES ('IT','RES_FT_HET',2007,5.07E+00,'MEUR/(PJ)','');
 -- New technologies
 INSERT INTO "CostInvest" VALUES ('IT','RES_RF_RFG_CLB_N',2007,1600.0,'MEUR/(Gl)','');
 INSERT INTO "CostInvest" VALUES ('IT','RES_RF_RFG_CLA1_N',2007,2200.0,'MEUR/(Gl)','');
@@ -3576,13 +3460,13 @@ CREATE TABLE "CostFixed" (
 );
 -- Residential sector
 -- Fuel technologies
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_NGA_N',2007,4.10,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_DST_N',2007,6.15,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_HFO_N',2007,6.15,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_KER_N',2007,6.15,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_COA_N',2007,6.97,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_LPG_N',2007,6.15,'MEUR/(PJ/year)','');
-INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_FT_BIO_N',2007,3.08,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_NGA',2006,4.10,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_DST',2006,6.15,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_HFO',2006,6.15,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_KER',2006,6.15,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_COA',2006,6.97,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_LPG',2006,6.15,'MEUR/(PJ/year)','');
+INSERT INTO "CostFixed" VALUES ('IT',2006,'RES_FT_BIO',2006,3.08,'MEUR/(PJ/year)','');
 -- New technologies
 INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_RF_RFG_CLB_N',2007,20.0,'MEUR/(Gl/year)','');
 INSERT INTO "CostFixed" VALUES ('IT',2007,'RES_RF_RFG_CLA1_N',2007,20.0,'MEUR/(Gl/year)','');

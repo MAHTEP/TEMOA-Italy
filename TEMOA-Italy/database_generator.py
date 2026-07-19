@@ -9,15 +9,7 @@ Reading = True
 Preprocessing = True
 Simplifying = False
 
-kept_years = [
-    2006,
-    2007,
-    2010,
-    2020,
-    2030,
-    2040,
-    2050
-]
+kept_years = [2007, 2010, 2020, 2030, 2040, 2050, 2060]
 
 
 # -----------------------------------------------------------------------------
@@ -132,7 +124,7 @@ if Simplifying:
     # Simplify time_periods table
     cursor.execute(f'''
         DELETE FROM "time_periods"
-        WHERE "t_periods" NOT IN {years_sql} AND WHERE "flag" NOT 'e'
+        WHERE "t_periods" NOT IN {years_sql} AND "flag" <> 'e'
     ''')
 
     conn.commit()
