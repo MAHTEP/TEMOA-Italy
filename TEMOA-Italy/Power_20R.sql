@@ -852,7 +852,9 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 INSERT INTO "StorageDuration" VALUES ('ABR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('BAS','HYD_PUM_E',10,'ATB 2022');
@@ -860,13 +862,10 @@ INSERT INTO "StorageDuration" VALUES ('CAL','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('CAM','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('EMR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('FVG','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('LAZ','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('LIG','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('LOM','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('MAR','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('MOL','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('PIE','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('PUG','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('SAR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('SIC','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('TOS','HYD_PUM_E',10,'ATB 2022');
@@ -959,7 +958,7 @@ CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
 	PRIMARY KEY("regions"),
-	FOREIGN KEY("regions") REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 INSERT INTO "PlanningReserveMargin" VALUES ('ABR',0.35);
 INSERT INTO "PlanningReserveMargin" VALUES ('BAS',0.35);
@@ -14780,7 +14779,6 @@ INSERT INTO "MaterialIntensity" VALUES ('SIC','TIT','BIO_E',2025,400,'t/(GW)','1
 INSERT INTO "MaterialIntensity" VALUES ('TAA','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('VDA','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('VEN','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('ABR','ALU','WIN_E',2025,1250,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('BAS','ALU','WIN_E',2025,1250,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14958,7 +14956,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','COP','HYD_RES_E',2025,1050,'t/(GW
 INSERT INTO "MaterialIntensity" VALUES ('MAR','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14975,7 +14973,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','MAN','HYD_RES_E',2025,200,'t/(GW)
 INSERT INTO "MaterialIntensity" VALUES ('MAR','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14992,7 +14990,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','NIC','HYD_RES_E',2025,30,'t/(GW)'
 INSERT INTO "MaterialIntensity" VALUES ('MAR','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
