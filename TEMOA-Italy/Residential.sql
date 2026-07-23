@@ -819,14 +819,16 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 
 CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
 	PRIMARY KEY("regions"),
-	FOREIGN KEY("regions") REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 
 CREATE TABLE "tech_groups" (

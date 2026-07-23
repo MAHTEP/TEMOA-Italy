@@ -1494,14 +1494,15 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
-
 CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
-	PRIMARY KEY(regions),
-	FOREIGN KEY("regions") REFERENCES regions
+	PRIMARY KEY("regions"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 
 CREATE TABLE "tech_groups" (
@@ -1950,7 +1951,7 @@ INSERT INTO "MinActivity" VALUES ('IT',2025,'IND_IS_FS_COK_E',0.0,'PJ','');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_IS_FS_PTC_E',0.10,'PJ','80% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2025,'IND_IS_FS_PTC_E',0.0,'PJ','');
 -- Non-ferrous metals
-INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ALU_E',1.26E+00,'Mt','60% of base year');
+INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ALU_E',1.05E+00,'Mt','50% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_COP_E',2.38E-01,'Mt','60% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ZNC_E',2.26E-01,'Mt','60% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_OTH_E',8.47E-01,'Mt','60% of base year');

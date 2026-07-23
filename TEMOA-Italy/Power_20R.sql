@@ -176,44 +176,44 @@ INSERT INTO "technologies" VALUES ('EXP_SI','p','IMP','Export to Slovenia','',''
 INSERT INTO "technologies" VALUES ('EXP_ME','p','IMP','Export to Montenegro','','');
 INSERT INTO "technologies" VALUES ('EXP_GR','p','IMP','Export to Greece','','');
 -- Generation
-INSERT INTO "technologies" VALUES ('BIO_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('WIN_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('HYD_RES_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('HYD_FLU_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('SOL_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('GEO_E','p','GEN','','','');
-INSERT INTO "technologies" VALUES ('OTH_E','p','GEN','(Natural gas)','','');
-INSERT INTO "technologies" VALUES ('CC_E','p','GEN','(Natural gas)','','');
-INSERT INTO "technologies" VALUES ('ICE_E','p','GEN','(Oil)','','');
-INSERT INTO "technologies" VALUES ('STM_E','p','GEN','(Natural gas)','','');
-INSERT INTO "technologies" VALUES ('TG_E','p','GEN','(Natural gas)','','');
-INSERT INTO "technologies" VALUES ('TE_E','p','GEN','(Natural gas)','','');
-INSERT INTO "technologies" VALUES ('CHP_CC_E','p','GEN','Cogeneration natural gas combined cycle - Existing','','');
-INSERT INTO "technologies" VALUES ('CHP_ICE_E','p','GEN','Cogeneration ICE oil based - Existing','','');
-INSERT INTO "technologies" VALUES ('CHP_TAP_E','p','GEN','Cogeneration natural gas cycle with steam tapping - Existing','','');
-INSERT INTO "technologies" VALUES ('CHP_CP_E','p','GEN','Cogeneration natural gas cycle in counter pressure - Existing','','');
-INSERT INTO "technologies" VALUES ('CHP_TG_E','p','GEN','Cogeneration natural gas turbine - Existing','','');
-INSERT INTO "technologies" VALUES ('NGA_CT_N','p','GEN','Natural gas combustion turbine - New','','');
-INSERT INTO "technologies" VALUES ('NGA_CC_N','p','GEN','Natural gas combined cycle - New','','');
-INSERT INTO "technologies" VALUES ('BIO_N','p','GEN','Biofuels plant - New','','');
-INSERT INTO "technologies" VALUES ('HYD_MICRO_N','p','GEN','Micro hydroelectric (< 1MW) - New','','');
-INSERT INTO "technologies" VALUES ('HYD_MINI_N','p','GEN','Mini hydroelectric (> 1MW) - New','','');
-INSERT INTO "technologies" VALUES ('GEO_HENT_N','p','GEN','Geothermal high enthalpy plant - New','','');
-INSERT INTO "technologies" VALUES ('GEO_LENT_N','p','GEN','Geothermal low enthalpy plant - New','','');
-INSERT INTO "technologies" VALUES ('WIN_N','p','GEN','Wind plant - New','','');
-INSERT INTO "technologies" VALUES ('WIN_OFF_N','p','GEN','Wind plant - Offshore - New','','');
-INSERT INTO "technologies" VALUES ('WIN_OFF_DEEP_N','p','GEN','Wind plant - Deep offshore - New','','');
-INSERT INTO "technologies" VALUES ('SOL_PV_GRO_N','p','GEN','Photovoltaic ground plant - New','','');
-INSERT INTO "technologies" VALUES ('SOL_PV_ROOF_N','p','GEN','Photovoltaic roof plant - New','','');
-INSERT INTO "technologies" VALUES ('FC_N','p','GEN','PEM fuel cell system running on hydrogen 100 kW based - New','','');
-INSERT INTO "technologies" VALUES ('NUC_LWR_N','pb','GEN','Nuclear fission - Light Water Reactor','','');
-INSERT INTO "technologies" VALUES ('NUC_SMR_N','pb','GEN','Nuclear fission - Small Modular Reactor','','');
-INSERT INTO "technologies" VALUES ('CHP_BIO_N','p','GEN','Cogeneration municipal waste plant - New','','');
-INSERT INTO "technologies" VALUES ('CHP_NGA_TURB_N','p','GEN','Cogeneration natural gas turbine - New','','');
-INSERT INTO "technologies" VALUES ('CHP_NGA_CC_N','p','GEN','Cogeneration natural gas combined cycle - New','','');
-INSERT INTO "technologies" VALUES ('CHP_NGA_CP_N','p','GEN','Cogeneration natural gas cycle in counter pressure - New','','');
-INSERT INTO "technologies" VALUES ('CHP_NGA_TAP_N','p','GEN','Cogeneration natural gas cycle with steam tapping - New','','');
-INSERT INTO "technologies" VALUES ('HET_N','p','GEN','Heat generator - New','','');
+INSERT INTO "technologies" VALUES ('BIO_E','p','GEN','Biomass Plant Existing','','');
+INSERT INTO "technologies" VALUES ('WIN_E','p','GEN','Wind Farm Existing','','');
+INSERT INTO "technologies" VALUES ('HYD_RES_E','p','GEN','Hydroelectric Reservoir Existing','','');
+INSERT INTO "technologies" VALUES ('HYD_FLU_E','p','GEN','Hydroelectric Flow Existing','','');
+INSERT INTO "technologies" VALUES ('SOL_E','p','GEN','Solar Plant Existing','','');
+INSERT INTO "technologies" VALUES ('GEO_E','p','GEN','Geothermal Plant Existing','','');
+INSERT INTO "technologies" VALUES ('OTH_E','p','GEN','Other Existing','','');
+INSERT INTO "technologies" VALUES ('CC_E','p','GEN','Combined Cycle Existing','','');
+INSERT INTO "technologies" VALUES ('ICE_E','p','GEN','Internal Combustion Engine Existing','','');
+INSERT INTO "technologies" VALUES ('STM_E','p','GEN','Steam Turbine Existing','','');
+INSERT INTO "technologies" VALUES ('TG_E','p','GEN','Turbine Generator Existing','','');
+INSERT INTO "technologies" VALUES ('TE_E','p','GEN','Thermal Electric Existing','','');
+INSERT INTO "technologies" VALUES ('CHP_CC_E','p','GEN','Cogeneration Combined Cycle Existing','','');
+INSERT INTO "technologies" VALUES ('CHP_ICE_E','p','GEN','Cogeneration Internal Combustion Engine Existing','','');
+INSERT INTO "technologies" VALUES ('CHP_TAP_E','p','GEN','Cogeneration Cycle with Steam Tapping Existing','','');
+INSERT INTO "technologies" VALUES ('CHP_CP_E','p','GEN','Cogeneration Cycle in Counter Pressure Existing','','');
+INSERT INTO "technologies" VALUES ('CHP_TG_E','p','GEN','Cogeneration Turbine Existing','','');
+INSERT INTO "technologies" VALUES ('NGA_CT_N','p','GEN','Natural Gas Turbine New','','');
+INSERT INTO "technologies" VALUES ('NGA_CC_N','p','GEN','Natural Gas Combined Cycle New','','');
+INSERT INTO "technologies" VALUES ('BIO_N','p','GEN','Biofuels Plant New','','');
+INSERT INTO "technologies" VALUES ('HYD_MICRO_N','p','GEN','Micro Hydroelectric (< 1MW) New','','');
+INSERT INTO "technologies" VALUES ('HYD_MINI_N','p','GEN','Mini Hydroelectric (> 1MW) New','','');
+INSERT INTO "technologies" VALUES ('GEO_HENT_N','p','GEN','Geothermal High Enthalpy Plant New','','');
+INSERT INTO "technologies" VALUES ('GEO_LENT_N','p','GEN','Geothermal Low Enthalpy Plant New','','');
+INSERT INTO "technologies" VALUES ('WIN_N','p','GEN','Wind Plant New','','');
+INSERT INTO "technologies" VALUES ('WIN_OFF_N','p','GEN','Wind Plant Offshore New','','');
+INSERT INTO "technologies" VALUES ('WIN_OFF_DEEP_N','p','GEN','Wind Plant Deep Offshore New','','');
+INSERT INTO "technologies" VALUES ('SOL_PV_GRO_N','p','GEN','Photovoltaic Ground Plant New','','');
+INSERT INTO "technologies" VALUES ('SOL_PV_ROOF_N','p','GEN','Photovoltaic Roof Plant New','','');
+INSERT INTO "technologies" VALUES ('FC_N','p','GEN','Hydrogen Fuel Cell New','','');
+INSERT INTO "technologies" VALUES ('NUC_LWR_N','pb','GEN','Nuclear Fission Light Water Reactor','','');
+INSERT INTO "technologies" VALUES ('NUC_SMR_N','pb','GEN','Nuclear Fission Small Modular Reactor','','');
+INSERT INTO "technologies" VALUES ('CHP_BIO_N','p','GEN','Cogeneration Municipal Waste Plant New','','');
+INSERT INTO "technologies" VALUES ('CHP_NGA_TURB_N','p','GEN','Cogeneration Natural Gas Turbine New','','');
+INSERT INTO "technologies" VALUES ('CHP_NGA_CC_N','p','GEN','Cogeneration Natural Gas Combined Cycle New','','');
+INSERT INTO "technologies" VALUES ('CHP_NGA_CP_N','p','GEN','Cogeneration Natural Gas Cycle in Counter Pressure New','','');
+INSERT INTO "technologies" VALUES ('CHP_NGA_TAP_N','p','GEN','Cogeneration Natural Gas Cycle with Steam Tapping New','','');
+INSERT INTO "technologies" VALUES ('HET_N','p','GEN','Heat Generator New','','');
 -- Transmission, distribution and storage
 INSERT INTO "technologies" VALUES ('HYD_PUM_E','ps','STG','Pumped Hydroelectric','','');
 INSERT INTO "technologies" VALUES ('STG_ELC_CEN_BTT','ps','STG','Storage - Centralized Electricity - Lithium-Ion Battery','','');
@@ -852,7 +852,9 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 INSERT INTO "StorageDuration" VALUES ('ABR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('BAS','HYD_PUM_E',10,'ATB 2022');
@@ -860,13 +862,10 @@ INSERT INTO "StorageDuration" VALUES ('CAL','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('CAM','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('EMR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('FVG','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('LAZ','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('LIG','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('LOM','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('MAR','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('MOL','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('PIE','HYD_PUM_E',10,'ATB 2022');
-INSERT INTO "StorageDuration" VALUES ('PUG','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('SAR','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('SIC','HYD_PUM_E',10,'ATB 2022');
 INSERT INTO "StorageDuration" VALUES ('TOS','HYD_PUM_E',10,'ATB 2022');
@@ -959,7 +958,7 @@ CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
 	PRIMARY KEY("regions"),
-	FOREIGN KEY("regions") REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 INSERT INTO "PlanningReserveMargin" VALUES ('ABR',0.35);
 INSERT INTO "PlanningReserveMargin" VALUES ('BAS',0.35);
@@ -4139,6 +4138,10 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
+--INSERT INTO "EmissionLimit" VALUES ('global',2035,'ELC_CO2',22528,'kt','from TEMOA-Italy_emissions results for power sector');
+--INSERT INTO "EmissionLimit" VALUES ('global',2040,'ELC_CO2',12135,'kt','from TEMOA-Italy_emissions results for power sector');
+--INSERT INTO "EmissionLimit" VALUES ('global',2045,'ELC_CO2',9724,'kt','from TEMOA-Italy_emissions results for power sector');
+--INSERT INTO "EmissionLimit" VALUES ('global',2050,'ELC_CO2',0,'kt','from TEMOA-Italy_emissions results for power sector');
 
 CREATE TABLE "EmissionActivity" (
 	"regions"	text,
@@ -8344,6 +8347,7 @@ INSERT INTO "CostVariable" VALUES ('EMR',2022,'BIO_E',2022,0.36,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'WIN_E',2022,0.00,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'HYD_RES_E',2022,0.08,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'HYD_FLU_E',2022,0.08,'MEUR/(PJ)','');
+INSERT INTO "CostVariable" VALUES ('EMR',2022,'SOL_E',2022,13.89,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'CC_E',2022,0.41,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'ICE_E',2022,0.48,'MEUR/(PJ)','');
 INSERT INTO "CostVariable" VALUES ('EMR',2022,'STM_E',2022,0.33,'MEUR/(PJ)','');
@@ -9975,6 +9979,7 @@ INSERT INTO "CostFixed" VALUES ('EMR',2022,'BIO_E',2022,12.50,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'WIN_E',2022,34.00,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'HYD_RES_E',2022,13.29,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'HYD_FLU_E',2022,33.65,'MEUR/(PJ)','');
+INSERT INTO "CostFixed" VALUES ('EMR',2022,'SOL_E',2022,30.8,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'CC_E',2022,13.50,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'ICE_E',2022,22.19,'MEUR/(PJ)','');
 INSERT INTO "CostFixed" VALUES ('EMR',2022,'STM_E',2022,42.61,'MEUR/(PJ)','');
@@ -14780,7 +14785,6 @@ INSERT INTO "MaterialIntensity" VALUES ('SIC','TIT','BIO_E',2025,400,'t/(GW)','1
 INSERT INTO "MaterialIntensity" VALUES ('TAA','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('VDA','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('VEN','TIT','BIO_E',2025,400,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('ABR','ALU','WIN_E',2025,1250,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('BAS','ALU','WIN_E',2025,1250,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14958,7 +14962,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','COP','HYD_RES_E',2025,1050,'t/(GW
 INSERT INTO "MaterialIntensity" VALUES ('MAR','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','COP','HYD_RES_E',2025,1050,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14975,7 +14979,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','MAN','HYD_RES_E',2025,200,'t/(GW)
 INSERT INTO "MaterialIntensity" VALUES ('MAR','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','MAN','HYD_RES_E',2025,200,'t/(GW)','10.1016/j.mtener.2025.101805');
@@ -14992,7 +14996,7 @@ INSERT INTO "MaterialIntensity" VALUES ('LOM','NIC','HYD_RES_E',2025,30,'t/(GW)'
 INSERT INTO "MaterialIntensity" VALUES ('MAR','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('MOL','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('PIE','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
-INSERT INTO "MaterialIntensity" VALUES ('SAR','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
+INSERT INTO "MaterialIntensity" VALUES ('SIC','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TOS','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('TAA','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');
 INSERT INTO "MaterialIntensity" VALUES ('UMB','NIC','HYD_RES_E',2025,30,'t/(GW)','10.1016/j.mtener.2025.101805');

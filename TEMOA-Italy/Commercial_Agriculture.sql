@@ -619,20 +619,22 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
-
 CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
-	PRIMARY KEY(regions),
-	FOREIGN KEY("regions") REFERENCES regions
+	PRIMARY KEY("regions"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 
 CREATE TABLE "tech_groups" (
 	"tech"	text,
 	"notes"	text,
-	PRIMARY KEY(tech)
+	PRIMARY KEY("tech"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- Agriculture sector
 INSERT INTO "tech_groups" VALUES ('AGR_TECH','');
@@ -717,7 +719,9 @@ CREATE TABLE "TechGroupWeight" (
 	"group_name"	    text,
 	"weight"        	real,
 	"tech_desc"	        text,
-	PRIMARY KEY("tech","group_name")
+	PRIMARY KEY("tech","group_name"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name")
 );
 -- Agriculture sector
 INSERT INTO "TechGroupWeight" VALUES ('AGR_TECH','AGR_GRP',1.0,'');
@@ -783,7 +787,9 @@ CREATE TABLE "MinActivityGroup" (
 	"group_name"	text,
 	"min_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("regions","periods","group_name")
+	PRIMARY KEY("regions","periods","group_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name")
 );
 CREATE TABLE "MaxActivityGroup" (
 	"regions"	text,
@@ -791,7 +797,9 @@ CREATE TABLE "MaxActivityGroup" (
 	"group_name"	text,
 	"max_act_g"	real,
 	"notes"	text,
-	PRIMARY KEY("regions","periods","group_name")
+	PRIMARY KEY("regions","periods","group_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name")
 );
 CREATE TABLE "MinCapacityGroup" (
 	"regions"	text,
@@ -799,7 +807,9 @@ CREATE TABLE "MinCapacityGroup" (
 	"group_name"	text,
 	"min_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("regions","periods","group_name")
+	PRIMARY KEY("regions","periods","group_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name")
 );
 CREATE TABLE "MaxCapacityGroup" (
 	"regions"	text,
@@ -807,7 +817,9 @@ CREATE TABLE "MaxCapacityGroup" (
 	"group_name"	text,
 	"max_cap_g"	real,
 	"notes"	text,
-	PRIMARY KEY("regions","periods","group_name")
+	PRIMARY KEY("regions","periods","group_name"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("group_name") REFERENCES "groups"("group_name")
 );
 CREATE TABLE "MinInputGroup" (
 	"regions"	      text,

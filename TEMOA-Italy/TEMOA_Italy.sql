@@ -3401,7 +3401,9 @@ CREATE TABLE "StorageDuration" (
 	"tech"	text,
 	"duration"	real,
 	"duration_notes"	text,
-	PRIMARY KEY("regions","tech")
+	PRIMARY KEY("regions","tech"),
+	FOREIGN KEY("regions") REFERENCES "regions"("regions"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
 -- Storage
 INSERT INTO "StorageDuration" VALUES ('IT','STG_ELC_HYD_PUM_E',10,'ATB 2022');
@@ -3415,7 +3417,7 @@ CREATE TABLE "PlanningReserveMargin" (
 	"regions"	text,
 	"reserve_margin"	REAL,
 	PRIMARY KEY("regions"),
-	FOREIGN KEY("regions") REFERENCES regions
+	FOREIGN KEY("regions") REFERENCES "regions"("regions")
 );
 INSERT INTO "PlanningReserveMargin" VALUES ('IT',0.35);
 
@@ -5230,7 +5232,7 @@ INSERT INTO "MinActivity" VALUES ('IT',2025,'IND_IS_FS_COK_E',0.0,'PJ','');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_IS_FS_PTC_E',0.10,'PJ','80% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2025,'IND_IS_FS_PTC_E',0.0,'PJ','');
 -- Non-ferrous metals
-INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ALU_E',1.26E+00,'Mt','60% of base year');
+INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ALU_E',1.05E+00,'Mt','50% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_COP_E',2.38E-01,'Mt','60% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_ZNC_E',2.26E-01,'Mt','60% of base year');
 INSERT INTO "MinActivity" VALUES ('IT',2007,'IND_NF_OTH_E',8.47E-01,'Mt','60% of base year');
@@ -8452,7 +8454,9 @@ CREATE TABLE "EmissionLimit" (
 	FOREIGN KEY("emis_comm") REFERENCES "commodities"("comm_name")
 );
 --INSERT INTO "EmissionLimit" VALUES ('IT',2030,'TOT_CO2',195000,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2035,'TOT_CO2',152500,'kt','');
 --INSERT INTO "EmissionLimit" VALUES ('IT',2040,'TOT_CO2',110000,'kt','');
+--INSERT INTO "EmissionLimit" VALUES ('IT',2045,'TOT_CO2',70000,'kt','');
 --INSERT INTO "EmissionLimit" VALUES ('IT',2050,'TOT_CO2',30000,'kt','');
 
 CREATE TABLE "EmissionActivity" (
