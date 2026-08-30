@@ -18,35 +18,37 @@ regions_list = []
 tech_list = []
 input_comm_list = []
 output_comm_list = []
-material_comm_list = []
+construction_input_comm_list = []
 emissions_comm_list = []
 periods_list = []
 
-tech_dummies = ['CCUS_SNK_BCKSTP', 'DMY_DEM_ANNUAL', 'DMY_PHY_ANNUAL', 'DMY_PHY_NON_ANNUAL']
+tech_dummies = ['CCUS_SNK_BCKSTP', 'DMY_IMP_TECH']
 
 result_set = {
-    "Output_CapacityByPeriodAndTech": False,
-    "Output_V_Capacity": False,
-    "Output_CostInvest": False,
-    "Output_CostFixed": False,
-    "Output_CostVariable": False,
-    "Output_VFlow_In": False,
-    "Output_VFlow_Out": False,
-    "Output_VMat_Cons": False,
-    "Output_Emissions": False
+    "output_net_capacity": False,
+    "output_built_capacity": False,
+    "output_retired_capacity": False,
+    "output_cost_invest": False,
+    "output_cost_fixed": False,
+    "output_cost_variable": False,
+    "output_flow_in": False,
+    "output_flow_out": False,
+    "output_construction_input": False,
+    "output_emission": False
 }
 
 disaggregation = {
     "regions": False,
-    "capacity_tech": False,
-    "new_capacity_tech": False,
+    "net_capacity_tech": False,
+    "built_capacity_tech": False,
+    "retired_capacity_tech": False,
     "cost_tech": False,
     "input_tech": False,
     "input_comm": False,
     "output_tech": False,
     "output_comm": False,
-    "material_tech": False,
-    "material_comm": False,
+    "construction_input_tech": False,
+    "construction_input_comm": False,
     "emissions_tech": False,
     "emissions_comm": False
 }
@@ -62,7 +64,7 @@ scenario_number = 0
 for i_file in range(0, len(file)):
 
     conn = sqlite3.connect(file[i_file])
-    Output_Objective = pd.read_sql("select * from Output_Objective", conn)
+    Output_Objective = pd.read_sql("select * from output_objective", conn)
     conn.close()
 
     scenario = list(Output_Objective.scenario)
@@ -74,1948 +76,2106 @@ for i_file in range(0, len(file)):
         file_list.append(file[i_file])
         scenario_list.append(scenario[i_scenario])
 
-# file, scenario, regions_list, tech_list, input_comm_list, output_comm_list, material_comm_list, emissions_comm_list, periods_list, tech_dummies, result_set, disaggregation
+# file, scenario, regions_list, tech_list, input_comm_list, output_comm_list, construction_input_comm_list, emissions_comm_list, periods_list, tech_dummies, result_set, disaggregation
 
 def function(args):
     file, scenario = args
     
-    Output_CapacityByPeriodAndTech_MERGE = pd.DataFrame()
-    Output_V_Capacity_MERGE = pd.DataFrame()
-    Output_CostInvest_MERGE = pd.DataFrame()
-    Output_CostFixed_MERGE = pd.DataFrame()
-    Output_CostVariable_MERGE = pd.DataFrame()
-    Output_VFlow_In_MERGE = pd.DataFrame()
-    Output_VFlow_Out_MERGE = pd.DataFrame()
-    Output_VMat_Cons_MERGE = pd.DataFrame()
-    Output_Emissions_MERGE = pd.DataFrame()
-    Check_Dummies_MERGE = pd.DataFrame()
+    output_net_capacity_merge = pd.DataFrame()
+    output_built_capacity_merge = pd.DataFrame()
+    output_retired_capacity_merge = pd.DataFrame()
+    output_cost_invest_merge = pd.DataFrame()
+    output_cost_fixed_merge = pd.DataFrame()
+    output_cost_variable_merge = pd.DataFrame()
+    output_flow_in_merge = pd.DataFrame()
+    output_flow_out_merge = pd.DataFrame()
+    output_construction_input_merge = pd.DataFrame()
+    output_emission_merge = pd.DataFrame()
+    check_dummies_merge = pd.DataFrame()
 
     periods = periods_list
     
     if not periods:  # Extraction of all the periods belonging to time_optimize if no time periods have been specified
         conn = sqlite3.connect(file)
-        time_periods_future = pd.read_sql("select * from time_periods where flag='f'", conn)
+        time_periods_future = pd.read_sql("select * from time_period where flag='f'", conn)
         conn.close()
         time_periods_optimize = time_periods_future.drop(len(time_periods_future)-1)
-        periods = time_periods_optimize.t_periods
+        periods = time_periods_optimize.period
 
-    # Output_CapacityByPeriodAndTech
+    # output_net_capacity
 
-    if result_set["Output_CapacityByPeriodAndTech"]:
+    if result_set["output_net_capacity"]:
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("WARNING: No Output_CapacityByPeriodAndTech found.")
-            result_set["Output_CapacityByPeriodAndTech"] = False
+            print("WARNING: No output_net_capacity found.")
+            result_set["output_net_capacity"] = False
 
         else:
             # Data reading
             if not regions and tech:
                 conn = sqlite3.connect(file)
-                Output_CapacityByPeriodAndTech = pd.read_sql("select * from Output_CapacityByPeriodAndTech where (" +
+                output_net_capacity = pd.read_sql("select * from output_net_capacity where (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
             elif regions and not tech:
                 conn = sqlite3.connect(file)
-                Output_CapacityByPeriodAndTech = pd.read_sql("select * from Output_CapacityByPeriodAndTech where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ")", conn)
+                output_net_capacity = pd.read_sql("select * from output_net_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_CapacityByPeriodAndTech = pd.read_sql("select * from Output_CapacityByPeriodAndTech where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_net_capacity = pd.read_sql("select * from output_net_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
 
-            regions = list(Output_CapacityByPeriodAndTech.regions)
+            regions = list(output_net_capacity.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_CapacityByPeriodAndTech.tech)
+            tech = list(output_net_capacity.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
 
             # Data aggregation
-            if disaggregation["regions"] and disaggregation["capacity_tech"]:
+            if disaggregation["regions"] and disaggregation["net_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_CapacityByPeriodAndTech_dict.update(dict.fromkeys(periods, 0))
+                output_net_capacity_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_net_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CapacityByPeriodAndTech_DF = pd.DataFrame(columns=columns_labels)
+                output_net_capacity_df = pd.DataFrame(columns=columns_labels)
                 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_CapacityByPeriodAndTech_dict['file'] = file
-                        Output_CapacityByPeriodAndTech_dict['scenario'] = scenario
-                        Output_CapacityByPeriodAndTech_dict['regions'] = regions[i_regions]
-                        Output_CapacityByPeriodAndTech_dict['tech'] = tech[i_tech]
+                        output_net_capacity_dict['file'] = file
+                        output_net_capacity_dict['scenario'] = scenario
+                        output_net_capacity_dict['region'] = regions[i_regions]
+                        output_net_capacity_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            capacity_period = (Output_CapacityByPeriodAndTech[(Output_CapacityByPeriodAndTech['scenario'] == scenario) &
-                                                                        (Output_CapacityByPeriodAndTech['regions'] == regions[i_regions]) &
-                                                                        (Output_CapacityByPeriodAndTech['tech'] == tech[i_tech]) &
-                                                                        (Output_CapacityByPeriodAndTech['t_periods'] == periods[i_periods])])
-                            Output_CapacityByPeriodAndTech_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                            capacity_period = (output_net_capacity[(output_net_capacity['scenario'] == scenario) &
+                                                                        (output_net_capacity['region'] == regions[i_regions]) &
+                                                                        (output_net_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_net_capacity['period'] == periods[i_periods])])
+                            output_net_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                             if float(sum(capacity_period.capacity)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
+                            output_net_capacity_df = output_net_capacity_df.append(output_net_capacity_dict, ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_net_capacity_df = output_net_capacity_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
                 
-            elif disaggregation["regions"] and not disaggregation["capacity_tech"]:
+            elif disaggregation["regions"] and not disaggregation["net_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_CapacityByPeriodAndTech_dict.update(dict.fromkeys(periods, 0))
+                output_net_capacity_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_net_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CapacityByPeriodAndTech_DF = pd.DataFrame(columns=columns_labels)
+                output_net_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_CapacityByPeriodAndTech_dict['file'] = file
-                    Output_CapacityByPeriodAndTech_dict['scenario'] = scenario
-                    Output_CapacityByPeriodAndTech_dict['regions'] = regions[i_regions]
+                    output_net_capacity_dict['file'] = file
+                    output_net_capacity_dict['scenario'] = scenario
+                    output_net_capacity_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        capacity_period = (Output_CapacityByPeriodAndTech[(Output_CapacityByPeriodAndTech['scenario'] == scenario) &
-                                                                        (Output_CapacityByPeriodAndTech['regions'] == regions[i_regions]) &
-                                                                        (Output_CapacityByPeriodAndTech['t_periods'] == periods[i_periods])])
-                        Output_CapacityByPeriodAndTech_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        capacity_period = (output_net_capacity[(output_net_capacity['scenario'] == scenario) &
+                                                                        (output_net_capacity['region'] == regions[i_regions]) &
+                                                                        (output_net_capacity['period'] == periods[i_periods])])
+                        output_net_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                         if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
+                        output_net_capacity_df = output_net_capacity_df.append(output_net_capacity_dict, ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_net_capacity_df = output_net_capacity_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
-            elif not disaggregation["regions"] and disaggregation["capacity_tech"]:
+            elif not disaggregation["regions"] and disaggregation["net_capacity_tech"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_CapacityByPeriodAndTech_dict.update(dict.fromkeys(periods, 0))
+                output_net_capacity_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_net_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CapacityByPeriodAndTech_DF = pd.DataFrame(columns=columns_labels)
+                output_net_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_CapacityByPeriodAndTech_dict['file'] = file
-                    Output_CapacityByPeriodAndTech_dict['scenario'] = scenario
-                    Output_CapacityByPeriodAndTech_dict['tech'] = tech[i_tech]
+                    output_net_capacity_dict['file'] = file
+                    output_net_capacity_dict['scenario'] = scenario
+                    output_net_capacity_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        capacity_period = (Output_CapacityByPeriodAndTech[(Output_CapacityByPeriodAndTech['scenario'] == scenario) &
-                                                                        (Output_CapacityByPeriodAndTech['tech'] == tech[i_tech]) &
-                                                                        (Output_CapacityByPeriodAndTech['t_periods'] == periods[i_periods])])
-                        Output_CapacityByPeriodAndTech_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        capacity_period = (output_net_capacity[(output_net_capacity['scenario'] == scenario) &
+                                                                        (output_net_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_net_capacity['period'] == periods[i_periods])])
+                        output_net_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                         if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
+                        output_net_capacity_df = output_net_capacity_df.append(output_net_capacity_dict, ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_net_capacity_df = output_net_capacity_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CapacityByPeriodAndTech_dict = {'file': '', 'scenario': ''}
-                Output_CapacityByPeriodAndTech_dict.update(dict.fromkeys(periods, 0))
+                output_net_capacity_dict = {'file': '', 'scenario': ''}
+                output_net_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CapacityByPeriodAndTech_DF = pd.DataFrame(columns=columns_labels)
+                output_net_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 check_zeros = True
 
-                Output_CapacityByPeriodAndTech_dict['file'] = file
-                Output_CapacityByPeriodAndTech_dict['scenario'] = scenario
+                output_net_capacity_dict['file'] = file
+                output_net_capacity_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    capacity_period = (Output_CapacityByPeriodAndTech[(Output_CapacityByPeriodAndTech['scenario'] == scenario) &
-                                                                    (Output_CapacityByPeriodAndTech['t_periods'] == periods[i_periods])])
-                    Output_CapacityByPeriodAndTech_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                    capacity_period = (output_net_capacity[(output_net_capacity['scenario'] == scenario) &
+                                                                    (output_net_capacity['period'] == periods[i_periods])])
+                    output_net_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                     if float(sum(capacity_period.capacity)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.append(Output_CapacityByPeriodAndTech_dict, ignore_index=True)
+                    output_net_capacity_df = output_net_capacity_df.append(output_net_capacity_dict, ignore_index=True)
                 
-                Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_net_capacity_df = output_net_capacity_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_CapacityByPeriodAndTech_DF = Output_CapacityByPeriodAndTech_DF.loc[:, (Output_CapacityByPeriodAndTech_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_CapacityByPeriodAndTech_MERGE = pd.concat([Output_CapacityByPeriodAndTech_MERGE, Output_CapacityByPeriodAndTech_DF])
+            output_net_capacity_df = output_net_capacity_df.loc[:, (output_net_capacity_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_net_capacity_merge = pd.concat([output_net_capacity_merge, output_net_capacity_df])
 
-    # Output_V_Capacity
+    # output_built_capacity
 
-    if result_set["Output_V_Capacity"]:
+    if result_set["output_built_capacity"]:
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("WARNING: No Output_V_Capacity found.")
-            result_set["Output_V_Capacity"] = False
+            print("WARNING: No output_built_capacity found.")
+            result_set["output_built_capacity"] = False
 
         else:
             # Data reading
             if not regions and tech:
                 conn = sqlite3.connect(file)
-                Output_V_Capacity = pd.read_sql("select * from Output_V_Capacity where (" +
+                output_built_capacity = pd.read_sql("select * from output_built_capacity where (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
             elif regions and not tech:
                 conn = sqlite3.connect(file)
-                Output_V_Capacity = pd.read_sql("select * from Output_V_Capacity where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ")", conn)
+                output_built_capacity = pd.read_sql("select * from output_built_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_V_Capacity = pd.read_sql("select * from Output_V_Capacity where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_built_capacity = pd.read_sql("select * from output_built_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
-            regions = list(Output_V_Capacity.regions)
+            regions = list(output_built_capacity.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_V_Capacity.tech)
+            tech = list(output_built_capacity.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
 
             # Data aggregation
-            if disaggregation["regions"] and disaggregation["new_capacity_tech"]:
+            if disaggregation["regions"] and disaggregation["built_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_V_Capacity_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_V_Capacity_dict.update(dict.fromkeys(periods, 0))
+                output_built_capacity_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_built_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_V_Capacity_DF = pd.DataFrame(columns=columns_labels)
+                output_built_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_V_Capacity_dict['file'] = file
-                        Output_V_Capacity_dict['scenario'] = scenario
-                        Output_V_Capacity_dict['regions'] = regions[i_regions]
-                        Output_V_Capacity_dict['tech'] = tech[i_tech]
+                        output_built_capacity_dict['file'] = file
+                        output_built_capacity_dict['scenario'] = scenario
+                        output_built_capacity_dict['region'] = regions[i_regions]
+                        output_built_capacity_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            capacity_period = (Output_V_Capacity[(Output_V_Capacity['scenario'] == scenario) &
-                                                                        (Output_V_Capacity['regions'] == regions[i_regions]) &
-                                                                        (Output_V_Capacity['tech'] == tech[i_tech]) &
-                                                                        (Output_V_Capacity['vintage'] == periods[i_periods])])
-                            Output_V_Capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                            capacity_period = (output_built_capacity[(output_built_capacity['scenario'] == scenario) &
+                                                                        (output_built_capacity['region'] == regions[i_regions]) &
+                                                                        (output_built_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_built_capacity['vintage'] == periods[i_periods])])
+                            output_built_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                             if float(sum(capacity_period.capacity)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_V_Capacity_DF = Output_V_Capacity_DF.append(Output_V_Capacity_dict, ignore_index=True)
+                            output_built_capacity_df = output_built_capacity_df.append(output_built_capacity_dict, ignore_index=True)
 
-                Output_V_Capacity_DF = Output_V_Capacity_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_built_capacity_df = output_built_capacity_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
-            elif disaggregation["regions"] and not disaggregation["new_capacity_tech"]:
+            elif disaggregation["regions"] and not disaggregation["built_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_V_Capacity_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_V_Capacity_dict.update(dict.fromkeys(periods, 0))
+                output_built_capacity_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_built_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_V_Capacity_DF = pd.DataFrame(columns=columns_labels)
+                output_built_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_V_Capacity_dict['file'] = file
-                    Output_V_Capacity_dict['scenario'] = scenario
-                    Output_V_Capacity_dict['regions'] = regions[i_regions]
+                    output_built_capacity_dict['file'] = file
+                    output_built_capacity_dict['scenario'] = scenario
+                    output_built_capacity_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        capacity_period = (Output_V_Capacity[(Output_V_Capacity['scenario'] == scenario) &
-                                                                        (Output_V_Capacity['regions'] == regions[i_regions]) &
-                                                                        (Output_V_Capacity['vintage'] == periods[i_periods])])
-                        Output_V_Capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        capacity_period = (output_built_capacity[(output_built_capacity['scenario'] == scenario) &
+                                                                        (output_built_capacity['region'] == regions[i_regions]) &
+                                                                        (output_built_capacity['vintage'] == periods[i_periods])])
+                        output_built_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                         if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_V_Capacity_DF = Output_V_Capacity_DF.append(Output_V_Capacity_dict, ignore_index=True)
+                        output_built_capacity_df = output_built_capacity_df.append(output_built_capacity_dict, ignore_index=True)
 
-                Output_V_Capacity_DF = Output_V_Capacity_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_built_capacity_df = output_built_capacity_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
-            elif not disaggregation["regions"] and disaggregation["new_capacity_tech"]:
+            elif not disaggregation["regions"] and disaggregation["built_capacity_tech"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_V_Capacity_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_V_Capacity_dict.update(dict.fromkeys(periods, 0))
+                output_built_capacity_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_built_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_V_Capacity_DF = pd.DataFrame(columns=columns_labels)
+                output_built_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_V_Capacity_dict['file'] = file
-                    Output_V_Capacity_dict['scenario'] = scenario
-                    Output_V_Capacity_dict['tech'] = tech[i_tech]
+                    output_built_capacity_dict['file'] = file
+                    output_built_capacity_dict['scenario'] = scenario
+                    output_built_capacity_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        capacity_period = (Output_V_Capacity[(Output_V_Capacity['scenario'] == scenario) &
-                                                                        (Output_V_Capacity['tech'] == tech[i_tech]) &
-                                                                        (Output_V_Capacity['vintage'] == periods[i_periods])])
-                        Output_V_Capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        capacity_period = (output_built_capacity[(output_built_capacity['scenario'] == scenario) &
+                                                                        (output_built_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_built_capacity['vintage'] == periods[i_periods])])
+                        output_built_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                         if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_V_Capacity_DF = Output_V_Capacity_DF.append(Output_V_Capacity_dict, ignore_index=True)
+                        output_built_capacity_df = output_built_capacity_df.append(output_built_capacity_dict, ignore_index=True)
 
-                Output_V_Capacity_DF = Output_V_Capacity_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_built_capacity_df = output_built_capacity_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_V_Capacity_dict = {'file': '', 'scenario': ''}
-                Output_V_Capacity_dict.update(dict.fromkeys(periods, 0))
+                output_built_capacity_dict = {'file': '', 'scenario': ''}
+                output_built_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_V_Capacity_DF = pd.DataFrame(columns=columns_labels)
+                output_built_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 check_zeros = True
 
-                Output_V_Capacity_dict['file'] = file
-                Output_V_Capacity_dict['scenario'] = scenario
+                output_built_capacity_dict['file'] = file
+                output_built_capacity_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    capacity_period = (Output_V_Capacity[(Output_V_Capacity['scenario'] == scenario) &
-                                                                    (Output_V_Capacity['vintage'] == periods[i_periods])])
-                    Output_V_Capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                    capacity_period = (output_built_capacity[(output_built_capacity['scenario'] == scenario) &
+                                                                    (output_built_capacity['vintage'] == periods[i_periods])])
+                    output_built_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
                     if float(sum(capacity_period.capacity)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_V_Capacity_DF = Output_V_Capacity_DF.append(Output_V_Capacity_dict, ignore_index=True)
+                    output_built_capacity_df = output_built_capacity_df.append(output_built_capacity_dict, ignore_index=True)
                 
-                Output_V_Capacity_DF = Output_V_Capacity_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_built_capacity_df = output_built_capacity_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_V_Capacity_DF = Output_V_Capacity_DF.loc[:, (Output_V_Capacity_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_V_Capacity_MERGE = pd.concat([Output_V_Capacity_MERGE, Output_V_Capacity_DF])
+            output_built_capacity_df = output_built_capacity_df.loc[:, (output_built_capacity_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_built_capacity_merge = pd.concat([output_built_capacity_merge, output_built_capacity_df])
 
-    # Output_CostInvest
+    # output_retired_capacity
 
-    if result_set["Output_CostInvest"]:
+    if result_set["output_retired_capacity"]:
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("WARNING: No Output_CostInvest found.")
-            result_set["Output_CostInvest"] = False
+            print("WARNING: No output_retired_capacity found.")
+            result_set["output_retired_capacity"] = False
 
         else:
             # Data reading
             if not regions and tech:
                 conn = sqlite3.connect(file)
-                Output_CostInvest = pd.read_sql("select * from Output_Costs where (" +
+                output_retired_capacity = pd.read_sql("select * from output_retired_capacity where (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostInvest = Output_CostInvest[(Output_CostInvest['output_name'] == 'V_DiscountedInvestmentByProcess')]
 
             elif regions and not tech:
                 conn = sqlite3.connect(file)
-                Output_CostInvest = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ")", conn)
+                output_retired_capacity = pd.read_sql("select * from output_retired_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
                 conn.close()
-                Output_CostInvest = Output_CostInvest[(Output_CostInvest['output_name'] == 'V_DiscountedInvestmentByProcess')]
 
             else:
                 conn = sqlite3.connect(file)
-                Output_CostInvest = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_retired_capacity = pd.read_sql("select * from output_retired_capacity where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostInvest = Output_CostInvest[(Output_CostInvest['output_name'] == 'V_DiscountedInvestmentByProcess')]
 
-            regions = list(Output_CostInvest.regions)
+            output_retired_capacity['capacity'] = (output_retired_capacity['cap_eol'].fillna(0) + output_retired_capacity['cap_early'].fillna(0))
+            
+            regions = list(output_retired_capacity.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_CostInvest.tech)
+            tech = list(output_retired_capacity.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
 
             # Data aggregation
-            if disaggregation["regions"] and disaggregation["cost_tech"]:
+            if disaggregation["regions"] and disaggregation["retired_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostInvest_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_CostInvest_dict.update(dict.fromkeys(periods, 0))
+                output_retired_capacity_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_retired_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostInvest_DF = pd.DataFrame(columns=columns_labels)
+                output_retired_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_CostInvest_dict['file'] = file
-                        Output_CostInvest_dict['scenario'] = scenario
-                        Output_CostInvest_dict['regions'] = regions[i_regions]
-                        Output_CostInvest_dict['tech'] = tech[i_tech]
+                        output_retired_capacity_dict['file'] = file
+                        output_retired_capacity_dict['scenario'] = scenario
+                        output_retired_capacity_dict['region'] = regions[i_regions]
+                        output_retired_capacity_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            output_cost_period = (Output_CostInvest[(Output_CostInvest['scenario'] == scenario) &
-                                                                        (Output_CostInvest['regions'] == regions[i_regions]) &
-                                                                        (Output_CostInvest['tech'] == tech[i_tech]) &
-                                                                        (Output_CostInvest['vintage'] == periods[i_periods])])
-                            Output_CostInvest_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                            if float(sum(output_cost_period.output_cost)) != 0:
+                            capacity_period = (output_retired_capacity[(output_retired_capacity['scenario'] == scenario) &
+                                                                        (output_retired_capacity['region'] == regions[i_regions]) &
+                                                                        (output_retired_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_retired_capacity['period'] == periods[i_periods])])
+                            output_retired_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                            if float(sum(capacity_period.capacity)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_CostInvest_DF = Output_CostInvest_DF.append(Output_CostInvest_dict, ignore_index=True)
+                            output_retired_capacity_df = output_retired_capacity_df.append(output_retired_capacity_dict, ignore_index=True)
 
-                Output_CostInvest_DF = Output_CostInvest_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_retired_capacity_df = output_retired_capacity_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
-            elif disaggregation["regions"] and not disaggregation["cost_tech"]:
+            elif disaggregation["regions"] and not disaggregation["retired_capacity_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostInvest_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_CostInvest_dict.update(dict.fromkeys(periods, 0))
+                output_retired_capacity_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_retired_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostInvest_DF = pd.DataFrame(columns=columns_labels)
+                output_retired_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_CostInvest_dict['file'] = file
-                    Output_CostInvest_dict['scenario'] = scenario
-                    Output_CostInvest_dict['regions'] = regions[i_regions]
+                    output_retired_capacity_dict['file'] = file
+                    output_retired_capacity_dict['scenario'] = scenario
+                    output_retired_capacity_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostInvest[(Output_CostInvest['scenario'] == scenario) &
-                                                                        (Output_CostInvest['regions'] == regions[i_regions]) &
-                                                                        (Output_CostInvest['vintage'] == periods[i_periods])])
-                        Output_CostInvest_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        capacity_period = (output_retired_capacity[(output_retired_capacity['scenario'] == scenario) &
+                                                                        (output_retired_capacity['region'] == regions[i_regions]) &
+                                                                        (output_retired_capacity['period'] == periods[i_periods])])
+                        output_retired_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostInvest_DF = Output_CostInvest_DF.append(Output_CostInvest_dict, ignore_index=True)
+                        output_retired_capacity_df = output_retired_capacity_df.append(output_retired_capacity_dict, ignore_index=True)
 
-                Output_CostInvest_DF = Output_CostInvest_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_retired_capacity_df = output_retired_capacity_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
-            elif not disaggregation["regions"] and disaggregation["cost_tech"]:
+            elif not disaggregation["regions"] and disaggregation["retired_capacity_tech"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostInvest_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_CostInvest_dict.update(dict.fromkeys(periods, 0))
+                output_retired_capacity_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_retired_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostInvest_DF = pd.DataFrame(columns=columns_labels)
+                output_retired_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_CostInvest_dict['file'] = file
-                    Output_CostInvest_dict['scenario'] = scenario
-                    Output_CostInvest_dict['tech'] = tech[i_tech]
+                    output_retired_capacity_dict['file'] = file
+                    output_retired_capacity_dict['scenario'] = scenario
+                    output_retired_capacity_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostInvest[(Output_CostInvest['scenario'] == scenario) &
-                                                                    (Output_CostInvest['tech'] == tech[i_tech]) &
-                                                                    (Output_CostInvest['vintage'] == periods[i_periods])])
-                        Output_CostInvest_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        capacity_period = (output_retired_capacity[(output_retired_capacity['scenario'] == scenario) &
+                                                                        (output_retired_capacity['tech'] == tech[i_tech]) &
+                                                                        (output_retired_capacity['period'] == periods[i_periods])])
+                        output_retired_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                        if float(sum(capacity_period.capacity)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostInvest_DF = Output_CostInvest_DF.append(Output_CostInvest_dict, ignore_index=True)
+                        output_retired_capacity_df = output_retired_capacity_df.append(output_retired_capacity_dict, ignore_index=True)
 
-                Output_CostInvest_DF = Output_CostInvest_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_retired_capacity_df = output_retired_capacity_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostInvest_dict = {'file': '', 'scenario': ''}
-                Output_CostInvest_dict.update(dict.fromkeys(periods, 0))
+                output_retired_capacity_dict = {'file': '', 'scenario': ''}
+                output_retired_capacity_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostInvest_DF = pd.DataFrame(columns=columns_labels)
+                output_retired_capacity_df = pd.DataFrame(columns=columns_labels)
 
                 check_zeros = True
 
-                Output_CostInvest_dict['file'] = file
-                Output_CostInvest_dict['scenario'] = scenario
+                output_retired_capacity_dict['file'] = file
+                output_retired_capacity_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    output_cost_period = (Output_CostInvest[(Output_CostInvest['scenario'] == scenario) &
-                                                                    (Output_CostInvest['vintage'] == periods[i_periods])])
-                    Output_CostInvest_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                    if float(sum(output_cost_period.output_cost)) != 0:
+                    capacity_period = (output_retired_capacity[(output_retired_capacity['scenario'] == scenario) &
+                                                                    (output_retired_capacity['period'] == periods[i_periods])])
+                    output_retired_capacity_dict[periods[i_periods]] = float(sum(capacity_period.capacity))
+                    if float(sum(capacity_period.capacity)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_CostInvest_DF = Output_CostInvest_DF.append(Output_CostInvest_dict, ignore_index=True)
+                    output_retired_capacity_df = output_retired_capacity_df.append(output_retired_capacity_dict, ignore_index=True)
                 
-                Output_CostInvest_DF = Output_CostInvest_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_retired_capacity_df = output_retired_capacity_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_CostInvest_DF = Output_CostInvest_DF.loc[:, (Output_CostInvest_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_CostInvest_MERGE = pd.concat([Output_CostInvest_MERGE, Output_CostInvest_DF])
+            output_retired_capacity_df = output_retired_capacity_df.loc[:, (output_retired_capacity_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_retired_capacity_merge = pd.concat([output_retired_capacity_merge, output_retired_capacity_df])
 
-    # Output_CostFixed
+    # output_cost_invest
 
-    if result_set["Output_CostFixed"]:
+    if result_set["output_cost_invest"]:
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("WARNING: No Output_CostFixed found.")
-            result_set["Output_CostFixed"] = False
+            print("WARNING: No output_cost_invest found.")
+            result_set["output_cost_invest"] = False
 
         else:
             # Data reading
             if not regions and tech:
                 conn = sqlite3.connect(file)
-                Output_CostFixed = pd.read_sql("select * from Output_Costs where (" +
+                output_cost_invest = pd.read_sql("select * from output_cost where (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostFixed = Output_CostFixed[(Output_CostFixed['output_name'] == 'V_DiscountedFixedCostsByProcess')]
+                output_cost_invest = output_cost_invest[output_cost_invest['d_invest'].notna()]
 
             elif regions and not tech:
                 conn = sqlite3.connect(file)
-                Output_CostFixed = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ")", conn)
+                output_cost_invest = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
                 conn.close()
-                Output_CostFixed = Output_CostFixed[(Output_CostFixed['output_name'] == 'V_DiscountedFixedCostsByProcess')]
+                output_cost_invest = output_cost_invest[output_cost_invest['d_invest'].notna()]
 
             else:
                 conn = sqlite3.connect(file)
-                Output_CostFixed = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_cost_invest = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostFixed = Output_CostFixed[(Output_CostFixed['output_name'] == 'V_DiscountedFixedCostsByProcess')]
+                output_cost_invest = output_cost_invest[output_cost_invest['d_invest'].notna()]
 
-            regions = list(Output_CostFixed.regions)
+            regions = list(output_cost_invest.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_CostFixed.tech)
+            tech = list(output_cost_invest.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
 
             # Data aggregation
             if disaggregation["regions"] and disaggregation["cost_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostFixed_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_CostFixed_dict.update(dict.fromkeys(periods, 0))
+                output_cost_invest_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_cost_invest_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostFixed_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_invest_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_CostFixed_dict['file'] = file
-                        Output_CostFixed_dict['scenario'] = scenario
-                        Output_CostFixed_dict['regions'] = regions[i_regions]
-                        Output_CostFixed_dict['tech'] = tech[i_tech]
+                        output_cost_invest_dict['file'] = file
+                        output_cost_invest_dict['scenario'] = scenario
+                        output_cost_invest_dict['region'] = regions[i_regions]
+                        output_cost_invest_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            output_cost_period = (Output_CostFixed[(Output_CostFixed['scenario'] == scenario) &
-                                                                        (Output_CostFixed['regions'] == regions[i_regions]) &
-                                                                        (Output_CostFixed['tech'] == tech[i_tech]) &
-                                                                        (Output_CostFixed['vintage'] == periods[i_periods])])
-                            Output_CostFixed_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                            if float(sum(output_cost_period.output_cost)) != 0:
+                            output_cost_period = (output_cost_invest[(output_cost_invest['scenario'] == scenario) &
+                                                                        (output_cost_invest['region'] == regions[i_regions]) &
+                                                                        (output_cost_invest['tech'] == tech[i_tech]) &
+                                                                        (output_cost_invest['vintage'] == periods[i_periods])])
+                            output_cost_invest_dict[periods[i_periods]] = float(sum(output_cost_period.d_invest))
+                            if float(sum(output_cost_period.d_invest)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_CostFixed_DF = Output_CostFixed_DF.append(Output_CostFixed_dict, ignore_index=True)
+                            output_cost_invest_df = output_cost_invest_df.append(output_cost_invest_dict, ignore_index=True)
 
-                Output_CostFixed_DF = Output_CostFixed_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_cost_invest_df = output_cost_invest_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["cost_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostFixed_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_CostFixed_dict.update(dict.fromkeys(periods, 0))
+                output_cost_invest_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_cost_invest_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostFixed_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_invest_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_CostFixed_dict['file'] = file
-                    Output_CostFixed_dict['scenario'] = scenario
-                    Output_CostFixed_dict['regions'] = regions[i_regions]
+                    output_cost_invest_dict['file'] = file
+                    output_cost_invest_dict['scenario'] = scenario
+                    output_cost_invest_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostFixed[(Output_CostFixed['scenario'] == scenario) &
-                                                                    (Output_CostFixed['regions'] == regions[i_regions]) &
-                                                                    (Output_CostFixed['vintage'] == periods[i_periods])])
-                        Output_CostFixed_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        output_cost_period = (output_cost_invest[(output_cost_invest['scenario'] == scenario) &
+                                                                        (output_cost_invest['region'] == regions[i_regions]) &
+                                                                        (output_cost_invest['vintage'] == periods[i_periods])])
+                        output_cost_invest_dict[periods[i_periods]] = float(sum(output_cost_period.d_invest))
+                        if float(sum(output_cost_period.d_invest)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostFixed_DF = Output_CostFixed_DF.append(Output_CostFixed_dict, ignore_index=True)
+                        output_cost_invest_df = output_cost_invest_df.append(output_cost_invest_dict, ignore_index=True)
 
-                Output_CostFixed_DF = Output_CostFixed_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_cost_invest_df = output_cost_invest_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
             elif not disaggregation["regions"] and disaggregation["cost_tech"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostFixed_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_CostFixed_dict.update(dict.fromkeys(periods, 0))
+                output_cost_invest_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_cost_invest_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostFixed_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_invest_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_CostFixed_dict['file'] = file
-                    Output_CostFixed_dict['scenario'] = scenario
-                    Output_CostFixed_dict['tech'] = tech[i_tech]
+                    output_cost_invest_dict['file'] = file
+                    output_cost_invest_dict['scenario'] = scenario
+                    output_cost_invest_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostFixed[(Output_CostFixed['scenario'] == scenario) &
-                                                                    (Output_CostFixed['tech'] == tech[i_tech]) &
-                                                                    (Output_CostFixed['vintage'] == periods[i_periods])])
-                        Output_CostFixed_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        output_cost_period = (output_cost_invest[(output_cost_invest['scenario'] == scenario) &
+                                                                    (output_cost_invest['tech'] == tech[i_tech]) &
+                                                                    (output_cost_invest['vintage'] == periods[i_periods])])
+                        output_cost_invest_dict[periods[i_periods]] = float(sum(output_cost_period.d_invest))
+                        if float(sum(output_cost_period.d_invest)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostFixed_DF = Output_CostFixed_DF.append(Output_CostFixed_dict, ignore_index=True)
+                        output_cost_invest_df = output_cost_invest_df.append(output_cost_invest_dict, ignore_index=True)
 
-                Output_CostFixed_DF = Output_CostFixed_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_cost_invest_df = output_cost_invest_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostFixed_dict = {'file': '', 'scenario': ''}
-                Output_CostFixed_dict.update(dict.fromkeys(periods, 0))
+                output_cost_invest_dict = {'file': '', 'scenario': ''}
+                output_cost_invest_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostFixed_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_invest_df = pd.DataFrame(columns=columns_labels)
 
                 check_zeros = True
 
-                Output_CostFixed_dict['file'] = file
-                Output_CostFixed_dict['scenario'] = scenario
+                output_cost_invest_dict['file'] = file
+                output_cost_invest_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    output_cost_period = (Output_CostFixed[(Output_CostFixed['scenario'] == scenario) &
-                                                                    (Output_CostFixed['vintage'] == periods[i_periods])])
-                    Output_CostFixed_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                    if float(sum(output_cost_period.output_cost)) != 0:
+                    output_cost_period = (output_cost_invest[(output_cost_invest['scenario'] == scenario) &
+                                                                    (output_cost_invest['vintage'] == periods[i_periods])])
+                    output_cost_invest_dict[periods[i_periods]] = float(sum(output_cost_period.d_invest))
+                    if float(sum(output_cost_period.d_invest)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_CostFixed_DF = Output_CostFixed_DF.append(Output_CostFixed_dict, ignore_index=True)
+                    output_cost_invest_df = output_cost_invest_df.append(output_cost_invest_dict, ignore_index=True)
                 
-                Output_CostFixed_DF = Output_CostFixed_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_cost_invest_df = output_cost_invest_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_CostFixed_DF = Output_CostFixed_DF.loc[:, (Output_CostFixed_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_CostFixed_MERGE = pd.concat([Output_CostFixed_MERGE, Output_CostFixed_DF])
+            output_cost_invest_df = output_cost_invest_df.loc[:, (output_cost_invest_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_cost_invest_merge = pd.concat([output_cost_invest_merge, output_cost_invest_df])
 
+    # output_cost_fixed
 
-    # Output_CostVariable
-
-    if result_set["Output_CostVariable"]:
+    if result_set["output_cost_fixed"]:
         regions = regions_list
         tech = tech_list
         if not tech:
-            print("WARNING: No Output_CostVariable found.")
-            result_set["Output_CostVariable"] = False
+            print("WARNING: No output_cost_fixed found.")
+            result_set["output_cost_fixed"] = False
 
         else:
             # Data reading
             if not regions and tech:
                 conn = sqlite3.connect(file)
-                Output_CostVariable = pd.read_sql("select * from Output_Costs where (" +
+                output_cost_fixed = pd.read_sql("select * from output_cost where (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostVariable = Output_CostVariable[(Output_CostVariable['output_name'] == 'V_DiscountedVariableCostsByProcess')]
+                output_cost_fixed = output_cost_fixed[output_cost_fixed['d_fixed'].notna()]
 
             elif regions and not tech:
                 conn = sqlite3.connect(file)
-                Output_CostVariable = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ")", conn)
+                output_cost_fixed = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
                 conn.close()
-                Output_CostVariable = Output_CostVariable[(Output_CostVariable['output_name'] == 'V_DiscountedVariableCostsByProcess')]
+                output_cost_fixed = output_cost_fixed[output_cost_fixed['d_fixed'].notna()]
 
             else:
                 conn = sqlite3.connect(file)
-                Output_CostVariable = pd.read_sql("select * from Output_Costs where (" +
-                                                " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_cost_fixed = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                                 " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
-                Output_CostVariable = Output_CostVariable[(Output_CostVariable['output_name'] == 'V_DiscountedVariableCostsByProcess')]
+                output_cost_fixed = output_cost_fixed[output_cost_fixed['d_fixed'].notna()]
 
-            regions = list(Output_CostVariable.regions)
+            regions = list(output_cost_fixed.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_CostVariable.tech)
+            tech = list(output_cost_fixed.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
 
             # Data aggregation
             if disaggregation["regions"] and disaggregation["cost_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostVariable_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_CostVariable_dict.update(dict.fromkeys(periods, 0))
+                output_cost_fixed_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_cost_fixed_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostVariable_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_fixed_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_CostVariable_dict['file'] = file
-                        Output_CostVariable_dict['scenario'] = scenario
-                        Output_CostVariable_dict['regions'] = regions[i_regions]
-                        Output_CostVariable_dict['tech'] = tech[i_tech]
+                        output_cost_fixed_dict['file'] = file
+                        output_cost_fixed_dict['scenario'] = scenario
+                        output_cost_fixed_dict['region'] = regions[i_regions]
+                        output_cost_fixed_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            output_cost_period = (Output_CostVariable[(Output_CostVariable['scenario'] == scenario) &
-                                                                        (Output_CostVariable['regions'] == regions[i_regions]) &
-                                                                        (Output_CostVariable['tech'] == tech[i_tech]) &
-                                                                        (Output_CostVariable['vintage'] == periods[i_periods])])
-                            Output_CostVariable_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                            if float(sum(output_cost_period.output_cost)) != 0:
+                            output_cost_period = (output_cost_fixed[(output_cost_fixed['scenario'] == scenario) &
+                                                                        (output_cost_fixed['region'] == regions[i_regions]) &
+                                                                        (output_cost_fixed['tech'] == tech[i_tech]) &
+                                                                        (output_cost_fixed['period'] == periods[i_periods])])
+                            output_cost_fixed_dict[periods[i_periods]] = float(sum(output_cost_period.d_fixed))
+                            if float(sum(output_cost_period.d_fixed)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_CostVariable_DF = Output_CostVariable_DF.append(Output_CostVariable_dict, ignore_index=True)
+                            output_cost_fixed_df = output_cost_fixed_df.append(output_cost_fixed_dict, ignore_index=True)
 
-                Output_CostVariable_DF = Output_CostVariable_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_cost_fixed_df = output_cost_fixed_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["cost_tech"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostVariable_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_CostVariable_dict.update(dict.fromkeys(periods, 0))
+                output_cost_fixed_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_cost_fixed_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostVariable_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_fixed_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_CostVariable_dict['file'] = file
-                    Output_CostVariable_dict['scenario'] = scenario
-                    Output_CostVariable_dict['regions'] = regions[i_regions]
+                    output_cost_fixed_dict['file'] = file
+                    output_cost_fixed_dict['scenario'] = scenario
+                    output_cost_fixed_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostVariable[(Output_CostVariable['scenario'] == scenario) &
-                                                                    (Output_CostVariable['regions'] == regions[i_regions]) &
-                                                                    (Output_CostVariable['vintage'] == periods[i_periods])])
-                        Output_CostVariable_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        output_cost_period = (output_cost_fixed[(output_cost_fixed['scenario'] == scenario) &
+                                                                    (output_cost_fixed['region'] == regions[i_regions]) &
+                                                                    (output_cost_fixed['period'] == periods[i_periods])])
+                        output_cost_fixed_dict[periods[i_periods]] = float(sum(output_cost_period.d_fixed))
+                        if float(sum(output_cost_period.d_fixed)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostVariable_DF = Output_CostVariable_DF.append(Output_CostVariable_dict, ignore_index=True)
+                        output_cost_fixed_df = output_cost_fixed_df.append(output_cost_fixed_dict, ignore_index=True)
 
-                Output_CostVariable_DF = Output_CostVariable_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_cost_fixed_df = output_cost_fixed_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
             elif not disaggregation["regions"] and disaggregation["cost_tech"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostVariable_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_CostVariable_dict.update(dict.fromkeys(periods, 0))
+                output_cost_fixed_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_cost_fixed_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostVariable_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_fixed_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_CostVariable_dict['file'] = file
-                    Output_CostVariable_dict['scenario'] = scenario
-                    Output_CostVariable_dict['tech'] = tech[i_tech]
+                    output_cost_fixed_dict['file'] = file
+                    output_cost_fixed_dict['scenario'] = scenario
+                    output_cost_fixed_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        output_cost_period = (Output_CostVariable[(Output_CostVariable['scenario'] == scenario) &
-                                                                    (Output_CostVariable['tech'] == tech[i_tech]) &
-                                                                    (Output_CostVariable['vintage'] == periods[i_periods])])
-                        Output_CostVariable_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                        if float(sum(output_cost_period.output_cost)) != 0:
+                        output_cost_period = (output_cost_fixed[(output_cost_fixed['scenario'] == scenario) &
+                                                                    (output_cost_fixed['tech'] == tech[i_tech]) &
+                                                                    (output_cost_fixed['period'] == periods[i_periods])])
+                        output_cost_fixed_dict[periods[i_periods]] = float(sum(output_cost_period.d_fixed))
+                        if float(sum(output_cost_period.d_fixed)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_CostVariable_DF = Output_CostVariable_DF.append(Output_CostVariable_dict, ignore_index=True)
+                        output_cost_fixed_df = output_cost_fixed_df.append(output_cost_fixed_dict, ignore_index=True)
 
-                Output_CostVariable_DF = Output_CostVariable_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_cost_fixed_df = output_cost_fixed_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_CostVariable_dict = {'file': '', 'scenario': ''}
-                Output_CostVariable_dict.update(dict.fromkeys(periods, 0))
+                output_cost_fixed_dict = {'file': '', 'scenario': ''}
+                output_cost_fixed_dict.update(dict.fromkeys(periods, 0))
 
-                Output_CostVariable_DF = pd.DataFrame(columns=columns_labels)
+                output_cost_fixed_df = pd.DataFrame(columns=columns_labels)
 
                 check_zeros = True
 
-                Output_CostVariable_dict['file'] = file
-                Output_CostVariable_dict['scenario'] = scenario
+                output_cost_fixed_dict['file'] = file
+                output_cost_fixed_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    output_cost_period = (Output_CostVariable[(Output_CostVariable['scenario'] == scenario) &
-                                                                    (Output_CostVariable['vintage'] == periods[i_periods])])
-                    Output_CostVariable_dict[periods[i_periods]] = float(sum(output_cost_period.output_cost))
-                    if float(sum(output_cost_period.output_cost)) != 0:
+                    output_cost_period = (output_cost_fixed[(output_cost_fixed['scenario'] == scenario) &
+                                                                    (output_cost_fixed['period'] == periods[i_periods])])
+                    output_cost_fixed_dict[periods[i_periods]] = float(sum(output_cost_period.d_fixed))
+                    if float(sum(output_cost_period.d_fixed)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_CostVariable_DF = Output_CostVariable_DF.append(Output_CostVariable_dict, ignore_index=True)
+                    output_cost_fixed_df = output_cost_fixed_df.append(output_cost_fixed_dict, ignore_index=True)
                 
-                Output_CostVariable_DF = Output_CostVariable_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_cost_fixed_df = output_cost_fixed_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_CostVariable_DF = Output_CostVariable_DF.loc[:, (Output_CostVariable_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_CostVariable_MERGE = pd.concat([Output_CostVariable_MERGE, Output_CostVariable_DF])
+            output_cost_fixed_df = output_cost_fixed_df.loc[:, (output_cost_fixed_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_cost_fixed_merge = pd.concat([output_cost_fixed_merge, output_cost_fixed_df])
 
-    # Output_VFlow_In
 
-    if result_set["Output_VFlow_In"]:
+    # output_cost_variable
+
+    if result_set["output_cost_variable"]:
+        regions = regions_list
+        tech = tech_list
+        if not tech:
+            print("WARNING: No output_cost_variable found.")
+            result_set["output_cost_variable"] = False
+
+        else:
+            # Data reading
+            if not regions and tech:
+                conn = sqlite3.connect(file)
+                output_cost_variable = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                conn.close()
+                output_cost_variable = output_cost_variable[output_cost_variable['d_var'].notna()]
+
+            elif regions and not tech:
+                conn = sqlite3.connect(file)
+                output_cost_variable = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ")", conn)
+                conn.close()
+                output_cost_variable = output_cost_variable[output_cost_variable['d_var'].notna()]
+
+            else:
+                conn = sqlite3.connect(file)
+                output_cost_variable = pd.read_sql("select * from output_cost where (" +
+                                                " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
+                                                " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
+                conn.close()
+                output_cost_variable = output_cost_variable[output_cost_variable['d_var'].notna()]
+
+            regions = list(output_cost_variable.region)
+            regions = list(dict.fromkeys(regions))  # To remove duplicates
+            tech = list(output_cost_variable.tech)
+            tech = list(dict.fromkeys(tech))  # To remove duplicates
+
+            # Data aggregation
+            if disaggregation["regions"] and disaggregation["cost_tech"]:
+
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
+                columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
+
+                output_cost_variable_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_cost_variable_dict.update(dict.fromkeys(periods, 0))
+
+                output_cost_variable_df = pd.DataFrame(columns=columns_labels)
+
+                for i_regions in range(0, len(regions)):
+                    for i_tech in range(0, len(tech)):
+                        output_cost_variable_dict['file'] = file
+                        output_cost_variable_dict['scenario'] = scenario
+                        output_cost_variable_dict['region'] = regions[i_regions]
+                        output_cost_variable_dict['tech'] = tech[i_tech]
+                        check_zeros = True
+                        for i_periods in range(0, len(periods)):
+                            output_cost_period = (output_cost_variable[(output_cost_variable['scenario'] == scenario) &
+                                                                        (output_cost_variable['region'] == regions[i_regions]) &
+                                                                        (output_cost_variable['tech'] == tech[i_tech]) &
+                                                                        (output_cost_variable['period'] == periods[i_periods])])
+                            output_cost_variable_dict[periods[i_periods]] = float(sum(output_cost_period.d_var))
+                            if float(sum(output_cost_period.d_var)) != 0:
+                                check_zeros = False
+                        if not check_zeros:
+                            output_cost_variable_df = output_cost_variable_df.append(output_cost_variable_dict, ignore_index=True)
+
+                output_cost_variable_df = output_cost_variable_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
+
+            elif disaggregation["regions"] and not disaggregation["cost_tech"]:
+
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
+                columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
+
+                output_cost_variable_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_cost_variable_dict.update(dict.fromkeys(periods, 0))
+
+                output_cost_variable_df = pd.DataFrame(columns=columns_labels)
+
+                for i_regions in range(0, len(regions)):
+                    output_cost_variable_dict['file'] = file
+                    output_cost_variable_dict['scenario'] = scenario
+                    output_cost_variable_dict['region'] = regions[i_regions]
+                    check_zeros = True
+                    for i_periods in range(0, len(periods)):
+                        output_cost_period = (output_cost_variable[(output_cost_variable['scenario'] == scenario) &
+                                                                    (output_cost_variable['region'] == regions[i_regions]) &
+                                                                    (output_cost_variable['period'] == periods[i_periods])])
+                        output_cost_variable_dict[periods[i_periods]] = float(sum(output_cost_period.d_var))
+                        if float(sum(output_cost_period.d_var)) != 0:
+                            check_zeros = False
+                    if not check_zeros:
+                        output_cost_variable_df = output_cost_variable_df.append(output_cost_variable_dict, ignore_index=True)
+
+                output_cost_variable_df = output_cost_variable_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
+
+            elif not disaggregation["regions"] and disaggregation["cost_tech"]:
+
+                columns_labels = pd.Series(['file', 'scenario', 'tech'])
+                columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
+
+                output_cost_variable_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_cost_variable_dict.update(dict.fromkeys(periods, 0))
+
+                output_cost_variable_df = pd.DataFrame(columns=columns_labels)
+
+                for i_tech in range(0, len(tech)):
+                    output_cost_variable_dict['file'] = file
+                    output_cost_variable_dict['scenario'] = scenario
+                    output_cost_variable_dict['tech'] = tech[i_tech]
+                    check_zeros = True
+                    for i_periods in range(0, len(periods)):
+                        output_cost_period = (output_cost_variable[(output_cost_variable['scenario'] == scenario) &
+                                                                    (output_cost_variable['tech'] == tech[i_tech]) &
+                                                                    (output_cost_variable['period'] == periods[i_periods])])
+                        output_cost_variable_dict[periods[i_periods]] = float(sum(output_cost_period.d_var))
+                        if float(sum(output_cost_period.d_var)) != 0:
+                            check_zeros = False
+                    if not check_zeros:
+                        output_cost_variable_df = output_cost_variable_df.append(output_cost_variable_dict, ignore_index=True)
+
+                output_cost_variable_df = output_cost_variable_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+
+            else:
+
+                columns_labels = pd.Series(['file', 'scenario'])
+                columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
+
+                output_cost_variable_dict = {'file': '', 'scenario': ''}
+                output_cost_variable_dict.update(dict.fromkeys(periods, 0))
+
+                output_cost_variable_df = pd.DataFrame(columns=columns_labels)
+
+                check_zeros = True
+
+                output_cost_variable_dict['file'] = file
+                output_cost_variable_dict['scenario'] = scenario
+                check_zeros = True
+                for i_periods in range(0, len(periods)):
+                    output_cost_period = (output_cost_variable[(output_cost_variable['scenario'] == scenario) &
+                                                                    (output_cost_variable['period'] == periods[i_periods])])
+                    output_cost_variable_dict[periods[i_periods]] = float(sum(output_cost_period.d_var))
+                    if float(sum(output_cost_period.d_var)) != 0:
+                        check_zeros = False
+                if not check_zeros:
+                    output_cost_variable_df = output_cost_variable_df.append(output_cost_variable_dict, ignore_index=True)
+                
+                output_cost_variable_df = output_cost_variable_df.sort_values(by=['file', 'scenario'], ignore_index=True)
+
+            output_cost_variable_df = output_cost_variable_df.loc[:, (output_cost_variable_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_cost_variable_merge = pd.concat([output_cost_variable_merge, output_cost_variable_df])
+
+    # output_flow_in
+
+    if result_set["output_flow_in"]:
         regions = regions_list
         tech = tech_list
         input_comm = input_comm_list
         if not tech and not input_comm:
-            print("WARNING: No Output_VFlow_In found.")
-            result_set["Output_VFlow_In"] = False
+            print("WARNING: No output_flow_in found.")
+            result_set["output_flow_in"] = False
         
         else:
             # Data reading
             if not regions and tech and not input_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
             
             elif not regions and not tech and input_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
                                             " or ".join((" input_comm = '" + str(n) + "'" for n in input_comm)) + ")", conn)
                 conn.close()
 
             elif not regions and tech and input_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
                                             " or ".join((" input_comm = '" + str(n) + "'" for n in input_comm)) + ")", conn)
                 conn.close()
 
             elif regions and tech and not input_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
             elif regions and not tech and input_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" input_comm = '" + str(n) + "'" for n in input_comm)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_VFlow_In = pd.read_sql("select * from Output_VFlow_In where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_in = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
                                             " or ".join((" input_comm = '" + str(n) + "'" for n in input_comm)) + ")", conn)
                 conn.close()
 
-            regions = list(Output_VFlow_In.regions)
+            # Excluding rows with empty output_comm (construction inputs)
+            output_flow_in = output_flow_in[output_flow_in['output_comm'].notna()].reset_index(drop=True)
+
+            regions = list(output_flow_in.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_VFlow_In.tech)
+            tech = list(output_flow_in.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
-            input_comm = list(Output_VFlow_In.input_comm)
+            input_comm = list(output_flow_in.input_comm)
             input_comm = list(dict.fromkeys(input_comm))  # To remove duplicates
 
             # Data aggregation
             if disaggregation["regions"] and disaggregation["input_tech"] and disaggregation["input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech', 'input_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech', 'input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': '', 'input_comm': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'region': '', 'tech': '', 'input_comm': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
                         for i_input_comm in range(0, len(input_comm)):
-                            Output_VFlow_In_dict['file'] = file
-                            Output_VFlow_In_dict['scenario'] = scenario
-                            Output_VFlow_In_dict['regions'] = regions[i_regions]
-                            Output_VFlow_In_dict['tech'] = tech[i_tech]
-                            Output_VFlow_In_dict['input_comm'] = input_comm[i_input_comm]
+                            output_flow_in_dict['file'] = file
+                            output_flow_in_dict['scenario'] = scenario
+                            output_flow_in_dict['region'] = regions[i_regions]
+                            output_flow_in_dict['tech'] = tech[i_tech]
+                            output_flow_in_dict['input_comm'] = input_comm[i_input_comm]
                             check_zeros = True
                             for i_periods in range(0, len(periods)):
-                                vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                                (Output_VFlow_In['regions'] == regions[i_regions]) &
-                                                                (Output_VFlow_In['tech'] == tech[i_tech]) &
-                                                                (Output_VFlow_In['input_comm'] == input_comm[i_input_comm]) &
-                                                                (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                                Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                                if float(sum(vflow_in_period.vflow_in)) != 0:
+                                vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                                (output_flow_in['region'] == regions[i_regions]) &
+                                                                (output_flow_in['tech'] == tech[i_tech]) &
+                                                                (output_flow_in['input_comm'] == input_comm[i_input_comm]) &
+                                                                (output_flow_in['period'] == periods[i_periods])]
+                                output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                                if float(sum(vflow_in_period.flow)) != 0:
                                     check_zeros = False
                             if not check_zeros:
-                                Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                                output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'input_comm'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'region', 'tech', 'input_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and disaggregation["input_tech"] and not disaggregation["input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_VFlow_In_dict['file'] = file
-                        Output_VFlow_In_dict['scenario'] = scenario
-                        Output_VFlow_In_dict['regions'] = regions[i_regions]
-                        Output_VFlow_In_dict['tech'] = tech[i_tech]
+                        output_flow_in_dict['file'] = file
+                        output_flow_in_dict['scenario'] = scenario
+                        output_flow_in_dict['region'] = regions[i_regions]
+                        output_flow_in_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                            (Output_VFlow_In['regions'] == regions[i_regions]) &
-                                                            (Output_VFlow_In['tech'] == tech[i_tech]) &
-                                                            (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                            Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                            if float(sum(vflow_in_period.vflow_in)) != 0:
+                            vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                            (output_flow_in['region'] == regions[i_regions]) &
+                                                            (output_flow_in['tech'] == tech[i_tech]) &
+                                                            (output_flow_in['period'] == periods[i_periods])]
+                            output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                            if float(sum(vflow_in_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                            output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["input_tech"] and disaggregation["input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'input_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regions': '', 'input_comm': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'region': '', 'input_comm': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_input_comm in range(0, len(input_comm)):
-                        Output_VFlow_In_dict['file'] = file
-                        Output_VFlow_In_dict['scenario'] = scenario
-                        Output_VFlow_In_dict['regions'] = regions[i_regions]
-                        Output_VFlow_In_dict['input_comm'] = input_comm[i_input_comm]
+                        output_flow_in_dict['file'] = file
+                        output_flow_in_dict['scenario'] = scenario
+                        output_flow_in_dict['region'] = regions[i_regions]
+                        output_flow_in_dict['input_comm'] = input_comm[i_input_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                            (Output_VFlow_In['regions'] == regions[i_regions]) &
-                                                            (Output_VFlow_In['input_comm'] == input_comm[i_input_comm]) &
-                                                            (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                            Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                            if float(sum(vflow_in_period.vflow_in)) != 0:
+                            vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                            (output_flow_in['region'] == regions[i_regions]) &
+                                                            (output_flow_in['input_comm'] == input_comm[i_input_comm]) &
+                                                            (output_flow_in['period'] == periods[i_periods])]
+                            output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                            if float(sum(vflow_in_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                            output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'regions', 'input_comm'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'region', 'input_comm'], ignore_index=True)
             
             elif not disaggregation["regions"] and disaggregation["input_tech"] and disaggregation["input_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech', 'input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'tech': '', 'input_comm': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'tech': '', 'input_comm': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
                     for i_input_comm in range(0, len(input_comm)):
-                        Output_VFlow_In_dict['file'] = file
-                        Output_VFlow_In_dict['scenario'] = scenario
-                        Output_VFlow_In_dict['tech'] = tech[i_tech]
-                        Output_VFlow_In_dict['input_comm'] = input_comm[i_input_comm]
+                        output_flow_in_dict['file'] = file
+                        output_flow_in_dict['scenario'] = scenario
+                        output_flow_in_dict['tech'] = tech[i_tech]
+                        output_flow_in_dict['input_comm'] = input_comm[i_input_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                            (Output_VFlow_In['tech'] == tech[i_tech]) &
-                                                            (Output_VFlow_In['input_comm'] == input_comm[i_input_comm]) &
-                                                            (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                            Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                            if float(sum(vflow_in_period.vflow_in)) != 0:
+                            vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                            (output_flow_in['tech'] == tech[i_tech]) &
+                                                            (output_flow_in['input_comm'] == input_comm[i_input_comm]) &
+                                                            (output_flow_in['period'] == periods[i_periods])]
+                            output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                            if float(sum(vflow_in_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                            output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'tech', 'input_comm'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'tech', 'input_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["input_tech"] and not disaggregation["input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_VFlow_In_dict['file'] = file
-                    Output_VFlow_In_dict['scenario'] = scenario
-                    Output_VFlow_In_dict['regions'] = regions[i_regions]
+                    output_flow_in_dict['file'] = file
+                    output_flow_in_dict['scenario'] = scenario
+                    output_flow_in_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                        (Output_VFlow_In['regions'] == tech[i_regions]) &
-                                                        (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                        Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                        if float(sum(vflow_in_period.vflow_in)) != 0:
+                        vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                        (output_flow_in['region'] == tech[i_regions]) &
+                                                        (output_flow_in['period'] == periods[i_periods])]
+                        output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                        if float(sum(vflow_in_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                        output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'regions'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'region'], ignore_index=True)
 
             elif not disaggregation["regions"] and disaggregation["input_tech"] and not disaggregation["input_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_VFlow_In_dict['file'] = file
-                    Output_VFlow_In_dict['scenario'] = scenario
-                    Output_VFlow_In_dict['tech'] = tech[i_tech]
+                    output_flow_in_dict['file'] = file
+                    output_flow_in_dict['scenario'] = scenario
+                    output_flow_in_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                        (Output_VFlow_In['tech'] == tech[i_tech]) &
-                                                        (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                        Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                        if float(sum(vflow_in_period.vflow_in)) != 0:
+                        vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                        (output_flow_in['tech'] == tech[i_tech]) &
+                                                        (output_flow_in['period'] == periods[i_periods])]
+                        output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                        if float(sum(vflow_in_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                        output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             elif not disaggregation["regions"] and not disaggregation["input_tech"] and disaggregation["input_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': '', 'input_comm': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': '', 'input_comm': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
                 for i_input_comm in range(0, len(input_comm)):
-                    Output_VFlow_In_dict['file'] = file
-                    Output_VFlow_In_dict['scenario'] = scenario
-                    Output_VFlow_In_dict['input_comm'] = input_comm[i_input_comm]
+                    output_flow_in_dict['file'] = file
+                    output_flow_in_dict['scenario'] = scenario
+                    output_flow_in_dict['input_comm'] = input_comm[i_input_comm]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                        (Output_VFlow_In['input_comm'] == input_comm[i_input_comm]) &
-                                                        (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                        Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                        if float(sum(vflow_in_period.vflow_in)) != 0:
+                        vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                        (output_flow_in['input_comm'] == input_comm[i_input_comm]) &
+                                                        (output_flow_in['period'] == periods[i_periods])]
+                        output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                        if float(sum(vflow_in_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                        output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario', 'input_comm'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario', 'input_comm'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_In_dict = {'file': '', 'scenario': ''}
-                Output_VFlow_In_dict.update(dict.fromkeys(periods, 0))
+                output_flow_in_dict = {'file': '', 'scenario': ''}
+                output_flow_in_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_In_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_in_df = pd.DataFrame(columns=columns_labels)
 
-                Output_VFlow_In_dict['file'] = file
-                Output_VFlow_In_dict['scenario'] = scenario
+                output_flow_in_dict['file'] = file
+                output_flow_in_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    vflow_in_period = Output_VFlow_In[(Output_VFlow_In['scenario'] == scenario) &
-                                                    (Output_VFlow_In['t_periods'] == periods[i_periods])]
-                    Output_VFlow_In_dict[periods[i_periods]] = float(sum(vflow_in_period.vflow_in))
-                    if float(sum(vflow_in_period.vflow_in)) != 0:
+                    vflow_in_period = output_flow_in[(output_flow_in['scenario'] == scenario) &
+                                                    (output_flow_in['period'] == periods[i_periods])]
+                    output_flow_in_dict[periods[i_periods]] = float(sum(vflow_in_period.flow))
+                    if float(sum(vflow_in_period.flow)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_VFlow_In_DF = Output_VFlow_In_DF.append(Output_VFlow_In_dict, ignore_index=True)
+                    output_flow_in_df = output_flow_in_df.append(output_flow_in_dict, ignore_index=True)
                 
-                Output_VFlow_In_DF = Output_VFlow_In_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_flow_in_df = output_flow_in_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_VFlow_In_DF = Output_VFlow_In_DF.loc[:, (Output_VFlow_In_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_VFlow_In_MERGE = pd.concat([Output_VFlow_In_MERGE, Output_VFlow_In_DF])
+            output_flow_in_df = output_flow_in_df.loc[:, (output_flow_in_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_flow_in_merge = pd.concat([output_flow_in_merge, output_flow_in_df])
 
-    # Output_VFlow_Out
+    # output_flow_out
 
-    if result_set["Output_VFlow_Out"]:
+    if result_set["output_flow_out"]:
         regions = regions_list
         tech = tech_list
         output_comm = output_comm_list
         if not tech and not output_comm:
-            print("WARNING: No Output_VFlow_Out found.")
-            result_set["Output_VFlow_Out"] = False
+            print("WARNING: No output_flow_out found.")
+            result_set["output_flow_out"] = False
         
         else:
             # Data reading
             if not regions and tech and not output_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
             
             elif not regions and not tech and output_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
                                             " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
                 conn.close()
 
             elif not regions and tech and output_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
                                             " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
                 conn.close()
 
             elif regions and tech and not output_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
             elif regions and not tech and output_comm:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_VFlow_Out = pd.read_sql("select * from Output_VFlow_Out where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_flow_out = pd.read_sql("select * from output_flow_out where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
                                             " or ".join((" output_comm = '" + str(n) + "'" for n in output_comm)) + ")", conn)
                 conn.close()
 
-            regions = list(Output_VFlow_Out.regions)
+            regions = list(output_flow_out.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_VFlow_Out.tech)
+            tech = list(output_flow_out.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
-            output_comm = list(Output_VFlow_Out.output_comm)
+            output_comm = list(output_flow_out.output_comm)
             output_comm = list(dict.fromkeys(output_comm))  # To remove duplicates
             
             # Data aggregation
             if disaggregation["regions"] and disaggregation["output_tech"] and disaggregation["output_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech', 'output_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech', 'output_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': '', 'output_comm': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'region': '', 'tech': '', 'output_comm': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
                         for i_output_comm in range(0, len(output_comm)):
-                            Output_VFlow_Out_dict['file'] = file
-                            Output_VFlow_Out_dict['scenario'] = scenario
-                            Output_VFlow_Out_dict['regions'] = regions[i_regions]
-                            Output_VFlow_Out_dict['tech'] = tech[i_tech]
-                            Output_VFlow_Out_dict['output_comm'] = output_comm[i_output_comm]
+                            output_flow_out_dict['file'] = file
+                            output_flow_out_dict['scenario'] = scenario
+                            output_flow_out_dict['region'] = regions[i_regions]
+                            output_flow_out_dict['tech'] = tech[i_tech]
+                            output_flow_out_dict['output_comm'] = output_comm[i_output_comm]
                             check_zeros = True
                             for i_periods in range(0, len(periods)):
-                                vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                                (Output_VFlow_Out['regions'] == regions[i_regions]) &
-                                                                (Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                                (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                                (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                                Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                                if float(sum(vflow_out_period.vflow_out)) != 0:
+                                vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                                (output_flow_out['region'] == regions[i_regions]) &
+                                                                (output_flow_out['tech'] == tech[i_tech]) &
+                                                                (output_flow_out['output_comm'] == output_comm[i_output_comm]) &
+                                                                (output_flow_out['period'] == periods[i_periods])]
+                                output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                                if float(sum(vflow_out_period.flow)) != 0:
                                     check_zeros = False
                             if not check_zeros:
-                                Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                                output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'output_comm'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'region', 'tech', 'output_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and disaggregation["output_tech"] and not disaggregation["output_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_VFlow_Out_dict['file'] = file
-                        Output_VFlow_Out_dict['scenario'] = scenario
-                        Output_VFlow_Out_dict['regions'] = regions[i_regions]
-                        Output_VFlow_Out_dict['tech'] = tech[i_tech]
+                        output_flow_out_dict['file'] = file
+                        output_flow_out_dict['scenario'] = scenario
+                        output_flow_out_dict['region'] = regions[i_regions]
+                        output_flow_out_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                            (Output_VFlow_Out['regions'] == regions[i_regions]) &
-                                                            (Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                            Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                            if float(sum(vflow_out_period.vflow_out)) != 0:
+                            vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                            (output_flow_out['region'] == regions[i_regions]) &
+                                                            (output_flow_out['tech'] == tech[i_tech]) &
+                                                            (output_flow_out['period'] == periods[i_periods])]
+                            output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                            if float(sum(vflow_out_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                            output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["output_tech"] and disaggregation["output_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'output_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'output_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'regions': '', 'output_comm': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'region': '', 'output_comm': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_output_comm in range(0, len(output_comm)):
-                        Output_VFlow_Out_dict['file'] = file
-                        Output_VFlow_Out_dict['scenario'] = scenario
-                        Output_VFlow_Out_dict['regions'] = regions[i_regions]
-                        Output_VFlow_Out_dict['output_comm'] = output_comm[i_output_comm]
+                        output_flow_out_dict['file'] = file
+                        output_flow_out_dict['scenario'] = scenario
+                        output_flow_out_dict['region'] = regions[i_regions]
+                        output_flow_out_dict['output_comm'] = output_comm[i_output_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                            (Output_VFlow_Out['regions'] == regions[i_regions]) &
-                                                            (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                            Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                            if float(sum(vflow_out_period.vflow_out)) != 0:
+                            vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                            (output_flow_out['region'] == regions[i_regions]) &
+                                                            (output_flow_out['output_comm'] == output_comm[i_output_comm]) &
+                                                            (output_flow_out['period'] == periods[i_periods])]
+                            output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                            if float(sum(vflow_out_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                            output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'regions', 'output_comm'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'region', 'output_comm'], ignore_index=True)
             
             elif not disaggregation["regions"] and disaggregation["output_tech"] and disaggregation["output_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech', 'output_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'tech': '', 'output_comm': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'tech': '', 'output_comm': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
                     for i_output_comm in range(0, len(output_comm)):
-                        Output_VFlow_Out_dict['file'] = file
-                        Output_VFlow_Out_dict['scenario'] = scenario
-                        Output_VFlow_Out_dict['tech'] = tech[i_tech]
-                        Output_VFlow_Out_dict['output_comm'] = output_comm[i_output_comm]
+                        output_flow_out_dict['file'] = file
+                        output_flow_out_dict['scenario'] = scenario
+                        output_flow_out_dict['tech'] = tech[i_tech]
+                        output_flow_out_dict['output_comm'] = output_comm[i_output_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                            (Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                            (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                            (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                            Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                            if float(sum(vflow_out_period.vflow_out)) != 0:
+                            vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                            (output_flow_out['tech'] == tech[i_tech]) &
+                                                            (output_flow_out['output_comm'] == output_comm[i_output_comm]) &
+                                                            (output_flow_out['period'] == periods[i_periods])]
+                            output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                            if float(sum(vflow_out_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                            output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'tech', 'output_comm'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'tech', 'output_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["output_tech"] and not disaggregation["output_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_VFlow_Out_dict['file'] = file
-                    Output_VFlow_Out_dict['scenario'] = scenario
-                    Output_VFlow_Out_dict['regions'] = regions[i_regions]
+                    output_flow_out_dict['file'] = file
+                    output_flow_out_dict['scenario'] = scenario
+                    output_flow_out_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                        (Output_VFlow_Out['regions'] == regions[i_regions]) &
-                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                        Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                        if float(sum(vflow_out_period.vflow_out)) != 0:
+                        vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                        (output_flow_out['region'] == regions[i_regions]) &
+                                                        (output_flow_out['period'] == periods[i_periods])]
+                        output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                        if float(sum(vflow_out_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                        output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
 
             elif not disaggregation["regions"] and disaggregation["output_tech"] and not disaggregation["output_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_VFlow_Out_dict['file'] = file
-                    Output_VFlow_Out_dict['scenario'] = scenario
-                    Output_VFlow_Out_dict['tech'] = tech[i_tech]
+                    output_flow_out_dict['file'] = file
+                    output_flow_out_dict['scenario'] = scenario
+                    output_flow_out_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                        (Output_VFlow_Out['tech'] == tech[i_tech]) &
-                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                        Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                        if float(sum(vflow_out_period.vflow_out)) != 0:
+                        vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                        (output_flow_out['tech'] == tech[i_tech]) &
+                                                        (output_flow_out['period'] == periods[i_periods])]
+                        output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                        if float(sum(vflow_out_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                        output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             elif not disaggregation["regions"] and not disaggregation["output_tech"] and disaggregation["output_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'output_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': '', 'output_comm': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': '', 'output_comm': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
                 for i_output_comm in range(0, len(output_comm)):
-                    Output_VFlow_Out_dict['file'] = file
-                    Output_VFlow_Out_dict['scenario'] = scenario
-                    Output_VFlow_Out_dict['output_comm'] = output_comm[i_output_comm]
+                    output_flow_out_dict['file'] = file
+                    output_flow_out_dict['scenario'] = scenario
+                    output_flow_out_dict['output_comm'] = output_comm[i_output_comm]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                        (Output_VFlow_Out['output_comm'] == output_comm[i_output_comm]) &
-                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                        Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                        if float(sum(vflow_out_period.vflow_out)) != 0:
+                        vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                        (output_flow_out['output_comm'] == output_comm[i_output_comm]) &
+                                                        (output_flow_out['period'] == periods[i_periods])]
+                        output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                        if float(sum(vflow_out_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                        output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario', 'output_comm'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario', 'output_comm'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VFlow_Out_dict = {'file': '', 'scenario': ''}
-                Output_VFlow_Out_dict.update(dict.fromkeys(periods, 0))
+                output_flow_out_dict = {'file': '', 'scenario': ''}
+                output_flow_out_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VFlow_Out_DF = pd.DataFrame(columns=columns_labels)
+                output_flow_out_df = pd.DataFrame(columns=columns_labels)
 
-                Output_VFlow_Out_dict['file'] = file
-                Output_VFlow_Out_dict['scenario'] = scenario
+                output_flow_out_dict['file'] = file
+                output_flow_out_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    vflow_out_period = Output_VFlow_Out[(Output_VFlow_Out['scenario'] == scenario) &
-                                                        (Output_VFlow_Out['t_periods'] == periods[i_periods])]
-                    Output_VFlow_Out_dict[periods[i_periods]] = float(sum(vflow_out_period.vflow_out))
-                    if float(sum(vflow_out_period.vflow_out)) != 0:
+                    vflow_out_period = output_flow_out[(output_flow_out['scenario'] == scenario) &
+                                                        (output_flow_out['period'] == periods[i_periods])]
+                    output_flow_out_dict[periods[i_periods]] = float(sum(vflow_out_period.flow))
+                    if float(sum(vflow_out_period.flow)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_VFlow_Out_DF = Output_VFlow_Out_DF.append(Output_VFlow_Out_dict, ignore_index=True)
+                    output_flow_out_df = output_flow_out_df.append(output_flow_out_dict, ignore_index=True)
                 
-                Output_VFlow_Out_DF = Output_VFlow_Out_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_flow_out_df = output_flow_out_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_VFlow_Out_DF = Output_VFlow_Out_DF.loc[:, (Output_VFlow_Out_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_VFlow_Out_MERGE = pd.concat([Output_VFlow_Out_MERGE, Output_VFlow_Out_DF])
+            output_flow_out_df = output_flow_out_df.loc[:, (output_flow_out_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_flow_out_merge = pd.concat([output_flow_out_merge, output_flow_out_df])
 
-    # Output_VMat_Cons
+    # output_construction_input
 
-    if result_set["Output_VMat_Cons"]:
+    if result_set["output_construction_input"]:
         regions = regions_list
         tech = tech_list
-        material_comm = material_comm_list
-        if not tech and not material_comm:
-            print("WARNING: No Output_VMat_Cons found.")
-            result_set["Output_VMat_Cons"] = False
+        construction_input_comm = construction_input_comm_list
+        if not tech and not construction_input_comm:
+            print("WARNING: No output_construction_input found.")
+            result_set["output_construction_input"] = False
         
         else:
             # Data reading
-            if not regions and tech and not material_comm:
+            if not regions and tech and not construction_input_comm:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
             
-            elif not regions and not tech and material_comm:
+            elif not regions and not tech and construction_input_comm:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
-                                            " or ".join((" material_comm = '" + str(n) + "'" for n in material_comm)) + ")", conn)
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" input_comm = '" + str(n) + "'" for n in construction_input_comm)) + ")", conn)
                 conn.close()
 
-            elif not regions and tech and material_comm:
+            elif not regions and tech and construction_input_comm:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                            " or ".join((" material_comm = '" + str(n) + "'" for n in material_comm)) + ")", conn)
+                                            " or ".join((" input_comm = '" + str(n) + "'" for n in construction_input_comm)) + ")", conn)
                 conn.close()
 
-            elif regions and tech and not material_comm:
+            elif regions and tech and not construction_input_comm:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
-            elif regions and not tech and material_comm:
+            elif regions and not tech and construction_input_comm:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
-                                            " or ".join((" material_comm = '" + str(n) + "'" for n in material_comm)) + ")", conn)
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
+                                            " or ".join((" input_comm = '" + str(n) + "'" for n in construction_input_comm)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_VMat_Cons = pd.read_sql("select * from Output_VMat_Cons where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_construction_input = pd.read_sql("select * from output_flow_in where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                            " or ".join((" material_comm = '" + str(n) + "'" for n in material_comm)) + ")", conn)
+                                            " or ".join((" input_comm = '" + str(n) + "'" for n in construction_input_comm)) + ")", conn)
                 conn.close()
 
-            regions = list(Output_VMat_Cons.regions)
+            # Filtering out rows where output_comm is not null, as we are only interested in construction input flows
+            output_construction_input = output_construction_input[output_construction_input['output_comm'].isna()].reset_index(drop=True)
+
+            regions = list(output_construction_input.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_VMat_Cons.tech)
+            tech = list(output_construction_input.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
-            material_comm = list(Output_VMat_Cons.material_comm)
-            material_comm = list(dict.fromkeys(material_comm))  # To remove duplicates
+            construction_input_comm = list(output_construction_input.input_comm)
+            construction_input_comm = list(dict.fromkeys(construction_input_comm))  # To remove duplicates
             
             # Data aggregation
-            if disaggregation["regions"] and disaggregation["material_tech"] and disaggregation["material_comm"]:
+            if disaggregation["regions"] and disaggregation["construction_input_tech"] and disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech', 'material_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech', 'construction_input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': '', 'material_comm': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'region': '', 'tech': '', 'construction_input_comm': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        for i_material_comm in range(0, len(material_comm)):
-                            Output_VMat_Cons_dict['file'] = file
-                            Output_VMat_Cons_dict['scenario'] = scenario
-                            Output_VMat_Cons_dict['regions'] = regions[i_regions]
-                            Output_VMat_Cons_dict['tech'] = tech[i_tech]
-                            Output_VMat_Cons_dict['material_comm'] = material_comm[i_material_comm]
+                        for i_construction_input_comm in range(0, len(construction_input_comm)):
+                            output_construction_input_dict['file'] = file
+                            output_construction_input_dict['scenario'] = scenario
+                            output_construction_input_dict['region'] = regions[i_regions]
+                            output_construction_input_dict['tech'] = tech[i_tech]
+                            output_construction_input_dict['construction_input_comm'] = construction_input_comm[i_construction_input_comm]
                             check_zeros = True
                             for i_periods in range(0, len(periods)):
-                                VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                                (Output_VMat_Cons['regions'] == regions[i_regions]) &
-                                                                (Output_VMat_Cons['tech'] == tech[i_tech]) &
-                                                                (Output_VMat_Cons['material_comm'] == material_comm[i_material_comm]) &
-                                                                (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                                Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                                if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                                VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                                (output_construction_input['region'] == regions[i_regions]) &
+                                                                (output_construction_input['tech'] == tech[i_tech]) &
+                                                                (output_construction_input['input_comm'] == construction_input_comm[i_construction_input_comm]) &
+                                                                (output_construction_input['vintage'] == periods[i_periods])]
+                                output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                                if float(sum(VMat_Cons_period.flow)) != 0:
                                     check_zeros = False
                             if not check_zeros:
-                                Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                                output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'material_comm'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'region', 'tech', 'construction_input_comm'], ignore_index=True)
 
-            elif disaggregation["regions"] and disaggregation["material_tech"] and not disaggregation["material_comm"]:
+            elif disaggregation["regions"] and disaggregation["construction_input_tech"] and not disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_VMat_Cons_dict['file'] = file
-                        Output_VMat_Cons_dict['scenario'] = scenario
-                        Output_VMat_Cons_dict['regions'] = regions[i_regions]
-                        Output_VMat_Cons_dict['tech'] = tech[i_tech]
+                        output_construction_input_dict['file'] = file
+                        output_construction_input_dict['scenario'] = scenario
+                        output_construction_input_dict['region'] = regions[i_regions]
+                        output_construction_input_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                            (Output_VMat_Cons['regions'] == regions[i_regions]) &
-                                                            (Output_VMat_Cons['tech'] == tech[i_tech]) &
-                                                            (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                            Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                            if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                            VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                            (output_construction_input['region'] == regions[i_regions]) &
+                                                            (output_construction_input['tech'] == tech[i_tech]) &
+                                                            (output_construction_input['vintage'] == periods[i_periods])]
+                            output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                            if float(sum(VMat_Cons_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                            output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
-            elif disaggregation["regions"] and not disaggregation["material_tech"] and disaggregation["material_comm"]:
+            elif disaggregation["regions"] and not disaggregation["construction_input_tech"] and disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'material_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'construction_input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'regions': '', 'material_comm': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'region': '', 'construction_input_comm': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    for i_material_comm in range(0, len(material_comm)):
-                        Output_VMat_Cons_dict['file'] = file
-                        Output_VMat_Cons_dict['scenario'] = scenario
-                        Output_VMat_Cons_dict['regions'] = regions[i_regions]
-                        Output_VMat_Cons_dict['material_comm'] = material_comm[i_material_comm]
+                    for i_construction_input_comm in range(0, len(construction_input_comm)):
+                        output_construction_input_dict['file'] = file
+                        output_construction_input_dict['scenario'] = scenario
+                        output_construction_input_dict['region'] = regions[i_regions]
+                        output_construction_input_dict['construction_input_comm'] = construction_input_comm[i_construction_input_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                            (Output_VMat_Cons['regions'] == regions[i_regions]) &
-                                                            (Output_VMat_Cons['material_comm'] == material_comm[i_material_comm]) &
-                                                            (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                            Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                            if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                            VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                            (output_construction_input['region'] == regions[i_regions]) &
+                                                            (output_construction_input['input_comm'] == construction_input_comm[i_construction_input_comm]) &
+                                                            (output_construction_input['vintage'] == periods[i_periods])]
+                            output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                            if float(sum(VMat_Cons_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                            output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'regions', 'material_comm'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'region', 'construction_input_comm'], ignore_index=True)
             
-            elif not disaggregation["regions"] and disaggregation["material_tech"] and disaggregation["material_comm"]:
+            elif not disaggregation["regions"] and disaggregation["construction_input_tech"] and disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'tech', 'material_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'tech', 'construction_input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'tech': '', 'material_comm': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'tech': '', 'construction_input_comm': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    for i_material_comm in range(0, len(material_comm)):
-                        Output_VMat_Cons_dict['file'] = file
-                        Output_VMat_Cons_dict['scenario'] = scenario
-                        Output_VMat_Cons_dict['tech'] = tech[i_tech]
-                        Output_VMat_Cons_dict['material_comm'] = material_comm[i_material_comm]
+                    for i_construction_input_comm in range(0, len(construction_input_comm)):
+                        output_construction_input_dict['file'] = file
+                        output_construction_input_dict['scenario'] = scenario
+                        output_construction_input_dict['tech'] = tech[i_tech]
+                        output_construction_input_dict['construction_input_comm'] = construction_input_comm[i_construction_input_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                            (Output_VMat_Cons['tech'] == tech[i_tech]) &
-                                                            (Output_VMat_Cons['material_comm'] == material_comm[i_material_comm]) &
-                                                            (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                            Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                            if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                            VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                            (output_construction_input['tech'] == tech[i_tech]) &
+                                                            (output_construction_input['input_comm'] == construction_input_comm[i_construction_input_comm]) &
+                                                            (output_construction_input['vintage'] == periods[i_periods])]
+                            output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                            if float(sum(VMat_Cons_period.flow)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                            output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'tech', 'material_comm'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'tech', 'construction_input_comm'], ignore_index=True)
 
-            elif disaggregation["regions"] and not disaggregation["material_tech"] and not disaggregation["material_comm"]:
+            elif disaggregation["regions"] and not disaggregation["construction_input_tech"] and not disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_VMat_Cons_dict['file'] = file
-                    Output_VMat_Cons_dict['scenario'] = scenario
-                    Output_VMat_Cons_dict['regions'] = regions[i_regions]
+                    output_construction_input_dict['file'] = file
+                    output_construction_input_dict['scenario'] = scenario
+                    output_construction_input_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                        (Output_VMat_Cons['regions'] == regions[i_regions]) &
-                                                        (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                        Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                        if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                        VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                        (output_construction_input['region'] == regions[i_regions]) &
+                                                        (output_construction_input['vintage'] == periods[i_periods])]
+                        output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                        if float(sum(VMat_Cons_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                        output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
 
-            elif not disaggregation["regions"] and disaggregation["material_tech"] and not disaggregation["material_comm"]:
+            elif not disaggregation["regions"] and disaggregation["construction_input_tech"] and not disaggregation["construction_input_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_VMat_Cons_dict['file'] = file
-                    Output_VMat_Cons_dict['scenario'] = scenario
-                    Output_VMat_Cons_dict['tech'] = tech[i_tech]
+                    output_construction_input_dict['file'] = file
+                    output_construction_input_dict['scenario'] = scenario
+                    output_construction_input_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                        (Output_VMat_Cons['tech'] == tech[i_tech]) &
-                                                        (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                        Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                        if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                        VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                        (output_construction_input['tech'] == tech[i_tech]) &
+                                                        (output_construction_input['vintage'] == periods[i_periods])]
+                        output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                        if float(sum(VMat_Cons_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                        output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
-            elif not disaggregation["regions"] and not disaggregation["material_tech"] and disaggregation["material_comm"]:
+            elif not disaggregation["regions"] and not disaggregation["construction_input_tech"] and disaggregation["construction_input_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'material_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'construction_input_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': '', 'material_comm': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': '', 'construction_input_comm': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
-                for i_material_comm in range(0, len(material_comm)):
-                    Output_VMat_Cons_dict['file'] = file
-                    Output_VMat_Cons_dict['scenario'] = scenario
-                    Output_VMat_Cons_dict['material_comm'] = material_comm[i_material_comm]
+                for i_construction_input_comm in range(0, len(construction_input_comm)):
+                    output_construction_input_dict['file'] = file
+                    output_construction_input_dict['scenario'] = scenario
+                    output_construction_input_dict['construction_input_comm'] = construction_input_comm[i_construction_input_comm]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                        (Output_VMat_Cons['material_comm'] == material_comm[i_material_comm]) &
-                                                        (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                        Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                        if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                        VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                        (output_construction_input['input_comm'] == construction_input_comm[i_construction_input_comm]) &
+                                                        (output_construction_input['vintage'] == periods[i_periods])]
+                        output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                        if float(sum(VMat_Cons_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                        output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario', 'material_comm'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario', 'construction_input_comm'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_VMat_Cons_dict = {'file': '', 'scenario': ''}
-                Output_VMat_Cons_dict.update(dict.fromkeys(periods, 0))
+                output_construction_input_dict = {'file': '', 'scenario': ''}
+                output_construction_input_dict.update(dict.fromkeys(periods, 0))
 
-                Output_VMat_Cons_DF = pd.DataFrame(columns=columns_labels)
+                output_construction_input_df = pd.DataFrame(columns=columns_labels)
 
-                Output_VMat_Cons_dict['file'] = file
-                Output_VMat_Cons_dict['scenario'] = scenario
+                output_construction_input_dict['file'] = file
+                output_construction_input_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    VMat_Cons_period = Output_VMat_Cons[(Output_VMat_Cons['scenario'] == scenario) &
-                                                        (Output_VMat_Cons['vintage'] == periods[i_periods])]
-                    Output_VMat_Cons_dict[periods[i_periods]] = float(sum(VMat_Cons_period.vmat_cons))
-                    if float(sum(VMat_Cons_period.vmat_cons)) != 0:
+                    VMat_Cons_period = output_construction_input[(output_construction_input['scenario'] == scenario) &
+                                                        (output_construction_input['vintage'] == periods[i_periods])]
+                    output_construction_input_dict[periods[i_periods]] = float(sum(VMat_Cons_period.flow))
+                    if float(sum(VMat_Cons_period.flow)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_VMat_Cons_DF = Output_VMat_Cons_DF.append(Output_VMat_Cons_dict, ignore_index=True)
+                    output_construction_input_df = output_construction_input_df.append(output_construction_input_dict, ignore_index=True)
                 
-                Output_VMat_Cons_DF = Output_VMat_Cons_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_construction_input_df = output_construction_input_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_VMat_Cons_DF = Output_VMat_Cons_DF.loc[:, (Output_VMat_Cons_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_VMat_Cons_MERGE = pd.concat([Output_VMat_Cons_MERGE, Output_VMat_Cons_DF])
+            output_construction_input_df = output_construction_input_df.loc[:, (output_construction_input_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_construction_input_merge = pd.concat([output_construction_input_merge, output_construction_input_df])
 
-    # Output_Emissions
+    # output_emission
 
-    if result_set["Output_Emissions"]:
+    if result_set["output_emission"]:
         regions = regions_list
         tech = tech_list
         emissions_comm = emissions_comm_list
         if not tech and not emissions_comm:
-            print("WARNING: No Output_Emissions found.")
-            result_set["Output_Emissions"] = False
+            print("WARNING: No output_emission found.")
+            result_set["output_emission"] = False
         
         else:
             # Data reading
             if not regions and tech and not emissions_comm:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
+                output_emission = pd.read_sql("select * from output_emission where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
             
             elif not regions and not tech and emissions_comm:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                            " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                output_emission = pd.read_sql("select * from output_emission where (" +
+                                            " or ".join((" emis_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
                 conn.close()
 
             elif not regions and tech and emissions_comm:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
+                output_emission = pd.read_sql("select * from output_emission where (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                            " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                                            " or ".join((" emis_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
                 conn.close()
 
             elif regions and tech and not emissions_comm:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_emission = pd.read_sql("select * from output_emission where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
                 conn.close()
 
             elif regions and not tech and emissions_comm:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
-                                            " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                output_emission = pd.read_sql("select * from output_emission where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
+                                            " or ".join((" emis_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
                 conn.close()
 
             else:
                 conn = sqlite3.connect(file)
-                Output_Emissions = pd.read_sql("select * from Output_Emissions where (" +
-                                            " or ".join((" regions = '" + str(n) + "'" for n in regions)) + ") and (" +
+                output_emission = pd.read_sql("select * from output_emission where (" +
+                                            " or ".join((" region = '" + str(n) + "'" for n in regions)) + ") and (" +
                                             " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ") and (" +
-                                            " or ".join((" emissions_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
+                                            " or ".join((" emis_comm = '" + str(n) + "'" for n in emissions_comm)) + ")", conn)
                 conn.close()
 
-            regions = list(Output_Emissions.regions)
+            regions = list(output_emission.region)
             regions = list(dict.fromkeys(regions))  # To remove duplicates
-            tech = list(Output_Emissions.tech)
+            tech = list(output_emission.tech)
             tech = list(dict.fromkeys(tech))  # To remove duplicates
-            emissions_comm = list(Output_Emissions.emissions_comm)
+            emissions_comm = list(output_emission.emis_comm)
             emissions_comm = list(dict.fromkeys(emissions_comm))  # To remove duplicates
             
             # Data aggregation
             if disaggregation["regions"] and disaggregation["emissions_tech"] and disaggregation["emissions_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech', 'emissions_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech', 'emissions_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': '', 'emissions_comm': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'region': '', 'tech': '', 'emissions_comm': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
                         for i_emissions_comm in range(0, len(emissions_comm)):
-                            Output_Emissions_dict['file'] = file
-                            Output_Emissions_dict['scenario'] = scenario
-                            Output_Emissions_dict['regions'] = regions[i_regions]
-                            Output_Emissions_dict['tech'] = tech[i_tech]
-                            Output_Emissions_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
+                            output_emission_dict['file'] = file
+                            output_emission_dict['scenario'] = scenario
+                            output_emission_dict['region'] = regions[i_regions]
+                            output_emission_dict['tech'] = tech[i_tech]
+                            output_emission_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
                             check_zeros = True
                             for i_periods in range(0, len(periods)):
-                                emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                                (Output_Emissions['regions'] == regions[i_regions]) &
-                                                                (Output_Emissions['tech'] == tech[i_tech]) &
-                                                                (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                                (Output_Emissions['t_periods'] == periods[i_periods])]
-                                Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                                if float(sum(emissions_period.emissions)) != 0:
+                                emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                                (output_emission['region'] == regions[i_regions]) &
+                                                                (output_emission['tech'] == tech[i_tech]) &
+                                                                (output_emission['emis_comm'] == emissions_comm[i_emissions_comm]) &
+                                                                (output_emission['period'] == periods[i_periods])]
+                                output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                                if float(sum(emissions_period.emission)) != 0:
                                     check_zeros = False
                             if not check_zeros:
-                                Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                                output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'emissions_comm'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'region', 'tech', 'emissions_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and disaggregation["emissions_tech"] and not disaggregation["emissions_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'region': '', 'tech': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_tech in range(0, len(tech)):
-                        Output_Emissions_dict['file'] = file
-                        Output_Emissions_dict['scenario'] = scenario
-                        Output_Emissions_dict['regions'] = regions[i_regions]
-                        Output_Emissions_dict['tech'] = tech[i_tech]
+                        output_emission_dict['file'] = file
+                        output_emission_dict['scenario'] = scenario
+                        output_emission_dict['region'] = regions[i_regions]
+                        output_emission_dict['tech'] = tech[i_tech]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                            (Output_Emissions['regions'] == regions[i_regions]) &
-                                                            (Output_Emissions['tech'] == tech[i_tech]) &
-                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
-                            Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                            if float(sum(emissions_period.emissions)) != 0:
+                            emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                            (output_emission['region'] == regions[i_regions]) &
+                                                            (output_emission['tech'] == tech[i_tech]) &
+                                                            (output_emission['period'] == periods[i_periods])]
+                            output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                            if float(sum(emissions_period.emission)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                            output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'regions', 'tech'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'region', 'tech'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["emissions_tech"] and disaggregation["emissions_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions', 'emissions_comm'])
+                columns_labels = pd.Series(['file', 'scenario', 'region', 'emissions_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'regions': '', 'emissions_comm': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'region': '', 'emissions_comm': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
                     for i_emissions_comm in range(0, len(emissions_comm)):
-                        Output_Emissions_dict['file'] = file
-                        Output_Emissions_dict['scenario'] = scenario
-                        Output_Emissions_dict['regions'] = regions[i_regions]
-                        Output_Emissions_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
+                        output_emission_dict['file'] = file
+                        output_emission_dict['scenario'] = scenario
+                        output_emission_dict['region'] = regions[i_regions]
+                        output_emission_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                            (Output_Emissions['regions'] == regions[i_regions]) &
-                                                            (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
-                            Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                            if float(sum(emissions_period.emissions)) != 0:
+                            emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                            (output_emission['region'] == regions[i_regions]) &
+                                                            (output_emission['emis_comm'] == emissions_comm[i_emissions_comm]) &
+                                                            (output_emission['period'] == periods[i_periods])]
+                            output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                            if float(sum(emissions_period.emission)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                            output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'regions', 'emissions_comm'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'region', 'emissions_comm'], ignore_index=True)
             
             elif not disaggregation["regions"] and disaggregation["emissions_tech"] and disaggregation["emissions_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech', 'emissions_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'tech': '', 'emissions_comm': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'tech': '', 'emissions_comm': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
                     for i_emissions_comm in range(0, len(emissions_comm)):
-                        Output_Emissions_dict['file'] = file
-                        Output_Emissions_dict['scenario'] = scenario
-                        Output_Emissions_dict['tech'] = tech[i_tech]
-                        Output_Emissions_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
+                        output_emission_dict['file'] = file
+                        output_emission_dict['scenario'] = scenario
+                        output_emission_dict['tech'] = tech[i_tech]
+                        output_emission_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
                         check_zeros = True
                         for i_periods in range(0, len(periods)):
-                            emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                            (Output_Emissions['tech'] == tech[i_tech]) &
-                                                            (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                            (Output_Emissions['t_periods'] == periods[i_periods])]
-                            Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                            if float(sum(emissions_period.emissions)) != 0:
+                            emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                            (output_emission['tech'] == tech[i_tech]) &
+                                                            (output_emission['emis_comm'] == emissions_comm[i_emissions_comm]) &
+                                                            (output_emission['period'] == periods[i_periods])]
+                            output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                            if float(sum(emissions_period.emission)) != 0:
                                 check_zeros = False
                         if not check_zeros:
-                            Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                            output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'tech', 'emissions_comm'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'tech', 'emissions_comm'], ignore_index=True)
 
             elif disaggregation["regions"] and not disaggregation["emissions_tech"] and not disaggregation["emissions_comm"]:
 
-                columns_labels = pd.Series(['file', 'scenario', 'regions'])
+                columns_labels = pd.Series(['file', 'scenario', 'region'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'regions': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'region': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_regions in range(0, len(regions)):
-                    Output_Emissions_dict['file'] = file
-                    Output_Emissions_dict['scenario'] = scenario
-                    Output_Emissions_dict['regions'] = regions[i_regions]
+                    output_emission_dict['file'] = file
+                    output_emission_dict['scenario'] = scenario
+                    output_emission_dict['region'] = regions[i_regions]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                        (Output_Emissions['regions'] == regions[i_regions]) &
-                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
-                        Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                        if float(sum(emissions_period.emissions)) != 0:
+                        emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                        (output_emission['region'] == regions[i_regions]) &
+                                                        (output_emission['period'] == periods[i_periods])]
+                        output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                        if float(sum(emissions_period.emission)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                        output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
 
             elif not disaggregation["regions"] and disaggregation["emissions_tech"] and not disaggregation["emissions_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'tech'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'tech': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'tech': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_tech in range(0, len(tech)):
-                    Output_Emissions_dict['file'] = file
-                    Output_Emissions_dict['scenario'] = scenario
-                    Output_Emissions_dict['tech'] = tech[i_tech]
+                    output_emission_dict['file'] = file
+                    output_emission_dict['scenario'] = scenario
+                    output_emission_dict['tech'] = tech[i_tech]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                        (Output_Emissions['tech'] == tech[i_tech]) &
-                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
-                        Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                        if float(sum(emissions_period.emissions)) != 0:
+                        emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                        (output_emission['tech'] == tech[i_tech]) &
+                                                        (output_emission['period'] == periods[i_periods])]
+                        output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                        if float(sum(emissions_period.emission)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                        output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'tech'], ignore_index=True)
 
             elif not disaggregation["regions"] and not disaggregation["emissions_tech"] and disaggregation["emissions_comm"]:
 
                 columns_labels = pd.Series(['file', 'scenario', 'emissions_comm'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': '', 'emissions_comm': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': '', 'emissions_comm': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
                 for i_emissions_comm in range(0, len(emissions_comm)):
-                    Output_Emissions_dict['file'] = file
-                    Output_Emissions_dict['scenario'] = scenario
-                    Output_Emissions_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
+                    output_emission_dict['file'] = file
+                    output_emission_dict['scenario'] = scenario
+                    output_emission_dict['emissions_comm'] = emissions_comm[i_emissions_comm]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                        (Output_Emissions['emissions_comm'] == emissions_comm[i_emissions_comm]) &
-                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
-                        Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                        if float(sum(emissions_period.emissions)) != 0:
+                        emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                        (output_emission['emis_comm'] == emissions_comm[i_emissions_comm]) &
+                                                        (output_emission['period'] == periods[i_periods])]
+                        output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                        if float(sum(emissions_period.emission)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                        output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario', 'emissions_comm'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario', 'emissions_comm'], ignore_index=True)
 
             else:
 
                 columns_labels = pd.Series(['file', 'scenario'])
                 columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-                Output_Emissions_dict = {'file': '', 'scenario': ''}
-                Output_Emissions_dict.update(dict.fromkeys(periods, 0))
+                output_emission_dict = {'file': '', 'scenario': ''}
+                output_emission_dict.update(dict.fromkeys(periods, 0))
 
-                Output_Emissions_DF = pd.DataFrame(columns=columns_labels)
+                output_emission_df = pd.DataFrame(columns=columns_labels)
 
-                Output_Emissions_dict['file'] = file
-                Output_Emissions_dict['scenario'] = scenario
+                output_emission_dict['file'] = file
+                output_emission_dict['scenario'] = scenario
                 check_zeros = True
                 for i_periods in range(0, len(periods)):
-                    emissions_period = Output_Emissions[(Output_Emissions['scenario'] == scenario) &
-                                                        (Output_Emissions['t_periods'] == periods[i_periods])]
-                    Output_Emissions_dict[periods[i_periods]] = float(sum(emissions_period.emissions))
-                    if float(sum(emissions_period.emissions)) != 0:
+                    emissions_period = output_emission[(output_emission['scenario'] == scenario) &
+                                                        (output_emission['period'] == periods[i_periods])]
+                    output_emission_dict[periods[i_periods]] = float(sum(emissions_period.emission))
+                    if float(sum(emissions_period.emission)) != 0:
                         check_zeros = False
                 if not check_zeros:
-                    Output_Emissions_DF = Output_Emissions_DF.append(Output_Emissions_dict, ignore_index=True)
+                    output_emission_df = output_emission_df.append(output_emission_dict, ignore_index=True)
                 
-                Output_Emissions_DF = Output_Emissions_DF.sort_values(by=['file', 'scenario'], ignore_index=True)
+                output_emission_df = output_emission_df.sort_values(by=['file', 'scenario'], ignore_index=True)
 
-            Output_Emissions_DF = Output_Emissions_DF.loc[:, (Output_Emissions_DF != 0).any(axis=0)]  # To remove columns with only zeros
-            Output_Emissions_MERGE = pd.concat([Output_Emissions_MERGE, Output_Emissions_DF])
+            output_emission_df = output_emission_df.loc[:, (output_emission_df != 0).any(axis=0)]  # To remove columns with only zeros
+            output_emission_merge = pd.concat([output_emission_merge, output_emission_df])
 
     # Check dummies
 
@@ -2023,50 +2183,50 @@ def function(args):
         tech = tech_dummies
 
         conn = sqlite3.connect(file)
-        Check_Dummies = pd.read_sql("select * from Output_VFlow_Out where (" +
+        check_dummies = pd.read_sql("select * from output_flow_out where (" +
                                     " or ".join((" tech = '" + str(n) + "'" for n in tech)) + ")", conn)
         conn.close()
 
-        regions = list(Check_Dummies.regions)
+        regions = list(check_dummies.region)
         regions = list(dict.fromkeys(regions))  # To remove duplicates
 
-        output_comm = list(Check_Dummies.output_comm)
+        output_comm = list(check_dummies.output_comm)
         output_comm = list(dict.fromkeys(output_comm))  # To remove duplicates
 
-        columns_labels = pd.Series(['file', 'scenario', 'regions', 'tech', 'output_comm'])
+        columns_labels = pd.Series(['file', 'scenario', 'region', 'tech', 'output_comm'])
         columns_labels = columns_labels.append(pd.Series(periods), ignore_index=True)
 
-        Check_Dummies_dict = {'file': '', 'scenario': '', 'regions': '', 'tech': '', 'output_comm': ''}
-        Check_Dummies_dict.update(dict.fromkeys(periods, 0))
+        check_dummies_dict = {'file': '', 'scenario': '', 'region': '', 'tech': '', 'output_comm': ''}
+        check_dummies_dict.update(dict.fromkeys(periods, 0))
 
-        Check_Dummies_DF = pd.DataFrame(columns=columns_labels)
+        check_dummies_df = pd.DataFrame(columns=columns_labels)
 
         for i_regions in range(0, len(regions)):
             for i_tech in range(0, len(tech)):
                 for i_output_comm in range(0, len(output_comm)):
-                    Check_Dummies_dict['file'] = file
-                    Check_Dummies_dict['scenario'] = scenario
-                    Check_Dummies_dict['regions'] = regions[i_regions]
-                    Check_Dummies_dict['tech'] = tech[i_tech]
-                    Check_Dummies_dict['output_comm'] = output_comm[i_output_comm]
+                    check_dummies_dict['file'] = file
+                    check_dummies_dict['scenario'] = scenario
+                    check_dummies_dict['region'] = regions[i_regions]
+                    check_dummies_dict['tech'] = tech[i_tech]
+                    check_dummies_dict['output_comm'] = output_comm[i_output_comm]
                     check_zeros = True
                     for i_periods in range(0, len(periods)):
-                        check_dummies_period = Check_Dummies[(Check_Dummies['scenario'] == scenario) &
-                                                            (Check_Dummies['regions'] == regions[i_regions]) &
-                                                            (Check_Dummies['tech'] == tech[i_tech]) &
-                                                            (Check_Dummies['output_comm'] == output_comm[i_output_comm]) &
-                                                            (Check_Dummies['t_periods'] == periods[i_periods])]
-                        Check_Dummies_dict[periods[i_periods]] = float(sum(check_dummies_period.vflow_out))
-                        if float(sum(check_dummies_period.vflow_out)) != 0:
+                        check_dummies_period = check_dummies[(check_dummies['scenario'] == scenario) &
+                                                            (check_dummies['region'] == regions[i_regions]) &
+                                                            (check_dummies['tech'] == tech[i_tech]) &
+                                                            (check_dummies['output_comm'] == output_comm[i_output_comm]) &
+                                                            (check_dummies['period'] == periods[i_periods])]
+                        check_dummies_dict[periods[i_periods]] = float(sum(check_dummies_period.flow))
+                        if float(sum(check_dummies_period.flow)) != 0:
                             check_zeros = False
                     if not check_zeros:
-                        Check_Dummies_DF = Check_Dummies_DF.append(Check_Dummies_dict, ignore_index=True)
+                        check_dummies_df = check_dummies_df.append(check_dummies_dict, ignore_index=True)
 
-        Check_Dummies_DF = Check_Dummies_DF.sort_values(by=['file', 'scenario', 'regions', 'tech', 'output_comm'], ignore_index=True)
-        Check_Dummies_DF = Check_Dummies_DF.loc[:, (Check_Dummies_DF != 0).any(axis=0)]  # To remove columns with only zeros
-        Check_Dummies_MERGE = pd.concat([Check_Dummies_MERGE, Check_Dummies_DF])
+        check_dummies_df = check_dummies_df.sort_values(by=['file', 'scenario', 'region', 'tech', 'output_comm'], ignore_index=True)
+        check_dummies_df = check_dummies_df.loc[:, (check_dummies_df != 0).any(axis=0)]  # To remove columns with only zeros
+        check_dummies_merge = pd.concat([check_dummies_merge, check_dummies_df])
 
-    return [Output_CapacityByPeriodAndTech_MERGE, Output_V_Capacity_MERGE, Output_CostInvest_MERGE, Output_CostFixed_MERGE, Output_CostVariable_MERGE, Output_VFlow_In_MERGE, Output_VFlow_Out_MERGE, Output_VMat_Cons_MERGE, Output_Emissions_MERGE, Check_Dummies_MERGE]
+    return [output_net_capacity_merge, output_built_capacity_merge, output_retired_capacity_merge, output_cost_invest_merge, output_cost_fixed_merge, output_cost_variable_merge, output_flow_in_merge, output_flow_out_merge, output_construction_input_merge, output_emission_merge, check_dummies_merge]
 
 if __name__ ==  '__main__':
     inputs = list(zip(file_list, scenario_list))
@@ -2074,75 +2234,81 @@ if __name__ ==  '__main__':
     with multiprocessing.Pool(processes=processes) as pool:
         results = list(tqdm(pool.imap(function, inputs), total=len(inputs)))
 
-    Output_CapacityByPeriodAndTech_list = [res[0] for res in results]
-    Output_V_Capacity_list = [res[1] for res in results]
-    Output_CostInvest_list = [res[2] for res in results]
-    Output_CostFixed_list = [res[3] for res in results]
-    Output_CostVariable_list = [res[4] for res in results]
-    Output_VFlow_In_list = [res[5] for res in results]
-    Output_VFlow_Out_list = [res[6] for res in results]
-    Output_VMat_Cons_list = [res[7] for res in results]
-    Output_Emissions_list = [res[8] for res in results]
-    Check_Dummies_list = [res[9] for res in results]
+    output_net_capacity_list = [res[0] for res in results]
+    output_built_capacity_list = [res[1] for res in results]
+    output_retired_capacity_list = [res[2] for res in results]
+    output_cost_invest_list = [res[3] for res in results]
+    output_cost_fixed_list = [res[4] for res in results]
+    output_cost_variable_list = [res[5] for res in results]
+    output_flow_in_list = [res[6] for res in results]
+    output_flow_out_list = [res[7] for res in results]
+    output_construction_input_list = [res[8] for res in results]
+    output_emission_list = [res[9] for res in results]
+    check_dummies_list = [res[10] for res in results]
 
-    Output_CapacityByPeriodAndTech = pd.concat(Output_CapacityByPeriodAndTech_list, ignore_index=True)
-    Output_V_Capacity = pd.concat(Output_V_Capacity_list, ignore_index=True)
-    Output_CostInvest = pd.concat(Output_CostInvest_list, ignore_index=True)
-    Output_CostFixed = pd.concat(Output_CostFixed_list, ignore_index=True)
-    Output_CostVariable = pd.concat(Output_CostVariable_list, ignore_index=True)
-    Output_VFlow_In = pd.concat(Output_VFlow_In_list, ignore_index=True)
-    Output_VFlow_Out = pd.concat(Output_VFlow_Out_list, ignore_index=True)
-    Output_VMat_Cons = pd.concat(Output_VMat_Cons_list, ignore_index=True)
-    Output_Emissions = pd.concat(Output_Emissions_list, ignore_index=True)
-    Check_Dummies = pd.concat(Check_Dummies_list, ignore_index=True)
+    output_net_capacity = pd.concat(output_net_capacity_list, ignore_index=True)
+    output_built_capacity = pd.concat(output_built_capacity_list, ignore_index=True)
+    output_retired_capacity = pd.concat(output_retired_capacity_list, ignore_index=True)
+    output_cost_invest = pd.concat(output_cost_invest_list, ignore_index=True)
+    output_cost_fixed = pd.concat(output_cost_fixed_list, ignore_index=True)
+    output_cost_variable = pd.concat(output_cost_variable_list, ignore_index=True)
+    output_flow_in = pd.concat(output_flow_in_list, ignore_index=True)
+    output_flow_out = pd.concat(output_flow_out_list, ignore_index=True)
+    output_construction_input = pd.concat(output_construction_input_list, ignore_index=True)
+    output_emission = pd.concat(output_emission_list, ignore_index=True)
+    check_dummies = pd.concat(check_dummies_list, ignore_index=True)
 
     # Printing output
 
     if print_set:
-        if result_set["Output_CapacityByPeriodAndTech"]:
-            print("\nOutput_CapacityByPeriodAndTech\n\n", Output_CapacityByPeriodAndTech.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_V_Capacity"]:
-            print("\nOutput_V_Capacity\n\n", Output_V_Capacity.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_CostInvest"]:
-            print("\nOutput_CostInvest\n\n", Output_CostInvest.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_CostFixed"]:
-            print("\nOutput_CostFixed\n\n", Output_CostFixed.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_CostVariable"]:
-            print("\nOutput_CostVariable\n\n", Output_CostVariable.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_VFlow_In"]:
-            print("\nOutput_VFlow_In\n\n", Output_VFlow_In.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_VFlow_Out"]:
-            print("\nOutput_VFlow_Out\n\n", Output_VFlow_Out.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_VMat_Cons"]:
-            print("\nOutput_VMat_Cons\n\n", Output_VMat_Cons.to_string(index=False, float_format='%.2f'))
-        if result_set["Output_Emissions"]:
-            print("\nOutput_Emissions\n\n", Output_Emissions.to_string(index=False, float_format='%.2f'))
+        if result_set["output_net_capacity"]:
+            print("\noutput_net_capacity\n\n", output_net_capacity.to_string(index=False, float_format='%.2f'))
+        if result_set["output_built_capacity"]:
+            print("\noutput_built_capacity\n\n", output_built_capacity.to_string(index=False, float_format='%.2f'))
+        if result_set["output_retired_capacity"]:
+            print("\noutput_retired_capacity\n\n", output_retired_capacity.to_string(index=False, float_format='%.2f'))
+        if result_set["output_cost_invest"]:
+            print("\noutput_cost_invest\n\n", output_cost_invest.to_string(index=False, float_format='%.2f'))
+        if result_set["output_cost_fixed"]:
+            print("\noutput_cost_fixed\n\n", output_cost_fixed.to_string(index=False, float_format='%.2f'))
+        if result_set["output_cost_variable"]:
+            print("\noutput_cost_variable\n\n", output_cost_variable.to_string(index=False, float_format='%.2f'))
+        if result_set["output_flow_in"]:
+            print("\noutput_flow_in\n\n", output_flow_in.to_string(index=False, float_format='%.2f'))
+        if result_set["output_flow_out"]:
+            print("\noutput_flow_out\n\n", output_flow_out.to_string(index=False, float_format='%.2f'))
+        if result_set["output_construction_input"]:
+            print("\noutput_construction_input\n\n", output_construction_input.to_string(index=False, float_format='%.2f'))
+        if result_set["output_emission"]:
+            print("\noutput_emission\n\n", output_emission.to_string(index=False, float_format='%.2f'))
     
-    if len(Check_Dummies) != 0:
-        print("\nWARNING: Dummy imports detected.\n\n", Check_Dummies.to_string(index=False, float_format='%.2f'))
+    if len(check_dummies) != 0:
+        print("\nWARNING: Dummy imports detected.\n\n", check_dummies.to_string(index=False, float_format='%.2f'))
 
     # Export to Excel
 
     if toexcel_set:
         writer = pd.ExcelWriter(excel_name + '.xlsx', engine='xlsxwriter')
-        if len(Check_Dummies) != 0:
-            Check_Dummies.to_excel(writer, sheet_name='Check_Dummies', index=False)
-        if result_set["Output_CapacityByPeriodAndTech"]:
-            Output_CapacityByPeriodAndTech.to_excel(writer, sheet_name='Output_CapacityByPeriodAndTech', index=False)
-        if result_set["Output_V_Capacity"]:
-            Output_V_Capacity.to_excel(writer, sheet_name='Output_V_Capacity', index=False)
-        if result_set["Output_CostInvest"]:
-            Output_CostInvest.to_excel(writer, sheet_name='Output_CostInvest', index=False)
-        if result_set["Output_CostFixed"]:
-            Output_CostFixed.to_excel(writer, sheet_name='Output_CostFixed', index=False)
-        if result_set["Output_CostVariable"]:
-            Output_CostVariable.to_excel(writer, sheet_name='Output_CostVariable', index=False)
-        if result_set["Output_VFlow_In"]:
-            Output_VFlow_In.to_excel(writer, sheet_name='Output_VFlow_In', index=False)
-        if result_set["Output_VFlow_Out"]:
-            Output_VFlow_Out.to_excel(writer, sheet_name='Output_VFlow_Out', index=False)
-        if result_set["Output_VMat_Cons"]:
-            Output_VMat_Cons.to_excel(writer, sheet_name='Output_VMat_Cons', index=False)
-        if result_set["Output_Emissions"]:
-            Output_Emissions.to_excel(writer, sheet_name='Output_Emissions', index=False)
+        if len(check_dummies) != 0:
+            check_dummies.to_excel(writer, sheet_name='check_dummies', index=False)
+        if result_set["output_net_capacity"]:
+            output_net_capacity.to_excel(writer, sheet_name='output_net_capacity', index=False)
+        if result_set["output_built_capacity"]:
+            output_built_capacity.to_excel(writer, sheet_name='output_built_capacity', index=False)
+        if result_set["output_retired_capacity"]:
+            output_retired_capacity.to_excel(writer, sheet_name='output_retired_capacity', index=False)
+        if result_set["output_cost_invest"]:
+            output_cost_invest.to_excel(writer, sheet_name='output_cost_invest', index=False)
+        if result_set["output_cost_fixed"]:
+            output_cost_fixed.to_excel(writer, sheet_name='output_cost_fixed', index=False)
+        if result_set["output_cost_variable"]:
+            output_cost_variable.to_excel(writer, sheet_name='output_cost_variable', index=False)
+        if result_set["output_flow_in"]:
+            output_flow_in.to_excel(writer, sheet_name='output_flow_in', index=False)
+        if result_set["output_flow_out"]:
+            output_flow_out.to_excel(writer, sheet_name='output_flow_out', index=False)
+        if result_set["output_construction_input"]:
+            output_construction_input.to_excel(writer, sheet_name='output_construction_input', index=False)
+        if result_set["output_emission"]:
+            output_emission.to_excel(writer, sheet_name='output_emission', index=False)
         writer.save()

@@ -63,53 +63,58 @@ if Simplifying:
 
     # Tables containing a "periods" column
     period_tables = [
-        'CapacityCredit',
-        'CostFixed',
-        'CostVariable',
-        'CostEmission',
-        'Demand',
-        'Driver',
-        'Elasticity',
-        'EmissionLimit',
-        'EnergyCommodityConcentrationIndex',
-        'MaxActivity',
-        'MaxActivityGroup',
-        'MaxCapacity',
-        'MaxCapacityGroup',
-        'MaxInputGroup',
-        'MaxOutputGroup',
-        'MinActivity',
-        'MinActivityGroup',
-        'MinCapacity',
-        'MinCapacityGroup',
-        'MinInputGroup',
-        'MinOutputGroup',
-        'TechInputSplit',
-        'TechOutputSplit'
+        'capacity_credit',
+        'cost_fixed',
+        'cost_variable',
+        'cost_emission',
+        'demand',
+        'demand_specific_distribution',
+        'driver',
+        'elasticity',
+        'limit_emission',
+        'limit_activity',
+        'limit_activity_share',
+        'limit_capacity',
+        'limit_capacity_share',
+        'lifetime_survival_curve',
+        'limit_tech_input_split',
+        'limit_tech_input_split_annual',
+        'limit_tech_output_split',
+        'limit_tech_output_split_annual'
     ]
 
     # Tables containing a "vintage" column
     vintage_tables = [
-        'CapacityCredit',
-        'CapacityFactor',
-        'CapacityFactorProcess',
-        'CostFixed',
-        'CostInvest',
-        'CostVariable',
-        'DiscountRate',
-        'Efficiency',
-        'EmissionActivity',
-        'ExistingCapacity',
-        'LifetimeProcess',
-        'MaterialIntensity',
-        'TechnologyMaterialSupplyRisk'
+        'capacity_credit',
+        'capacity_factor_process',
+        'construction_input',
+        'cost_emission',
+        'cost_invest',
+        'cost_fixed',
+        'cost_variable',
+        'efficiency',
+        'efficiency_variable',
+        'emission_activity',
+        'emission_embodied',
+        'emission_end_of_life',
+        'end_of_life_output',
+        'existing_capacity',
+        'lifetime_process',
+        'lifetime_survival_curve',
+        'limit_annual_capacity_factor',
+        'limit_new_capacity',
+        'limit_new_capacity_share',
+        'loan_lifetime_process',
+        'loan_rate',
+        'myopic_efficiency',
+        'reserve_capacity_derate'
     ]
 
     # Delete rows whose periods are NOT in kept_periods
     for table in period_tables:
         query = f'''
             DELETE FROM "{table}"
-            WHERE "periods" NOT IN {years_sql}
+            WHERE "period" NOT IN {years_sql}
         '''
         cursor.execute(query)
 
@@ -123,8 +128,8 @@ if Simplifying:
 
     # Simplify time_periods table
     cursor.execute(f'''
-        DELETE FROM "time_periods"
-        WHERE "t_periods" NOT IN {years_sql} AND "flag" <> 'e'
+        DELETE FROM "time_period"
+        WHERE "period" NOT IN {years_sql} AND "flag" <> 'e'
     ''')
 
     conn.commit()
