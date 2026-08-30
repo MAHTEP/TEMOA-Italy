@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+title: TEMOA-Italy
+message: >-
+  If you use TEMOA-Italy in your work, please cite the article
+  listed under "preferred-citation" below.
+type: software
+authors:
+  - given-names: Matteo
+    family-names: Nicoli
+    email: matteo.nicoli@polito.it
+    affiliation: Politecnico di Torino
+  - name: MAHTEP Group, Politecnico di Torino
+    website: 'http://www.mahtep.polito.it/'
+abstract: >-
+  A model instance for the optimization of the Italian energy system,
+  compliant with the TEMOA (Tools for Energy Modeling Optimization and
+  Analysis) modeling framework.
+repository-code: 'https://github.com/MAHTEP/TEMOA-Italy'
+url: 'http://www.mahtep.polito.it/'
+license:
+  - CC-BY-4.0
+  - MIT
+keywords:
+  - energy system optimization
+  - energy planning
+  - TEMOA
+  - Italy
+  - open source
+preferred-citation:
+  type: article
+  title: >-
+    A framework for global sensitivity analysis in long-term energy systems
+    planning using optimal transport
+  authors:
+    - given-names: Matteo
+      family-names: Nicoli
+    - given-names: Emanuele
+      family-names: Borgonovo
+    - given-names: Valeria
+      family-names: Di Cosmo
+    - given-names: Daniele
+      family-names: Mosso
+    - given-names: Elmar
+      family-names: Plischke
+    - given-names: Laura
+      family-names: Savoldi
+    - given-names: Anderson
+      family-names: Rodrigo de Queiroz
+  journal: Energy
+  volume: 338
+  number: 138788
+  year: 2025
+  month: 11
+  issn: 0360-5442
+  publisher:
+    name: Elsevier
+  doi: 10.1016/j.energy.2025.138788

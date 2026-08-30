@@ -58,12 +58,15 @@ TEMOA-Italy has been employed to analyze various aspects of the Italian energy t
 
 ## **Contribution**
 
-The developing team wishes to receive help form the users in the definition and test of new test cases, in the benchmark against other established software, in the inclusion of other functionalities.
-To contribute please refer to [contribution](CONTRIBUTION.md).
+The developing team welcomes help from users in defining and testing new test cases, benchmarking against other established software, and including new functionalities.
+To contribute, please refer to [CONTRIBUTION.md](CONTRIBUTION.md).
 
 ## **Code of Conduct**
 
 The developing team agreed to embrace the [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) **Code of Conduct**.
  
 ## **License**
-TEMOA-Italy is licensed under [![AGPL](https://www.gnu.org/graphics/agplv3-with-text-100x42.png)](LICENSE) or any other version of it.
+TEMOA-Italy is distributed under the terms set out in the [LICENSE](LICENSE) file.
+
+## **How to Cite**
+If you use TEMOA-Italy in your work, please cite the reference indicated in [CITATION.cff](CITATION.cff).
