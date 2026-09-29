@@ -88,7 +88,6 @@ if Simplifying:
         'capacity_credit',
         'capacity_factor_process',
         'construction_input',
-        'cost_emission',
         'cost_invest',
         'cost_fixed',
         'cost_variable',

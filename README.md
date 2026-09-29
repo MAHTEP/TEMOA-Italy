@@ -59,7 +59,7 @@ TEMOA-Italy has been employed to analyze various aspects of the Italian energy t
 ## **Contribution**
 
 The developing team welcomes help from users in defining and testing new test cases, benchmarking against other established software, and including new functionalities.
-To contribute, please refer to [CONTRIBUTION.md](CONTRIBUTION.md).
+To contribute, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## **Code of Conduct**
 
