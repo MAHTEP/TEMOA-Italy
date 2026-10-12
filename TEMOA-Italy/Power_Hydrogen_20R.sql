@@ -24444,7 +24444,7 @@ INSERT INTO "limit_annual_capacity_factor" VALUES('PIE','SF_NGA_METH',2025,'SYN_
 INSERT INTO "limit_annual_capacity_factor" VALUES('PIE','STG_H2_TNK',2025,'H2','le',0.98,'JRC-EU-TIMES');
 INSERT INTO "limit_annual_capacity_factor" VALUES('PIE','STM_E',2022,'ELC_CEN','le',0.74,'');
 INSERT INTO "limit_annual_capacity_factor" VALUES('PIE-LIG','TRANSPORT_H2G',2025,'H2','le',0.75,'From Sectorial model');
-INSERT INTO "limit_annual_capacity_factor" VALUES('PIE-LOM','TRANSPORT_H2G',2025,'H2','le',0.75,'From Sectorial model')
+INSERT INTO "limit_annual_capacity_factor" VALUES('PIE-LOM','TRANSPORT_H2G',2025,'H2','le',0.75,'From Sectorial model');
 INSERT INTO "limit_annual_capacity_factor" VALUES('PIE-VDA','TRANSPORT_H2G',2025,'H2','le',0.75,'From Sectorial model');
 INSERT INTO "limit_annual_capacity_factor" VALUES('PUG','BIO_E',2022,'ELC_DST','le',0.44,'');
 INSERT INTO "limit_annual_capacity_factor" VALUES('PUG','BIO_N',2025,'ELC_DST','le',0.7,'');
@@ -25547,7 +25547,7 @@ INSERT INTO "limit_capacity" VALUES('global',2050,'IMP_GRP','le',14.89,NULL,'GW'
 INSERT INTO "limit_capacity" VALUES('global',2025,'EXP_GRP','le',5.69,NULL,'GW');
 INSERT INTO "limit_capacity" VALUES('global',2050,'EXP_GRP','le',8.53,NULL,'GW');
 INSERT INTO "limit_capacity" VALUES('global',2035,'ELC_NUC_GRP','le',0.0,NULL,'GW');
-INSERT INTO "limit_capacity" VALUES('global',2050,'ELC_NUC_GRP','le',0.0,NULL,'GW');
+-- INSERT INTO "limit_capacity" VALUES('global',2050,'ELC_NUC_GRP','le',0.0,NULL,'GW');
 
 CREATE TABLE limit_capacity_share (
     region      TEXT,
