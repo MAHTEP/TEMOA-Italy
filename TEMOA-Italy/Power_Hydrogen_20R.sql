@@ -25546,8 +25546,8 @@ INSERT INTO "limit_capacity" VALUES('global',2025,'IMP_GRP','le',9.93,NULL,'GW')
 INSERT INTO "limit_capacity" VALUES('global',2050,'IMP_GRP','le',14.89,NULL,'GW');
 INSERT INTO "limit_capacity" VALUES('global',2025,'EXP_GRP','le',5.69,NULL,'GW');
 INSERT INTO "limit_capacity" VALUES('global',2050,'EXP_GRP','le',8.53,NULL,'GW');
--- INSERT INTO "limit_capacity" VALUES('global',2035,'ELC_NUC_GRP','le',0.0,NULL,'GW');
--- INSERT INTO "limit_capacity" VALUES('global',2050,'ELC_NUC_GRP','le',0.0,NULL,'GW');
+INSERT INTO "limit_capacity" VALUES('global',2035,'ELC_NUC_GRP','le',0.0,NULL,'GW');
+INSERT INTO "limit_capacity" VALUES('global',2050,'ELC_NUC_GRP','le',0.0,NULL,'GW');
 
 CREATE TABLE limit_capacity_share (
     region      TEXT,
