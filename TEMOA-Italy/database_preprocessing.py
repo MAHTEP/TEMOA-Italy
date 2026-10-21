@@ -35,7 +35,7 @@ def _replace_table_rows(df, table, conn):
 
 
 def _interp_extrap(df, key_cols, time_col, value_col, time_periods,
-                   value_dtype=float):
+                   value_dtype=float, extrapolate=True):
     """
     Linearly interpolate `value_col` over `time_col` within each unique
     combination of `key_cols`, then constant-extrapolate forward past the
@@ -60,6 +60,9 @@ def _interp_extrap(df, key_cols, time_col, value_col, time_periods,
     value_dtype : type
         Cast each interpolated value to this type. Use `int` for lifetime,
         `float` for everything else.
+    extrapolate : bool
+        If False, nothing is generated past the last anchor (only the last
+        anchor itself is kept, if it is a milestone period).
 
     Returns
     -------
@@ -100,7 +103,8 @@ def _interp_extrap(df, key_cols, time_col, value_col, time_periods,
                     out.append({**keymap, time_col: int(t),
                                 value_col: value_dtype(v), **ancil})
             else:  # constant extrapolation past the last anchor
-                tail = [t for t in time_periods if t >= t_i]
+                tail = [t for t in time_periods
+                        if (t >= t_i if extrapolate else t == t_i)]
                 for t in tail:
                     out.append({**keymap, time_col: int(t),
                                 value_col: value_dtype(v_i), **ancil})
@@ -155,6 +159,20 @@ def preprocess_database(sqlite_database):
         'capacity_factor_process':          False,
         'capacity_credit':                  False,
         'construction_input':               False,
+        'limit_activity_share':              False,
+        'limit_capacity_share':              False,
+        'rps_requirement':                   False,
+        'lifetime_survival_curve':           False,
+        'demand_specific_distribution':      False,
+        'emission_embodied':                 False,
+        'emission_end_of_life':              False,
+        'end_of_life_output':                False,
+        'loan_lifetime_process':             False,
+        'limit_new_capacity':                False,
+        'limit_new_capacity_share':          False,
+        'limit_annual_capacity_factor':      False,
+        'efficiency_variable':               False,
+        'reserve_capacity_derate':           False,
     }
     # Which sections actually write back the interpolated table.
     save_tosql = {k: True for k in print_outcome}
@@ -399,6 +417,28 @@ def preprocess_database(sqlite_database):
     if print_status:
         print(_status_line(print_i, len(print_outcome),
                            'lifetime_process interpolated.',
+                           time.time() - start_time))
+
+    # =====================================================================
+    # loan_lifetime_process
+    # =====================================================================
+    # Same treatment as lifetime_process: value_dtype=int.
+    start_time = time.time()
+    LoanLifetimeProcess = pd.read_sql("SELECT * FROM loan_lifetime_process", conn)
+    LoanLifetimeProcess = _interp_extrap(
+        LoanLifetimeProcess,
+        key_cols=['region', 'tech'],
+        time_col='vintage',
+        value_col='lifetime',
+        time_periods=time_periods,
+        value_dtype=int,
+    )
+    if save_tosql['loan_lifetime_process']:
+        _replace_table_rows(LoanLifetimeProcess, 'loan_lifetime_process', conn)
+    print_i += 1
+    if print_status:
+        print(_status_line(print_i, len(print_outcome),
+                           'loan_lifetime_process interpolated.',
                            time.time() - start_time))
 
     # Reload LifetimeTech and LifetimeProcess into Python — needed later by
@@ -986,28 +1026,25 @@ def preprocess_database(sqlite_database):
         Demand_proj = pd.DataFrame(projected) if projected else \
             pd.DataFrame(columns=Demand.columns)
 
-        # --- step 2: any explicitly entered future-period row in Demand
-        #     overrides the projected value for the same (region, commodity,
-        #     period). Manually inserted rows take priority.
-        manual = Demand[Demand['period'] > base_year].copy()
+        # --- step 2: any explicitly entered row in Demand (every period
+        #     except the base year) overrides the projected value for the
+        #     same (region, commodity, period). Manually inserted rows take
+        #     priority.
+        manual = Demand[Demand['period'] != base_year].copy()
         if not Demand_proj.empty and not manual.empty:
-            manual_keys = set(
-                zip(manual['region'], manual['commodity'], manual['period'])
-            )
-            Demand_proj = Demand_proj[~Demand_proj.apply(
-                lambda r: (r['region'], r['commodity'], r['period']) in manual_keys,
-                axis=1
-            )]
+            proj_idx = pd.MultiIndex.from_frame(
+                Demand_proj[['region', 'commodity', 'period']])
+            manual_idx = pd.MultiIndex.from_frame(
+                manual[['region', 'commodity', 'period']])
+            Demand_proj = Demand_proj[~proj_idx.isin(manual_idx)]
 
-        # --- step 3: merge projections + manual (existing periods excluded) ---
-        # v3 drops the base-year row from the projection and only keeps
-        # non-base-year original rows. More generally, demand for any
-        # existing period should be removed after preprocessing (the model
-        # only optimises future periods). Same logic as cost_fixed /
-        # cost_variable where "if year_p <= time_existing[-1]: continue".
-        Demand = pd.concat([Demand_proj, manual], ignore_index=True)
-        Demand = Demand.sort_values(
-            by=['region', 'commodity', 'period'], ignore_index=True)
+        # --- step 3: merge projections + manual rows ---
+        # The base-year row is dropped (as in v3); every other original row
+        # is kept. If there is nothing to merge, Demand is left untouched.
+        if not Demand_proj.empty or not manual.empty:
+            Demand = pd.concat([Demand_proj, manual], ignore_index=True)
+            Demand = Demand.sort_values(
+                by=['region', 'commodity', 'period'], ignore_index=True)
     else:
         # Fallback: plain linear interpolation / forward extrapolation, like
         # the other parameter tables. (No driver-elasticity projection.)
@@ -1201,6 +1238,130 @@ def preprocess_database(sqlite_database):
         print(_status_line(print_i, len(print_outcome),
                            'construction_input interpolated.',
                            time.time() - start_time))
+
+    # =====================================================================
+    # demand_specific_distribution
+    # =====================================================================
+    # Same logic as pass 1 of capacity_credit, with PERIOD in place of
+    # VINTAGE: piecewise-constant fill. Every milestone period that is
+    # missing for a (region, season, tod, demand_name) series, and that lies
+    # after the first anchor, takes the value of the previous milestone
+    # period. The fill "chains forward" (a synthetic row can feed the next
+    # missing period). There is no linear pass afterwards: unlike
+    # capacity_credit there is no second time dimension to interpolate over.
+    start_time = time.time()
+    DSD = pd.read_sql("SELECT * FROM demand_specific_distribution", conn)
+
+    if not DSD.empty:
+        DSD['_k'] = (DSD['region'].astype(str) + '|' +
+                     DSD['season'].astype(str) + '|' +
+                     DSD['tod'].astype(str) + '|' +
+                     DSD['demand_name'].astype(str))
+        new_rows = []
+        for k in list(dict.fromkeys(DSD['_k'])):
+            sub = DSD[DSD['_k'] == k].sort_values(by='period', ignore_index=True)
+            all_p = list(sub['period'])  # initial snapshot, before the loop
+            working = {}
+            for _, row in sub.iterrows():
+                working.setdefault(int(row['period']), []).append(float(row['dsd']))
+            for i in range(len(time_periods)):
+                t = time_periods[i]
+                if t not in all_p and t > all_p[0]:
+                    prev_p = time_periods[i - 1]
+                    if prev_p in working and working[prev_p]:
+                        avg_val = float(np.average(working[prev_p]))
+                        new_rows.append({
+                            'region':      sub['region'].iloc[0],
+                            'period':      int(t),
+                            'season':      sub['season'].iloc[0],
+                            'tod':         sub['tod'].iloc[0],
+                            'demand_name': sub['demand_name'].iloc[0],
+                            'dsd':         avg_val,
+                            'notes':       sub['notes'].iloc[0],
+                            '_k':          k,
+                        })
+                        working.setdefault(int(t), []).append(avg_val)
+        if new_rows:
+            DSD = pd.concat([DSD, pd.DataFrame(new_rows)], ignore_index=True)
+        DSD = DSD.drop(columns=['_k'])
+        DSD = DSD.sort_values(
+            by=['region', 'demand_name', 'season', 'tod', 'period'],
+            ignore_index=True)
+
+    if save_tosql['demand_specific_distribution']:
+        _replace_table_rows(DSD, 'demand_specific_distribution', conn)
+    if print_outcome['demand_specific_distribution']:
+        print("\ndemand_specific_distribution DataFrame\n\n", DSD[:1000])
+    print_i += 1
+    if print_status:
+        print(_status_line(print_i, len(print_outcome),
+                           'demand_specific_distribution filled.',
+                           time.time() - start_time))
+
+    # =====================================================================
+    # Remaining v4 tables indexed by period or vintage
+    # =====================================================================
+    # Same linear interpolation + constant forward extrapolation as the
+    # sections above. Each entry: (table, key columns, time column, value
+    # column, value dtype, extrapolate). Tables that don't exist in the
+    # database or are empty are skipped by the helper / existence check.
+    #   - lifetime_survival_curve is NOT extrapolated: a survival fraction
+    #     held constant past the last anchor would keep the plant "alive"
+    #     beyond the end of the curve.
+    #   - existing-vintage anchors are kept like in efficiency/cost_invest.
+    remaining_tables = [
+        ('limit_activity_share',  ['region', 'sub_group', 'super_group', 'operator'],
+         'period', 'share', float, True),
+        ('limit_capacity_share',  ['region', 'sub_group', 'super_group', 'operator'],
+         'period', 'share', float, True),
+        ('rps_requirement',       ['region', 'tech_group'],
+         'period', 'requirement', float, True),
+        ('lifetime_survival_curve', ['region', 'tech', 'vintage'],
+         'period', 'fraction', float, False),
+        ('emission_embodied',     ['region', 'emis_comm', 'tech'],
+         'vintage', 'value', float, True),
+        ('emission_end_of_life',  ['region', 'emis_comm', 'tech'],
+         'vintage', 'value', float, True),
+        ('end_of_life_output',    ['region', 'tech', 'output_comm'],
+         'vintage', 'value', float, True),
+        ('limit_new_capacity',    ['region', 'tech_or_group', 'operator'],
+         'vintage', 'new_cap', float, True),
+        ('limit_new_capacity_share',
+         ['region', 'sub_group', 'super_group', 'operator'],
+         'vintage', 'share', float, True),
+        ('limit_annual_capacity_factor',
+         ['region', 'tech_or_group', 'output_comm', 'operator'],
+         'vintage', 'factor', float, True),
+        ('efficiency_variable',
+         ['region', 'season', 'tod', 'input_comm', 'tech', 'output_comm'],
+         'vintage', 'efficiency', float, True),
+        ('reserve_capacity_derate', ['region', 'season', 'tech'],
+         'vintage', 'factor', float, True),
+    ]
+    for tbl, key_cols, time_col, value_col, dtype, extrap in remaining_tables:
+        start_time = time.time()
+        if _table_exists(conn, tbl):
+            df = pd.read_sql(f"SELECT * FROM {tbl}", conn)
+            df = _interp_extrap(
+                df,
+                key_cols=key_cols,
+                time_col=time_col,
+                value_col=value_col,
+                time_periods=time_periods,
+                value_dtype=dtype,
+                extrapolate=extrap,
+            )
+            if save_tosql[tbl]:
+                _replace_table_rows(df, tbl, conn)
+            if print_outcome[tbl]:
+                print(f"\n{tbl} DataFrame\n\n", df[:1000])
+        else:
+            print(f"  [info] Table '{tbl}' not found — skipping.")
+        print_i += 1
+        if print_status:
+            print(_status_line(print_i, len(print_outcome),
+                               f'{tbl} interpolated.',
+                               time.time() - start_time))
 
     print('_______________________________________________________________________')
 
