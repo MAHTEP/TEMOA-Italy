@@ -58,8 +58,8 @@ def _interp_extrap(df, key_cols, time_col, value_col, time_periods,
         Sorted list of model milestone years (from the time_period table,
         excluding the terminal boundary year).
     value_dtype : type
-        Cast each interpolated value to this type. Use `int` for lifetime,
-        `float` for everything else.
+        Cast each interpolated value with this callable. Use `_round_int`
+        for lifetimes, `float` for everything else.
     extrapolate : bool
         If False, nothing is generated past the last anchor (only the last
         anchor itself is kept, if it is a milestone period).
@@ -113,6 +113,104 @@ def _interp_extrap(df, key_cols, time_col, value_col, time_periods,
     result = pd.DataFrame(out)
     column_order = key_cols + [time_col, value_col] + ancillary_cols
     return result[column_order]
+
+
+def _round_int(v):
+    """Round half up to the closest integer (int() alone would truncate)."""
+    return int(np.floor(float(v) + 0.5))
+
+
+def _resolve_lifetime(region, tech, vintage, lifetime_tech_df, lifetime_process_df,
+                      lifetime_default):
+    """
+    Lifetime of a process, with the same precedence as TEMOA:
+    lifetime_process (region, tech, vintage), else lifetime_tech (region, tech),
+    else the default lifetime.
+    """
+    lp = lifetime_process_df[
+        (lifetime_process_df['region'] == region) &
+        (lifetime_process_df['tech'] == tech) &
+        (lifetime_process_df['vintage'] == vintage)
+    ]
+    if not lp.empty:
+        return float(lp['lifetime'].iloc[0])
+    lt = lifetime_tech_df[
+        (lifetime_tech_df['region'] == region) &
+        (lifetime_tech_df['tech'] == tech)
+    ]
+    if not lt.empty:
+        return float(lt['lifetime'].iloc[0])
+    return float(lifetime_default)
+
+
+def _expand_cost_over_lifetime(df, time_periods, last_existing, lifetime_tech_df,
+                               lifetime_process_df, lifetime_default):
+    """
+    Expand cost_fixed / cost_variable anchors to every (period, vintage) pair.
+
+    For each (region, tech):
+      - one anchor: the same cost applies to every vintage from the anchor
+        vintage onwards;
+      - several anchors: the cost is linearly interpolated between the anchor
+        periods and kept constant after the last anchor, giving one cost per
+        vintage.
+    Each vintage then gets one row per milestone period within its lifetime
+    (lifetime_process, else lifetime_tech, else the default). Rows for
+    existing periods (<= last_existing) are dropped.
+    """
+    if df.empty:
+        return df.iloc[0:0].copy()
+
+    out_rows = []
+    for (region_i, tech_i), anchors in df.groupby(['region', 'tech'], sort=False):
+        anchors = anchors.sort_values(by='period', ignore_index=True)
+
+        if len(anchors) == 1:
+            only = anchors.iloc[0]
+            cost_by_vintage = {v: float(only['cost']) for v in time_periods
+                               if v >= only['vintage']}
+            units, notes = only['units'], only['notes']
+        else:
+            cost_by_vintage = {}
+            for i in range(len(anchors) - 1):
+                y1, y2 = anchors['period'].iloc[i], anchors['period'].iloc[i + 1]
+                c1, c2 = anchors['cost'].iloc[i], anchors['cost'].iloc[i + 1]
+                for year in time_periods:
+                    if y1 <= year < y2:
+                        cost_by_vintage[year] = float(c1 + (year - y1) / (y2 - y1) * (c2 - c1))
+            # Constant extrapolation from the last anchor PERIOD to the end of
+            # the horizon (time_periods already excludes the terminal year).
+            year_last = anchors['period'].iloc[-1]
+            cost_last = float(anchors['cost'].iloc[-1])
+            for year in time_periods:
+                if year >= year_last:
+                    cost_by_vintage[year] = cost_last
+            first_vintage = anchors['vintage'].iloc[0]
+            cost_by_vintage = {v: c for v, c in cost_by_vintage.items()
+                               if v >= first_vintage}
+            units, notes = anchors['units'].iloc[0], anchors['notes'].iloc[0]
+
+        for year_vintage in sorted(cost_by_vintage):
+            life = _resolve_lifetime(region_i, tech_i, year_vintage, lifetime_tech_df,
+                                     lifetime_process_df, lifetime_default)
+            for year_p in time_periods:
+                if not (year_vintage <= year_p < year_vintage + life):
+                    continue
+                if year_p <= last_existing:
+                    continue  # skip existing periods
+                out_rows.append({
+                    'region':  region_i,
+                    'period':  int(year_p),
+                    'tech':    tech_i,
+                    'vintage': int(year_vintage),
+                    'cost':    float(np.format_float_scientific(cost_by_vintage[year_vintage])),
+                    'units':   units,
+                    'notes':   notes,
+                })
+
+    if not out_rows:
+        return df.iloc[0:0].copy()
+    return pd.DataFrame(out_rows)
 
 
 def _status_line(idx, total, label, dt):
@@ -269,7 +367,9 @@ def preprocess_database(sqlite_database):
 
     keys_PEF = set(EmissionActivity_PEF['_k']) if not EmissionActivity_PEF.empty else set()
     keys_CEF = set(EmissionActivity_CEF['_k']) if not EmissionActivity_CEF.empty else set()
-    all_keys = list(keys_PEF | keys_CEF)
+    # sorted: a plain set has no stable order, which made the output (units of
+    # aggregated emissions, float summation order) change from run to run
+    all_keys = sorted(keys_PEF | keys_CEF)
 
     merged = []
     for k in all_keys:
@@ -400,7 +500,8 @@ def preprocess_database(sqlite_database):
     # =====================================================================
     # lifetime_process
     # =====================================================================
-    # value_dtype=int matches the v3 behavior (life_process was cast to int).
+    # Lifetimes are rounded to the closest integer (half up). A plain int()
+    # cast would truncate them (e.g. 17.9 -> 17).
     start_time = time.time()
     LifetimeProcess = pd.read_sql("SELECT * FROM lifetime_process", conn)
     LifetimeProcess = _interp_extrap(
@@ -409,7 +510,7 @@ def preprocess_database(sqlite_database):
         time_col='vintage',
         value_col='lifetime',
         time_periods=time_periods,
-        value_dtype=int,
+        value_dtype=_round_int,
     )
     if save_tosql['lifetime_process']:
         _replace_table_rows(LifetimeProcess, 'lifetime_process', conn)
@@ -422,7 +523,7 @@ def preprocess_database(sqlite_database):
     # =====================================================================
     # loan_lifetime_process
     # =====================================================================
-    # Same treatment as lifetime_process: value_dtype=int.
+    # Same treatment as lifetime_process: rounded to the closest integer.
     start_time = time.time()
     LoanLifetimeProcess = pd.read_sql("SELECT * FROM loan_lifetime_process", conn)
     LoanLifetimeProcess = _interp_extrap(
@@ -431,7 +532,7 @@ def preprocess_database(sqlite_database):
         time_col='vintage',
         value_col='lifetime',
         time_periods=time_periods,
-        value_dtype=int,
+        value_dtype=_round_int,
     )
     if save_tosql['loan_lifetime_process']:
         _replace_table_rows(LoanLifetimeProcess, 'loan_lifetime_process', conn)
@@ -605,121 +706,15 @@ def preprocess_database(sqlite_database):
     # cost_fixed   (lifetime-aware expansion)
     # =====================================================================
     # Unlike vintage-only tables, cost_fixed is indexed by BOTH `period` and
-    # `vintage`. The v3 logic — preserved here — expands each input anchor
-    # over the periods [vintage, vintage+lifetime), and (if multiple anchors
-    # exist for the same region+tech) interpolates the cost linearly across
-    # those periods. Lifetime comes from lifetime_tech, falling back to
-    # lifetime_process, then to lifetime_default.
+    # `vintage`. Each anchor is turned into one cost per vintage (linear
+    # interpolation between anchors, constant after the last one) and then
+    # expanded over the periods [vintage, vintage + lifetime). See
+    # _expand_cost_over_lifetime for details.
     start_time = time.time()
     CostFixed = pd.read_sql("SELECT * FROM cost_fixed", conn)
-
-    out_rows = []
-    if not CostFixed.empty:
-        tech_already_considered = set()
-        for i_tech in range(len(CostFixed)):
-            region_i = CostFixed['region'].iloc[i_tech]
-            tech_i = CostFixed['tech'].iloc[i_tech]
-            key = (region_i, tech_i)
-            if key in tech_already_considered:
-                continue
-
-            # Resolve the technology lifetime
-            lifetime = lifetime_default
-            lt_match = LifetimeTech_df[
-                (LifetimeTech_df['region'] == region_i) &
-                (LifetimeTech_df['tech'] == tech_i)
-            ]
-            if not lt_match.empty:
-                lifetime = float(lt_match['lifetime'].iloc[0])
-            # Per-vintage lifetimes for fall-back inside the loop
-            lp_match = LifetimeProcess_df[
-                (LifetimeProcess_df['region'] == region_i) &
-                (LifetimeProcess_df['tech'] == tech_i)
-            ]
-            life_by_vintage = dict(zip(lp_match['vintage'], lp_match['lifetime'])) \
-                if not lp_match.empty else {}
-
-            # Find all rows that share this (region, tech) — these are the
-            # anchor points whose values we'll interpolate across periods.
-            anchors = CostFixed[
-                (CostFixed['region'] == region_i) &
-                (CostFixed['tech'] == tech_i)
-            ].sort_values(by='period', ignore_index=True)
-
-            if len(anchors) == 1:
-                # Single anchor — expand from CostFixed.vintage of that row
-                # over [vintage, vintage+lifetime) at each milestone period.
-                only = anchors.iloc[0]
-                for year_vintage in time_periods:
-                    if year_vintage < only['vintage']:
-                        continue
-                    life = life_by_vintage.get(year_vintage, lifetime)
-                    start = year_vintage
-                    stop = year_vintage + life
-                    for year_p in time_periods:
-                        if not (start <= year_p < stop):
-                            continue
-                        if year_p <= time_existing[-1]:
-                            continue  # skip existing periods
-                        out_rows.append({
-                            'region':  region_i,
-                            'period':  int(year_p),
-                            'tech':    tech_i,
-                            'vintage': int(year_vintage),
-                            'cost':    float(np.format_float_scientific(only['cost'])),
-                            'units':   only['units'],
-                            'notes':   only['notes'],
-                        })
-            else:
-                # Multiple anchors — linearly interpolate the cost over
-                # periods between consecutive anchor period values, then
-                # constant-extrapolate forward.
-                year_list = []
-                cost_list = []
-                for i in range(len(anchors) - 1):
-                    y1, y2 = anchors['period'].iloc[i], anchors['period'].iloc[i + 1]
-                    c1, c2 = anchors['cost'].iloc[i], anchors['cost'].iloc[i + 1]
-                    for year in time_periods:
-                        if y1 <= year < y2:
-                            year_list.append(year)
-                            cost_list.append(c1 + (year - y1) / (y2 - y1) * (c2 - c1))
-                # Tail: extrapolate from the last anchor
-                year_last = anchors['vintage'].iloc[-1]
-                cost_last = anchors['cost'].iloc[-1]
-                if year_last != time_periods[-2]:
-                    for year in time_periods:
-                        if year >= year_last:
-                            year_list.append(year)
-                            cost_list.append(cost_last)
-                else:
-                    year_list.append(year_last)
-                    cost_list.append(cost_last)
-
-                first_vintage = anchors['vintage'].iloc[0]
-                for idx, year_vintage in enumerate(year_list):
-                    if year_vintage < first_vintage:
-                        continue
-                    life = life_by_vintage.get(year_vintage, lifetime)
-                    start = year_vintage
-                    stop = year_vintage + life
-                    for year_p in year_list:
-                        if not (start <= year_p < stop):
-                            continue
-                        if year_p <= time_existing[-1]:
-                            continue
-                        out_rows.append({
-                            'region':  region_i,
-                            'period':  int(year_p),
-                            'tech':    tech_i,
-                            'vintage': int(year_vintage),
-                            'cost':    float(np.format_float_scientific(cost_list[idx])),
-                            'units':   anchors['units'].iloc[0],
-                            'notes':   anchors['notes'].iloc[0],
-                        })
-
-            tech_already_considered.add(key)
-
-    CostFixed = pd.DataFrame(out_rows) if out_rows else CostFixed.iloc[0:0]
+    CostFixed = _expand_cost_over_lifetime(
+        CostFixed, time_periods, time_existing[-1], LifetimeTech_df,
+        LifetimeProcess_df, lifetime_default)
     if save_tosql['cost_fixed']:
         _replace_table_rows(CostFixed, 'cost_fixed', conn)
     print_i += 1
@@ -733,104 +728,9 @@ def preprocess_database(sqlite_database):
     # =====================================================================
     start_time = time.time()
     CostVariable = pd.read_sql("SELECT * FROM cost_variable", conn)
-
-    out_rows = []
-    if not CostVariable.empty:
-        tech_already_considered = set()
-        for i_tech in range(len(CostVariable)):
-            region_i = CostVariable['region'].iloc[i_tech]
-            tech_i = CostVariable['tech'].iloc[i_tech]
-            key = (region_i, tech_i)
-            if key in tech_already_considered:
-                continue
-
-            lifetime = lifetime_default
-            lt_match = LifetimeTech_df[
-                (LifetimeTech_df['region'] == region_i) &
-                (LifetimeTech_df['tech'] == tech_i)
-            ]
-            if not lt_match.empty:
-                lifetime = float(lt_match['lifetime'].iloc[0])
-            lp_match = LifetimeProcess_df[
-                (LifetimeProcess_df['region'] == region_i) &
-                (LifetimeProcess_df['tech'] == tech_i)
-            ]
-            life_by_vintage = dict(zip(lp_match['vintage'], lp_match['lifetime'])) \
-                if not lp_match.empty else {}
-
-            anchors = CostVariable[
-                (CostVariable['region'] == region_i) &
-                (CostVariable['tech'] == tech_i)
-            ].sort_values(by='period', ignore_index=True)
-
-            if len(anchors) == 1:
-                only = anchors.iloc[0]
-                for year_vintage in time_periods:
-                    if year_vintage < only['vintage']:
-                        continue
-                    life = life_by_vintage.get(year_vintage, lifetime)
-                    start = year_vintage
-                    stop = year_vintage + life
-                    for year_p in time_periods:
-                        if not (start <= year_p < stop):
-                            continue
-                        if year_p <= time_existing[-1]:
-                            continue
-                        out_rows.append({
-                            'region':  region_i,
-                            'period':  int(year_p),
-                            'tech':    tech_i,
-                            'vintage': int(year_vintage),
-                            'cost':    float(np.format_float_scientific(only['cost'])),
-                            'units':   only['units'],
-                            'notes':   only['notes'],
-                        })
-            else:
-                year_list = []
-                cost_list = []
-                for i in range(len(anchors) - 1):
-                    y1, y2 = anchors['period'].iloc[i], anchors['period'].iloc[i + 1]
-                    c1, c2 = anchors['cost'].iloc[i], anchors['cost'].iloc[i + 1]
-                    for year in time_periods:
-                        if y1 <= year < y2:
-                            year_list.append(year)
-                            cost_list.append(c1 + (year - y1) / (y2 - y1) * (c2 - c1))
-                year_last = anchors['vintage'].iloc[-1]
-                cost_last = anchors['cost'].iloc[-1]
-                if year_last != time_periods[-2]:
-                    for year in time_periods:
-                        if year >= year_last:
-                            year_list.append(year)
-                            cost_list.append(cost_last)
-                else:
-                    year_list.append(year_last)
-                    cost_list.append(cost_last)
-
-                first_vintage = anchors['vintage'].iloc[0]
-                for idx, year_vintage in enumerate(year_list):
-                    if year_vintage < first_vintage:
-                        continue
-                    life = life_by_vintage.get(year_vintage, lifetime)
-                    start = year_vintage
-                    stop = year_vintage + life
-                    for year_p in year_list:
-                        if not (start <= year_p < stop):
-                            continue
-                        if year_p <= time_existing[-1]:
-                            continue
-                        out_rows.append({
-                            'region':  region_i,
-                            'period':  int(year_p),
-                            'tech':    tech_i,
-                            'vintage': int(year_vintage),
-                            'cost':    float(np.format_float_scientific(cost_list[idx])),
-                            'units':   anchors['units'].iloc[0],
-                            'notes':   anchors['notes'].iloc[0],
-                        })
-
-            tech_already_considered.add(key)
-
-    CostVariable = pd.DataFrame(out_rows) if out_rows else CostVariable.iloc[0:0]
+    CostVariable = _expand_cost_over_lifetime(
+        CostVariable, time_periods, time_existing[-1], LifetimeTech_df,
+        LifetimeProcess_df, lifetime_default)
     if save_tosql['cost_variable']:
         _replace_table_rows(CostVariable, 'cost_variable', conn)
     print_i += 1
@@ -1004,6 +904,13 @@ def preprocess_database(sqlite_database):
                     if period_k == base_year:
                         # base-year row already added — skip
                         continue
+                    if k == 0:
+                        # No driver value for a previous period: iloc[k - 1]
+                        # would wrap around to the LAST driver value.
+                        print(f"  [warning] Driver '{alloc_row['driver_name']}' in "
+                              f"region '{region_i}' has no value before {period_k}: "
+                              f"projection of '{comm_i}' for {period_k} skipped.")
+                        continue
                     # Project from the most recent previous projected value
                     prev_demand = seq_rows[-1]['demand']
                     drv_curr = float(drv['driver'].iloc[k])
@@ -1159,22 +1066,10 @@ def preprocess_database(sqlite_database):
                 tech_i = sub['tech'].iloc[0]
                 region_i = sub['region'].iloc[i]
                 vintage_i = sub['vintage'].iloc[i]
-                # Resolve lifetime: tech > process > default
-                lt = LifetimeTech_df[
-                    (LifetimeTech_df['region'] == region_i) &
-                    (LifetimeTech_df['tech'] == tech_i)
-                ]
-                lp = LifetimeProcess_df[
-                    (LifetimeProcess_df['region'] == region_i) &
-                    (LifetimeProcess_df['tech'] == tech_i) &
-                    (LifetimeProcess_df['vintage'] == vintage_i)
-                ]
-                if not lt.empty:
-                    lifetime = float(lt['lifetime'].iloc[0])
-                elif not lp.empty:
-                    lifetime = float(lp['lifetime'].iloc[0])
-                else:
-                    lifetime = lifetime_default
+                # Resolve lifetime as TEMOA does: process > tech > default
+                lifetime = _resolve_lifetime(region_i, tech_i, vintage_i,
+                                             LifetimeTech_df, LifetimeProcess_df,
+                                             lifetime_default)
 
                 p_i = sub['period'].iloc[i]
                 c_i = sub['credit'].iloc[i]
