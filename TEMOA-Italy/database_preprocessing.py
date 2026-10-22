@@ -200,7 +200,7 @@ def preprocess_database(sqlite_database):
     base_year = time_existing[-1]  # last existing period is the model base year
 
     print('_______________________________________________________________________')
-    print("{:>62}".format('Output code of database_preprocessing_v4.py:'))
+    print("{:>62}".format('Output code of database_preprocessing.py:'))
 
 
     # =====================================================================
@@ -1026,25 +1026,28 @@ def preprocess_database(sqlite_database):
         Demand_proj = pd.DataFrame(projected) if projected else \
             pd.DataFrame(columns=Demand.columns)
 
-        # --- step 2: any explicitly entered row in Demand (every period
-        #     except the base year) overrides the projected value for the
-        #     same (region, commodity, period). Manually inserted rows take
-        #     priority.
-        manual = Demand[Demand['period'] != base_year].copy()
+        # --- step 2: any explicitly entered future-period row in Demand
+        #     overrides the projected value for the same (region, commodity,
+        #     period). Manually inserted rows take priority.
+        manual = Demand[Demand['period'] > base_year].copy()
         if not Demand_proj.empty and not manual.empty:
-            proj_idx = pd.MultiIndex.from_frame(
-                Demand_proj[['region', 'commodity', 'period']])
-            manual_idx = pd.MultiIndex.from_frame(
-                manual[['region', 'commodity', 'period']])
-            Demand_proj = Demand_proj[~proj_idx.isin(manual_idx)]
+            manual_keys = set(
+                zip(manual['region'], manual['commodity'], manual['period'])
+            )
+            Demand_proj = Demand_proj[~Demand_proj.apply(
+                lambda r: (r['region'], r['commodity'], r['period']) in manual_keys,
+                axis=1
+            )]
 
-        # --- step 3: merge projections + manual rows ---
-        # The base-year row is dropped (as in v3); every other original row
-        # is kept. If there is nothing to merge, Demand is left untouched.
-        if not Demand_proj.empty or not manual.empty:
-            Demand = pd.concat([Demand_proj, manual], ignore_index=True)
-            Demand = Demand.sort_values(
-                by=['region', 'commodity', 'period'], ignore_index=True)
+        # --- step 3: merge projections + manual (existing periods excluded) ---
+        # v3 drops the base-year row from the projection and only keeps
+        # non-base-year original rows. More generally, demand for any
+        # existing period should be removed after preprocessing (the model
+        # only optimises future periods). Same logic as cost_fixed /
+        # cost_variable where "if year_p <= time_existing[-1]: continue".
+        Demand = pd.concat([Demand_proj, manual], ignore_index=True)
+        Demand = Demand.sort_values(
+            by=['region', 'commodity', 'period'], ignore_index=True)
     else:
         # Fallback: plain linear interpolation / forward extrapolation, like
         # the other parameter tables. (No driver-elasticity projection.)
@@ -1411,6 +1414,6 @@ def preprocess_database(sqlite_database):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python database_preprocessing_v4.py <path_to_v4_database.sqlite>")
+        print("Usage: python database_preprocessing.py <path_to_v4_database.sqlite>")
         sys.exit(1)
     preprocess_database(sys.argv[1])

@@ -1,5 +1,9 @@
 import os
 import sqlite3
+import sys
+
+# Do not write __pycache__ when importing database_preprocessing.py
+sys.dont_write_bytecode = True
 
 sqlite_database = 'TEMOA_Italy.sqlite'
 sql_modules = ['TEMOA_Italy.sql']
@@ -9,7 +13,7 @@ Reading = True
 Preprocessing = True
 Simplifying = False
 
-kept_years = [2007, 2010, 2020, 2030, 2040, 2050, 2060]
+kept_years = [2010, 2020, 2030, 2040, 2050, 2060]
 
 
 # -----------------------------------------------------------------------------
@@ -59,7 +63,13 @@ if Simplifying:
     conn = sqlite3.connect(sqlite_database)
     cursor = conn.cursor()
 
-    years_sql = format_sql_list(kept_years)
+    periods_sql = format_sql_list(kept_years)
+
+    # The existing vintages (time_period flag 'e') are kept too: they hold the
+    # existing capacity and the parameters of the existing stock
+    cursor.execute("SELECT period FROM time_period WHERE flag = 'e'")
+    existing_years = [period for (period,) in cursor.fetchall()]
+    vintages_sql = format_sql_list(sorted(set(kept_years) | set(existing_years)))
 
     # Tables containing a "periods" column
     period_tables = [
@@ -113,7 +123,7 @@ if Simplifying:
     for table in period_tables:
         query = f'''
             DELETE FROM "{table}"
-            WHERE "period" NOT IN {years_sql}
+            WHERE "period" NOT IN {periods_sql}
         '''
         cursor.execute(query)
 
@@ -121,14 +131,14 @@ if Simplifying:
     for table in vintage_tables:
         query = f'''
             DELETE FROM "{table}"
-            WHERE "vintage" NOT IN {years_sql}
+            WHERE "vintage" NOT IN {vintages_sql}
         '''
         cursor.execute(query)
 
     # Simplify time_periods table
     cursor.execute(f'''
         DELETE FROM "time_period"
-        WHERE "period" NOT IN {years_sql} AND "flag" <> 'e'
+        WHERE "period" NOT IN {periods_sql} AND "flag" <> 'e'
     ''')
 
     conn.commit()
