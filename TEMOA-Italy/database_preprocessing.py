@@ -1182,9 +1182,16 @@ def preprocess_database(sqlite_database):
         if new_rows:
             DSD = pd.concat([DSD, pd.DataFrame(new_rows)], ignore_index=True)
         DSD = DSD.drop(columns=['_k'])
+        # sorted by region, demand commodity, period, season and time of day;
+        # seasons and times of day follow their sequence in time_season and
+        # time_of_day (names not listed there go last, alphabetically)
+        season_seq = dict(conn.execute("SELECT season, sequence FROM time_season").fetchall())
+        tod_seq = dict(conn.execute("SELECT tod, sequence FROM time_of_day").fetchall())
+        DSD['_s'] = DSD['season'].map(season_seq).fillna(float('inf'))
+        DSD['_d'] = DSD['tod'].map(tod_seq).fillna(float('inf'))
         DSD = DSD.sort_values(
-            by=['region', 'demand_name', 'season', 'tod', 'period'],
-            ignore_index=True)
+            by=['region', 'demand_name', 'period', '_s', 'season', '_d', 'tod'],
+            ignore_index=True).drop(columns=['_s', '_d'])
 
     if save_tosql['demand_specific_distribution']:
         _replace_table_rows(DSD, 'demand_specific_distribution', conn)
