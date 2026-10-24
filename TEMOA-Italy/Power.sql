@@ -2108,6 +2108,22 @@ CREATE TABLE demand_specific_distribution (
     PRIMARY KEY(region, period, season, tod, demand_name),
     CHECK(dsd >= 0 AND dsd <= 1)
 );
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'winter','night','ELC_DEM',0.0784,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'winter','morning','ELC_DEM',0.0632,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'winter','afternoon','ELC_DEM',0.0350,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'winter','noon','ELC_DEM',0.0713,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'spring','night','ELC_DEM',0.0782,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'spring','morning','ELC_DEM',0.0594,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'spring','afternoon','ELC_DEM',0.0331,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'spring','noon','ELC_DEM',0.0650,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'summer','night','ELC_DEM',0.0908,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'summer','morning','ELC_DEM',0.0664,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'summer','afternoon','ELC_DEM',0.0388,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'summer','noon','ELC_DEM',0.0776,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'fall','night','ELC_DEM',0.0766,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'fall','morning','ELC_DEM',0.0619,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'fall','afternoon','ELC_DEM',0.0344,'');
+INSERT INTO "demand_specific_distribution" VALUES('IT',2007,'fall','noon','ELC_DEM',0.0699,'');
 
 CREATE TABLE driver (
     region      TEXT,
