@@ -10,7 +10,7 @@ Ensure you have the **temoa virtual environment** installed and activated in the
 
 ## Repository Content
 
-The GitHub repository includes several SQL codes, together with their associated SQLite databases and results. Each model is generated, preprocessed, and postprocessed with the same algorithms described in this guide, simply by pointing the scripts to the corresponding `.sql` and `.sqlite` file names.
+The GitHub repository includes several SQL codes, together with their associated SQLite databases and results. Each model is generated, preprocessed, and postprocessed with the same algorithms described in this guide, simply by listing their names in the generator script.
 
 ### Full model
 
@@ -29,37 +29,38 @@ The GitHub repository includes several SQL codes, together with their associated
 
 ## Overview
 
-The `database_generator.py` script automates the process of generating, preprocessing, and optionally simplifying an SQLite database for the TEMOA-Italy project. The script executes four steps controlled by Boolean flags, followed by a final optimization of the database:
+The `database_generator.py` script automates the process of generating, preprocessing, and optionally simplifying the SQLite databases of the TEMOA-Italy project. The script loops over the models listed in `sql_modules` and, for each of them, executes four steps controlled by Boolean flags, followed by a final optimization of the database:
 
 1. **Deleting:** Removes an existing database if present.
-2. **Reading:** Creates a new database by executing SQL scripts.
+2. **Reading:** Creates a new database by executing the SQL code of the model.
 3. **Preprocessing:** Runs the Python preprocessing function.
 4. **Simplifying (Optional):** Reduces the number of future time periods.
 5. **Final Optimization:** Runs `VACUUM` on the database (always executed).
 
+The flags and the simplification settings are shared by all the listed models: the whole list is generated with the same options, one model after the other.
+
 ## Key Components
 
-- **SQLite Database File:** `sqlite_database`, e.g. `TEMOA_Italy.sqlite`
-- **SQL Script(s):** `sql_modules`, e.g. `['TEMOA_Italy.sql']`. Several SQL files can be listed: they are executed in sequence on the same database.
+- **Model List:** `sql_modules`, e.g. `['TEMOA_Italy']`. The entries are the **base names** of the models, without extension. Several models can be listed, e.g. `['TEMOA_Italy', 'Power']`: each entry is generated as a separate database, in the order they appear in the list.
+- **File Names:** Derived from each entry of `sql_modules`: the SQL code is read from `<name>.sql` and the database is written to `<name>.sqlite`. There is no separate variable for the database file, so the two names always match.
 - **Preprocessing Script:** `database_preprocessing.py`, imported as `from database_preprocessing import preprocess_database` and invoked as `preprocess_database(sqlite_database)`. It must be in the same folder as the generator.
 - **Simplification Settings (Optional):** the `kept_years` list, defined at the top of the generator.
 
-*Note:* The same components apply to the other models available in the repository (e.g. `Power.sql`/`Power.sqlite`, `Power_20R.sql`/`Power_20R.sqlite`): it is sufficient to update `sqlite_database` and `sql_modules` in the script.
+*Note:* Each model is announced in the console by printing its SQL file name, followed by one status line per executed step.
 
 ## Step-by-Step Breakdown
 
 ### 1. Deleting the Existing Database
 - **Controlled by:** `Deleting = True`
 - **Functionality:**
-  - Checks if the database file (`sqlite_database`) exists.
+  - Checks if the database file of the model (`<name>.sqlite`) exists.
   - Deletes the file to ensure a clean slate for database creation.
 
 ### 2. Reading and Creating the Database
 - **Controlled by:** `Reading = True`
 - **Functionality:**
-  - Iterates over the `sql_modules` list (e.g., `TEMOA_Italy.sql`).
-  - Connects to the SQLite database (creates it if it doesn't exist).
-  - Executes the SQL script to define tables, relationships, and insert data.
+  - Connects to the SQLite database of the model (creates it if it doesn't exist).
+  - Executes the SQL code of the model (e.g. `TEMOA_Italy.sql`) to define tables, relationships, and insert data.
   - SQL files are read with `utf-8-sig` encoding, so a leading BOM is handled transparently.
 
 ### 3. Preprocessing the Database
@@ -72,23 +73,25 @@ The `database_generator.py` script automates the process of generating, preproce
 ### 4. Simplifying the Database (Optional)
 - **Controlled by:** `Simplifying = False` *(set to `True` to enable)*
 - **Functionality:**
-  - Simplifies the model time horizon by keeping only the future time periods listed in `kept_years`.
+  - Simplifies the model time horizon by keeping only the time periods listed in `kept_years`.
   - Runs after preprocessing, so it acts on the already interpolated tables.
-  - Deletes the rows whose `period` is not in `kept_years` from the period-indexed tables (e.g. `cost_fixed`, `cost_variable`, `cost_emission`, `demand`, `limit_*`), and the rows whose `vintage` is not in `kept_years` from the vintage-indexed tables (e.g. `efficiency`, `emission_activity`, `cost_invest`, `existing_capacity`, `lifetime_process`).
-  - Existing vintages (`time_period` rows with flag `'e'`) are always kept, since they hold the existing capacity and the parameters of the existing stock.
-  - Removes the dropped periods from `time_period`.
-  - *Note:* the last year of `time_period` is not a model period but marks the end of the time horizon. Include it in `kept_years` (e.g. `2060`), otherwise the last kept period becomes the end of the horizon and is no longer optimized.
+  - Deletes the rows whose `period` is not in `kept_years` from the period-indexed tables: `capacity_credit`, `cost_fixed`, `cost_variable`, `cost_emission`, `demand`, `demand_specific_distribution`, `driver`, `elasticity`, `lifetime_survival_curve`, `limit_emission`, `limit_activity`, `limit_activity_share`, `limit_capacity`, `limit_capacity_share`, `limit_tech_input_split`, `limit_tech_input_split_annual`, `limit_tech_output_split`, `limit_tech_output_split_annual`.
+  - Deletes the rows whose `vintage` is not in the **kept vintages** from the vintage-indexed tables: `capacity_credit`, `capacity_factor_process`, `construction_input`, `cost_invest`, `cost_fixed`, `cost_variable`, `efficiency`, `efficiency_variable`, `emission_activity`, `emission_embodied`, `emission_end_of_life`, `end_of_life_output`, `existing_capacity`, `lifetime_process`, `lifetime_survival_curve`, `limit_annual_capacity_factor`, `limit_new_capacity`, `limit_new_capacity_share`, `loan_lifetime_process`, `loan_rate`, `myopic_efficiency`, `reserve_capacity_derate`.
+  - The kept vintages are the union of `kept_years` and the existing periods, read from `time_period` with flag `'e'`: the existing vintages are always kept, since they hold the existing capacity and the parameters of the existing stock.
+  - Removes the dropped periods from `time_period`, again keeping the rows flagged `'e'`.
+  - *Note:* the step issues a plain `DELETE` on each table of the two lists, so every one of them must exist in the database. A model whose SQL code does not create the full TEMOA v4 schema makes the simplification stop with an error; comment the missing tables out of the two lists before enabling the step.
+  - *Note:* the last year of `time_period` is not a model period but marks the end of the time horizon. Include it in `kept_years`, as the default `[2010, 2020, 2030, 2040, 2050, 2060]` does with 2060, otherwise the last kept period becomes the end of the horizon and is no longer optimized.
 
 ### 5. Final Optimization
 - **Command:** `VACUUM`
 - **Purpose:**
   - Rebuilds the SQLite database to defragment the file and optimize storage.
   - Reduces file size and improves performance after data manipulations.
-  - Executed unconditionally, at the end of the script.
+  - Executed unconditionally, on each model, at the end of its loop iteration.
 
 ## Modifying the Script
 
-- **Select the model:** Set `sqlite_database` and `sql_modules` to the model to be generated.
+- **Select the models:** List in `sql_modules` the base names of the models to be generated.
 - **Skip Deletion:** Set `Deleting = False` to retain the existing database.
 - **Bypass SQL Execution:** Set `Reading = False` if no schema updates are needed.
 - **Disable Preprocessing:** Set `Preprocessing = False` if preprocessing is unnecessary.
