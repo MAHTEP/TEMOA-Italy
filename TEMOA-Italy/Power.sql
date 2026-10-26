@@ -22,9 +22,9 @@ CREATE TABLE commodity (
 INSERT INTO "commodity" VALUES('ELC_BGS','a','Biogas','PJ');
 INSERT INTO "commodity" VALUES('ELC_BLQ','a','Bioliquids','PJ');
 INSERT INTO "commodity" VALUES('ELC_BMU','a','Municipal waste','PJ');
-INSERT INTO "commodity" VALUES('ELC_CEN','a','Electricity (centralized)','PJ');
+INSERT INTO "commodity" VALUES('ELC_CEN','p','Electricity (centralized)','PJ');
 INSERT INTO "commodity" VALUES('ELC_COA','a','Coal','PJ');
-INSERT INTO "commodity" VALUES('ELC_DST','a','Electricity (distributed)','PJ');
+INSERT INTO "commodity" VALUES('ELC_DST','p','Electricity (distributed)','PJ');
 INSERT INTO "commodity" VALUES('ELC_GASDER','a','Derived gas','PJ');
 INSERT INTO "commodity" VALUES('ELC_GEO','a','Geothermal energy','PJ');
 INSERT INTO "commodity" VALUES('ELC_H2','p','Hydrogen','PJ');
