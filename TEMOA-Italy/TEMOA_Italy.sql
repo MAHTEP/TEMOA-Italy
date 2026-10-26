@@ -13860,14 +13860,14 @@ INSERT INTO "limit_activity" VALUES('IT',2030,'CCUS_SNK_DGF_ON','le',100,'kt',''
 INSERT INTO "limit_activity" VALUES('IT',2035,'CCUS_SNK_DGF_ON','le',760,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2040,'CCUS_SNK_DGF_ON','le',2830,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2045,'CCUS_SNK_DGF_ON','le',10510,'kt','');
-INSERT INTO "limit_activity" VALUES('IT',2050,'CCUS_SNK_DGF_ON','le',27000,'kt','');
+INSERT INTO "limit_activity" VALUES('IT',2050,'CCUS_SNK_DGF_ON','le',14000,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2020,'CCUS_SNK_DGF_OFF','le',0,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2025,'CCUS_SNK_DGF_OFF','le',1,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2030,'CCUS_SNK_DGF_OFF','le',20,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2035,'CCUS_SNK_DGF_OFF','le',160,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2040,'CCUS_SNK_DGF_OFF','le',870,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2045,'CCUS_SNK_DGF_OFF','le',4680,'kt','');
-INSERT INTO "limit_activity" VALUES('IT',2050,'CCUS_SNK_DGF_OFF','le',18000,'kt','');
+INSERT INTO "limit_activity" VALUES('IT',2050,'CCUS_SNK_DGF_OFF','le',6000,'kt','');
 INSERT INTO "limit_activity" VALUES('IT',2010,'RES_LG_HAL_IN_GRP','ge',100.00,NULL,'Glm');
 INSERT INTO "limit_activity" VALUES('IT',2050,'RES_LG_HAL_IN_GRP','ge',50.00,NULL,'Glm');
 INSERT INTO "limit_activity" VALUES('IT',2010,'IND_CH_FS_NGA_GRP','ge',19.36,NULL,'PJ');
@@ -14811,6 +14811,9 @@ CREATE TABLE limit_emission (
     notes     TEXT,
     PRIMARY KEY(region, period, emis_comm, operator)
 );
+--INSERT INTO "limit_emission" VALUES('IT',2030,'TOT_CO2','le',195000,'kt','');
+--INSERT INTO "limit_emission" VALUES('IT',2040,'TOT_CO2','le',110000,'kt','');
+--INSERT INTO "limit_emission" VALUES('IT',2050,'TOT_CO2','le',30000,'kt','');
 
 CREATE TABLE limit_growth_capacity (
     region       TEXT,
