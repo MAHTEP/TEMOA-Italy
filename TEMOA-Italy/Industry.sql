@@ -4612,7 +4612,7 @@ CREATE TABLE metadata_real (
     value   REAL,
     notes   TEXT
 );
-INSERT INTO "metadata_real" VALUES('global_discount_rate',0.05,NULL);
+INSERT INTO "metadata_real" VALUES('global_discount_rate',0.02,NULL);
 INSERT INTO "metadata_real" VALUES('default_loan_rate',0.05,NULL);
 
 CREATE TABLE myopic_efficiency (
