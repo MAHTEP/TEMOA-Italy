@@ -3668,6 +3668,10 @@ CREATE TABLE limit_emission (
     notes     TEXT,
     PRIMARY KEY(region, period, emis_comm, operator)
 );
+--INSERT INTO "limit_emission" VALUES('global',2035,'ELC_CO2','le',23000,'kt','');
+--INSERT INTO "limit_emission" VALUES('global',2040,'ELC_CO2','le',12000,'kt','');
+--INSERT INTO "limit_emission" VALUES('global',2045,'ELC_CO2','le',10000,'kt','');
+--INSERT INTO "limit_emission" VALUES('global',2050,'ELC_CO2','le',0,'kt','');
 
 CREATE TABLE limit_growth_capacity (
     region       TEXT,
